@@ -61,8 +61,8 @@ public class User {
         rol = nrol;
     }
 
-    public Date getCreate_at(){
-        if(create_at == null){
+    public Date getCreate_at() {
+        if(create_at == null) {
             System.out.println("beria estar inicializada");
         }
         Date miDate = Date.valueOf(create_at.split(" ")[0]);
@@ -85,13 +85,14 @@ public class User {
         update_at = nupdate_at;
     }
 
-    public String GetAllProperties(){
+    public String GetAllProperties() {
         String all =
             "Id_Pk: " +  this.getId_pk() + "\n" +
             "Nombre: " + this.getNombre() + "\n" +
             "Email: " + this.getEmail() + "\n" +
             "Password: " + this.getPassword() + "\n" +
             "Rol: " + this.getRol() + "\n";
+
         if(this.getCreate_at() != null) {
             all += "Create At: " + this.getCreate_at() + "\n";
         }
