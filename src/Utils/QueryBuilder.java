@@ -1,5 +1,7 @@
 package Utils;
 
+import Mundo.User;
+
 public record QueryBuilder(String options, String column) {
     /**
      * combina las options & valores en 1 solo String
@@ -99,5 +101,32 @@ public record QueryBuilder(String options, String column) {
         }
         assert cont == 0 : "deberi ser mayor a 0";
         return cont;
+    }
+    /**
+     * crea la sentencia sql para el registro de datos
+     * @param nUser: el usuario a registrar
+     * @return la sentencia sql para registrar
+     */
+    public String InsertRegisterQuery(User nUser) {
+        String[] data = nUser.GetAllProperties().split("\n");
+        String column_name = "";
+        for(int i = 0; i < data.length; i++) {
+            column_name += data[i].split(":")[0].stripIndent() + ", ";
+        }
+        String[] columns = column_name.split(",");
+        String clean_colunm_name = "";
+        for(int i = 1; i < columns.length; i++) {
+            clean_colunm_name += columns[i].stripIndent() + ", ";
+        }
+
+        String user_data = "";
+        for(int i = 1; i < data.length; i++) {
+            user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
+        }
+        assert user_data == "" : "deberia tener la información del usuario nuevo";
+        String clean_data = user_data.substring(0, user_data.length()-1);
+        String column = clean_colunm_name.substring(0, clean_colunm_name.length()-4);
+        String sql = "insert into users (" + column +") values (" + clean_data + ")";
+        return sql;
     }
 }

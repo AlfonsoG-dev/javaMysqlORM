@@ -268,6 +268,38 @@ public class UserDAO {
      */
     public boolean InsertNewRegister(User nUser) {
         boolean registrado = false;
+        Statement stm = null;
+        try {
+            stm = connector.createStatement();
+            // System.out.println(sql);
+            User registrar = new User(0, "juan", "j@gmail", "123", "user", "2023-10-05 10:20:30", null);
+
+            User buscado = this.FindByColumnName("nombre: " + registrar.getNombre());
+
+            if(buscado == null) {
+                QueryBuilder query_util = new QueryBuilder(null, null);
+                String sql = query_util.InsertRegisterQuery(registrar);
+                System.out.println(sql);
+                stm.executeUpdate(sql);
+                registrado = true;
+            } else {
+                registrado = false;
+                throw new Exception("usuario deberia ser null");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally{
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+                stm = null;
+            }
+        }
+        assert registrado == false : "deberia ser diferente de false";
         return registrado;
-    }   
+    }
 }

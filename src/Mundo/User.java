@@ -62,9 +62,7 @@ public class User {
     }
 
     public Date getCreate_at() {
-        if(create_at == null) {
-            System.out.println("beria estar inicializada");
-        }
+        assert create_at == null : "deberia estar inicializada";
         Date miDate = Date.valueOf(create_at.split(" ")[0]);
         return miDate;    
     }
@@ -87,17 +85,17 @@ public class User {
 
     public String GetAllProperties() {
         String all =
-            "Id_Pk: " +  this.getId_pk() + "\n" +
-            "Nombre: " + this.getNombre() + "\n" +
-            "Email: " + this.getEmail() + "\n" +
-            "Password: " + this.getPassword() + "\n" +
+            "id: " +  this.getId_pk() + "\n" +
+            "nombre: " + this.getNombre() + "\n" +
+            "email: " + this.getEmail() + "\n" +
+            "password: " + this.getPassword() + "\n" +
             "Rol: " + this.getRol() + "\n";
 
         if(this.getCreate_at() != null) {
-            all += "Create At: " + this.getCreate_at() + "\n";
+            all += "create_at: " + this.getCreate_at() + "\n";
         }
         if(this.getUpdate_at() != null) {
-            all += "Update At" + this.getUpdate_at();
+            all += "update_at" + this.getUpdate_at();
         }
         return all;
     }
