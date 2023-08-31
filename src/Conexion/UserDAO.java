@@ -39,16 +39,17 @@ public class UserDAO {
      * @return cantidad de datos
      */
     public int CountData(){
-        int count = 1;
+        int count = 0;
         PreparedStatement stm = null;
         ResultSet rst = null;
         try{
             String sql = "select count(id) from users";
             stm = connector.prepareStatement(sql);
             rst = stm.executeQuery();
-            while(rst.next()) {
+            do{
                 count++;
             }
+            while(rst.next());
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -113,6 +114,7 @@ public class UserDAO {
                 stm = null;
             }
         }
+        System.out.println(users.length);
         return users;
     }
 
