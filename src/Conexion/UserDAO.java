@@ -70,6 +70,7 @@ public class UserDAO {
                 stm = null;
             }
         }
+        assert count == 0 : "deberia ser mayor a 0";
         return count;
     }
     /**
@@ -114,7 +115,9 @@ public class UserDAO {
                 stm = null;
             }
         }
-        System.out.println(users.length);
+        //System.out.println(users.length);
+        assert users == null : "deberia ser diferente de null";
+        assert users.length == 0 : "deberia ser mayor a 0";
         return users;
     }
 
@@ -159,6 +162,7 @@ public class UserDAO {
                 stm = null;
             }
         }
+        assert buscado == null: "deberia ser diferente de null";
         return buscado;
     }
     /**
@@ -200,6 +204,7 @@ public class UserDAO {
                 stm = null;
             }
         }
+        assert buscado == null : "deberia ser diferente de null";
         return buscado;
     }
     /**
@@ -253,6 +258,7 @@ public class UserDAO {
         if(result == "") {
             result = null;
         }
+        assert result == null : "deberia ser diferente de null";
         return result.substring(0, result.length()-2);
     }
     /**

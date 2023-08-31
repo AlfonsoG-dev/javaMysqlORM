@@ -12,6 +12,7 @@ public record QueryBuilder(String options, String column) {
         for(String val: div) {
             values += val.split(":")[1] +",";
         }
+        assert values == "" : "deberia ser diferente a \"\"";
         String clean_values = values.substring(0, values.length()-1);
         return clean_values;
     }
@@ -26,6 +27,7 @@ public record QueryBuilder(String options, String column) {
         for(String val: div) {
             values += val.split(":")[0] + " =" + "?" + " and";
         }
+        assert values == "" : "deberia ser diferente a \"\"";
         String clean_values = values.substring(0, values.length()-3);
         String sql = "select *" + " from users where " + clean_values;
         return sql;
@@ -45,7 +47,7 @@ public record QueryBuilder(String options, String column) {
             val.split(":")[1].stripIndent()+
             "'" + " and";
         }
-
+        assert values == "" : "deberia ser diferente a \"\"";
         String clean_values = values.substring(0, values.length()-3);
         String sql = "select *" +" from users where " + clean_values.stripIndent();
         return sql;
@@ -65,7 +67,7 @@ public record QueryBuilder(String options, String column) {
             val.split(":")[1].stripIndent() +
             "'" + " and";
         }
-
+        assert values == "" : "deberia ser diferente a \"\"";
         String clean_values = values.substring(0, values.length()-3);
         String sql = "";
 
@@ -95,6 +97,7 @@ public record QueryBuilder(String options, String column) {
                 }
             }
         }
+        assert cont == 0 : "deberi ser mayor a 0";
         return cont;
     }
 }

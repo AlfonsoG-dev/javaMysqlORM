@@ -35,7 +35,7 @@ public class Conector {
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-
+        assert conn == null : "deberia ser diferente de null";
         return conn;
     }
 

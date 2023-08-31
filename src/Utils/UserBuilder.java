@@ -20,6 +20,7 @@ public record UserBuilder(ResultSet rst, int capacity) {
             data[i] = rst.getString(i);
         }
         //System.out.println(data.length);
+        assert data.length == 1 : "deberia ser mayor a 1";
         return data;
     }
     
@@ -30,6 +31,7 @@ public record UserBuilder(ResultSet rst, int capacity) {
     public User CreateNewUser() throws SQLException {
         String[] data = this.DataValidator();
         User nUser = new User(Integer.parseInt(data[1]), data[2], data[3], data[4], data[5], data[6], data[7]);
+        assert nUser.getEmail() == null : "deberia ser diferente de null";
         return nUser;
     }
 }
