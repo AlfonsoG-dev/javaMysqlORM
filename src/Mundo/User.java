@@ -1,6 +1,7 @@
 package Mundo;
 
-import java.sql.Date;
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;
 
 public class User {
     //atributos
@@ -61,26 +62,34 @@ public class User {
         rol = nrol;
     }
 
-    public Date getCreate_at() {
+    public String getCreate_at() {
         assert create_at == null : "deberia estar inicializada";
-        Date miDate = Date.valueOf(create_at.split(" ")[0]);
-        return miDate;    
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
+        LocalDateTime miDate = LocalDateTime.parse(create_at, dtf);  
+        return miDate.toString();    
     }
 
     public void setCreate_at(String ncreate_at) {
-        create_at = ncreate_at;
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
+        LocalDateTime miDate = LocalDateTime.now();  
+        create_at = dtf.format(miDate);
     }
 
-    public Date getUpdate_at() {
-        if(update_at == null){
-            return null;
+    public String getUpdate_at() {
+        String date = null;
+        if(update_at != null) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
+            LocalDateTime miDate = LocalDateTime.parse(update_at, dtf);  
+            date = dtf.format(miDate);
+
         }
-        Date miDate = Date.valueOf(update_at.split(" ")[0]);
-        return miDate;    
+        return date;    
     }
 
     public void setUpdate_at(String nupdate_at) {
-        update_at = nupdate_at;
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
+        LocalDateTime miDate = LocalDateTime.now();  
+        update_at = dtf.format(miDate);
     }
 
     public String GetAllProperties() {
@@ -95,7 +104,7 @@ public class User {
             all += "create_at: " + this.getCreate_at() + "\n";
         }
         if(this.getUpdate_at() != null) {
-            all += "update_at" + this.getUpdate_at();
+            all += "update_at: " + this.getUpdate_at();
         }
         return all;
     }
