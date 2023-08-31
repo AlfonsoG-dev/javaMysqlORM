@@ -39,7 +39,7 @@ public class UserDAO {
      * @return cantidad de datos
      */
     public int CountData(){
-        int count = 0;
+        int count = 1;
         PreparedStatement stm = null;
         ResultSet rst = null;
         try{
@@ -270,15 +270,15 @@ public class UserDAO {
         boolean registrado = false;
         Statement stm = null;
         try {
+            if(nUser == null) {
+                throw new Exception("user no deberia ser null");
+            }
             stm = connector.createStatement();
             // System.out.println(sql);
-            User registrar = new User(0, "juan", "j@gmail", "123", "user", "2023-10-05 10:20:30", null);
-
-            User buscado = this.FindByColumnName("nombre: " + registrar.getNombre());
-
+           User buscado = this.FindByColumnName("nombre: " + nUser.getNombre());
             if(buscado == null) {
                 QueryBuilder query_util = new QueryBuilder(null, null);
-                String sql = query_util.InsertRegisterQuery(registrar);
+                String sql = query_util.InsertRegisterQuery(nUser);
                 System.out.println(sql);
                 stm.executeUpdate(sql);
                 registrado = true;
