@@ -34,7 +34,43 @@ public class UserDAO {
 
     //métodos
 
-
+    /**
+     * se utiliza para dar la cantidad de datos en la tabla
+     * @return cantidad de datos
+     */
+    public int CountData(){
+        int count = 1;
+        PreparedStatement stm = null;
+        ResultSet rst = null;
+        try{
+            String sql = "select count(id) from users";
+            stm = connector.prepareStatement(sql);
+            rst = stm.executeQuery();
+            while(rst.next()) {
+                count++;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+                stm = null;
+            }
+        }
+        return count;
+    }
     /**
      * crea una lista de usuarios con los datos de la bd
      * @return lista de usuarios
@@ -51,7 +87,7 @@ public class UserDAO {
             QueryBuilder util = new QueryBuilder(null, null);
             int lenght = util.GetMetadataColumns(rst.getMetaData().toString());
             miUser = new UserBuilder(rst, lenght);
-            users = new User[lenght];
+            users = new User[CountData()];
             int cont = 0;
             while(rst.next()) {
                 users[cont] = miUser.CreateNewUser();
@@ -59,7 +95,7 @@ public class UserDAO {
             }
         } catch(SQLException e) {
             System.out.println(e.getMessage());
-        } finally{
+        } finally {
             if(rst != null) {
                 try {
                     rst.close();
