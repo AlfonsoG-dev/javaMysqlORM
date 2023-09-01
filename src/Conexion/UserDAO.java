@@ -320,7 +320,7 @@ public class UserDAO {
             stm = connector.createStatement();
             User buscado = this.FindByColumnName(conditions.split(",")[0]);
             if(buscado != null) {
-                String sql = query_util.ModificarRegister(nUser, conditions);
+                String sql = query_util.ModificarRegisterQuery(nUser, conditions);
                 stm.executeUpdate(sql);
                 System.out.println(sql);
                 registrado = true;
@@ -344,5 +344,15 @@ public class UserDAO {
         }
         assert registrado == false : "deberia ser diferente de false";
         return registrado;
+    }
+    /**
+     * eliminar un registro por cualquier columna valida de la bd
+     * @param options: columna con el valor para el condicional
+     * @return true si elimina de lo contrario false
+     * */
+    public boolean EliminarRegistro() {
+        boolean eliminar = false;
+        //TODO: crear la ejecución de la sentencia sql eliminar
+        return eliminar;
     }
 }

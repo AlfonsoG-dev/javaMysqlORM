@@ -134,7 +134,7 @@ public record QueryBuilder() {
      * @param nUser: usuario con los datos a modificar
      * @return la sentencia sql para modificar
      */
-    public String ModificarRegister(User nUser, String condicional) {
+    public String ModificarRegisterQuery(User nUser, String condicional) {
         String[] data = nUser.GetAllProperties().split("\n");
         String key_value = "";
         for(int i = 0; i < data.length; i++) {
@@ -154,5 +154,15 @@ public record QueryBuilder() {
         String clean_condition = condition.stripIndent().substring(0, condition.length()-5);
         String sql = "update users set " +  clean_key_value + " where " + clean_condition;
         return sql;
+   }
+   /**
+    * crear la sentencia sql para eliminar el registro
+    * @param options: las columnas con los valores para el condicional
+    * @return la sentencia sql
+    **/
+   public String EliminarRegistroQuery(String options){
+       String sql = "delete users where nombre='alfonso'";
+       //TODO: crear la sentencia sql dinámica
+       return sql;
    }
 }
