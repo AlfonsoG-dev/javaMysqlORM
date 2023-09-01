@@ -1,7 +1,6 @@
 package Utils;
 
 
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
 
 import Model.ModelMethods;
 
@@ -163,7 +162,7 @@ public record QueryBuilder(String tb_name) {
     * @param options: las columnas con los valores para el condicional
     * @return la sentencia sql
     **/
-   public String EliminarRegistroQuery(String options){
+   public String EliminarRegistroQuery(String options) {
        String[] data = options.split(",");
        String condicional = "";
        for(String key_value: data) {
