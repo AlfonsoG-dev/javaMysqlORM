@@ -318,10 +318,11 @@ public class UserDAO {
                 throw new Exception("user no deberia ser null");
             }
             stm = connector.createStatement();
-            User buscado = this.FindByColumnName("nombre: " + nUser.getNombre());
+            User buscado = this.FindByColumnName("nombre: juan");
             if(buscado != null) {
-                String sql = query_util.ModificarRegister(nUser, "nombre: alfonso, email: alf@gmail.com, password: 123asd");
+                String sql = query_util.ModificarRegister(nUser, "nombre: juan, email: alf@gmail.com, password: 123asd");
                 stm.executeUpdate(sql);
+                System.out.println(sql);
                 registrado = true;
             } else {
                 registrado = false;
