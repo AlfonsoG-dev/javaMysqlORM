@@ -39,7 +39,7 @@ public class UserDAO {
     public UserDAO() {
         connector = new Conector().conectarMySQL();
         nUserBuilder = new UserBuilder();
-        query_util = new QueryBuilder();
+        query_util = new QueryBuilder("users");
     }
 
 

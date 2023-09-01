@@ -2,7 +2,7 @@ package Utils;
 
 import Mundo.User;
 
-public record QueryBuilder() {
+public record QueryBuilder(String tb_name) {
     /**
      * combina las options & valores en 1 solo String
      * @param options: los valores a limpiar
@@ -31,7 +31,7 @@ public record QueryBuilder() {
         }
         assert values == "" : "deberia ser diferente a \"\"";
         String clean_values = values.substring(0, values.length()-3);
-        String sql = "select *" + " from users where " + clean_values;
+        String sql = "select *" + " from "+ tb_name+ " where " + clean_values;
         return sql;
     }
     /**
@@ -51,7 +51,7 @@ public record QueryBuilder() {
         }
         assert values == "" : "deberia ser diferente a \"\"";
         String clean_values = values.substring(0, values.length()-3);
-        String sql = "select *" +" from users where " + clean_values.stripIndent();
+        String sql = "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         return sql;
     }
     /**
@@ -74,10 +74,10 @@ public record QueryBuilder() {
         String sql = "";
 
         if( column == null || column.isEmpty() == true) {
-            sql =  "select *" +" from users where " + clean_values.stripIndent();
+            sql =  "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         }
         else if(column != null || column.isEmpty() == false) {
-            sql =  "select "+ column +" from users where " + clean_values.stripIndent();
+            sql =  "select "+ column +" from " + tb_name + " where " + clean_values.stripIndent();
         }
         return sql;
     }
@@ -126,7 +126,7 @@ public record QueryBuilder() {
         assert user_data == "" : "deberia tener la información del usuario nuevo";
         String clean_data = user_data.substring(0, user_data.length()-1);
         String column = clean_colunm_name.substring(0, clean_colunm_name.length()-4);
-        String sql = "insert into users (" + column +") values (" + clean_data + ")";
+        String sql = "insert into " + tb_name + " (" + column +") values (" + clean_data + ")";
         return sql;
     }
     /** 
@@ -152,7 +152,7 @@ public record QueryBuilder() {
         }
         String clean_key_value = key_value.substring(0, key_value.length()-2);
         String clean_condition = condition.stripIndent().substring(0, condition.length()-5);
-        String sql = "update users set " +  clean_key_value + " where " + clean_condition;
+        String sql = "update " + tb_name + " set " +  clean_key_value + " where " + clean_condition;
         return sql;
    }
    /**
