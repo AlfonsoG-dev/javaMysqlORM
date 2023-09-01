@@ -1,7 +1,7 @@
 package Utils;
 
+
 import Model.ModelMethods;
-import Mundo.User;
 
 public record QueryBuilder(String tb_name) {
     /**
@@ -138,7 +138,7 @@ public record QueryBuilder(String tb_name) {
     public String ModificarRegisterQuery(ModelMethods nObject, String condicional) {
         String[] data = nObject.GetAllProperties().split("\n");
         String key_value = "";
-        for(int i = 0; i < data.length; i++) {
+        for(int i = 1; i < data.length; i++) {
             String key = data[i].split(":")[0];
             String value = data[i].split(":")[1];
             key_value += key.stripIndent() +"="+ "'"+value.stripIndent()+"'"+ ", ";

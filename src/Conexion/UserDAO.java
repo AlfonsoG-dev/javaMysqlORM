@@ -272,18 +272,23 @@ public class UserDAO {
     public boolean InsertNewRegister(User nUser) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
+        ResultSet rst = null;
         try {
             if(nUser == null) {
                 throw new Exception("user no deberia ser null");
             }
             stm = connector.createStatement();
             // System.out.println(sql);
-           User buscado = this.FindByColumnName("nombre: " + nUser.getNombre());
+            User buscado = this.FindByColumnName("nombre: " + nUser.getNombre());
             if(buscado == null) {
                 String sql = query_util.InsertRegisterQuery(nUser);
-                System.out.println(sql);
-                stm.executeUpdate(sql);
-                registrado = true;
+                String[] columns = {"id"};
+                stm.executeUpdate(sql, columns);
+                rst = stm.getGeneratedKeys();
+                while(rst.next()){
+                    System.out.println(sql);
+                    registrado = true;
+                }
             } else {
                 registrado = false;
                 throw new Exception("usuario deberia ser null");
@@ -292,6 +297,14 @@ public class UserDAO {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally{
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+                rst = null;
+            }
             if(stm != null) {
                 try {
                     stm.close();
@@ -313,6 +326,7 @@ public class UserDAO {
     public boolean UpdateRegister(User nUser, String conditions) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
+        ResultSet rst = null;
         try {
             if(nUser == null) {
                 throw new Exception("user no deberia ser null");
@@ -321,9 +335,13 @@ public class UserDAO {
             User buscado = this.FindByColumnName(conditions.split(",")[0]);
             if(buscado != null) {
                 String sql = query_util.ModificarRegisterQuery(nUser, conditions);
-                stm.executeUpdate(sql);
-                System.out.println(sql);
-                registrado = true;
+                String[] columns = {"id"};
+                stm.executeUpdate(sql, columns);
+                rst = stm.getGeneratedKeys();
+                while(rst.next()) {
+                    System.out.println(sql);
+                    registrado = true;
+                }
             } else {
                 registrado = false;
                 throw new Exception("usuario no deberia ser null");
@@ -332,6 +350,16 @@ public class UserDAO {
         } catch( Exception e) {
             System.out.println(e.getMessage());
         } finally {
+            if(rst != null){
+                try {
+                    rst.close();
+
+                } catch( Exception e2) {
+                    System.out.println(e2.getMessage());
+                }
+                rst = null;
+            }
+
             if(stm != null) {
                 try {
                     stm.close();
@@ -350,9 +378,16 @@ public class UserDAO {
      * @param options: columna con el valor para el condicional
      * @return true si elimina de lo contrario false
      * */
-    public boolean EliminarRegistro() {
+    public boolean EliminarRegistro() throws SQLException {
         boolean eliminar = false;
-        //TODO: crear la ejecución de la sentencia sql eliminar
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+        } catch (Exception e ) {
+
+        } finally {
+        }
+
         return eliminar;
     }
 }
