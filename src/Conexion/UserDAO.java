@@ -310,7 +310,7 @@ public class UserDAO {
      * @param nUser: usuario con los datos a modificar
      * @return true si se modifican los datos de lo contrario false
      **/
-    public boolean UpdateRegister(User nUser) throws SQLException {
+    public boolean UpdateRegister(User nUser, String conditions) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         try {
@@ -318,9 +318,9 @@ public class UserDAO {
                 throw new Exception("user no deberia ser null");
             }
             stm = connector.createStatement();
-            User buscado = this.FindByColumnName("nombre: juan");
+            User buscado = this.FindByColumnName(conditions.split(",")[0]);
             if(buscado != null) {
-                String sql = query_util.ModificarRegister(nUser, "nombre: juan, email: alf@gmail.com, password: 123asd");
+                String sql = query_util.ModificarRegister(nUser, conditions);
                 stm.executeUpdate(sql);
                 System.out.println(sql);
                 registrado = true;
