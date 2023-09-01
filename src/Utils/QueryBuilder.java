@@ -2,13 +2,13 @@ package Utils;
 
 import Mundo.User;
 
-public record QueryBuilder(String options, String column) {
+public record QueryBuilder() {
     /**
      * combina las options & valores en 1 solo String
      * @param options: los valores a limpiar
      * @return los valores limpios y combinados
      */
-    public String GetOptionValue() {
+    public String GetOptionValue(String options) {
         String[] div = options.split(",");
         String values = "";
         for(String val: div) {
@@ -23,7 +23,7 @@ public record QueryBuilder(String options, String column) {
      * @param: options: las columnas a buscar por key, value
      * @return: el usuario buscado
      */
-    public String FindQuery() {
+    public String FindQuery(String options) {
         String[] div = options.split(",");
         String values = "";
         for(String val: div) {
@@ -39,7 +39,7 @@ public record QueryBuilder(String options, String column) {
      * @param options: las columnas a buscar por key, value
      * @return: el usuario buscado
      */
-    public String FindColumnQuery() {
+    public String FindColumnQuery(String options) {
         String[] div = options.split(",");
         String values = "";
 
@@ -60,7 +60,7 @@ public record QueryBuilder(String options, String column) {
      * @param column: los valores a retornar
      * @return la sentencia sql con los valores a retornar y los valores de condicion
      */
-    public String FindColumnValueQuery() {
+    public String FindColumnValueQuery(String options, String column) {
         String[] div = options.split(",");
         String values = "";
         for(String val: div) {
@@ -73,10 +73,10 @@ public record QueryBuilder(String options, String column) {
         String clean_values = values.substring(0, values.length()-3);
         String sql = "";
 
-        if( this.column == null || this.column.isEmpty() == true) {
+        if( column == null || column.isEmpty() == true) {
             sql =  "select *" +" from users where " + clean_values.stripIndent();
         }
-        else if(this.column != null || this.column.isEmpty() == false) {
+        else if(column != null || column.isEmpty() == false) {
             sql =  "select "+ column +" from users where " + clean_values.stripIndent();
         }
         return sql;

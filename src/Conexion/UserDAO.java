@@ -19,6 +19,15 @@ public class UserDAO {
      */
     private Connection connector;
 
+    /**
+     * user builder
+     */
+    private UserBuilder nUserBuilder;
+
+    /**
+     * query builder
+     */
+    private QueryBuilder query_util;
 
     //constructor
 
@@ -29,6 +38,8 @@ public class UserDAO {
      */
     public UserDAO() {
         connector = new Conector().conectarMySQL();
+        nUserBuilder = new UserBuilder();
+        query_util = new QueryBuilder();
     }
 
 
@@ -80,19 +91,16 @@ public class UserDAO {
     public User[] ReadAll() {
         PreparedStatement stm = null;
         ResultSet rst = null;
-        UserBuilder miUser = null;
         User[] users = null;
         try {
             String sql = "select * from users";
             stm = connector.prepareStatement(sql);
             rst = stm.executeQuery();
-            QueryBuilder util = new QueryBuilder(null, null);
-            int lenght = util.GetMetadataColumns(rst.getMetaData().toString());
-            miUser = new UserBuilder(rst, lenght);
+            int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             users = new User[CountData()];
             int cont = 0;
             while(rst.next()) {
-                users[cont] = miUser.CreateNewUser();
+                users[cont] = nUserBuilder.CreateNewUser(rst, lenght);
                 cont++;
             }
         } catch(SQLException e) {
@@ -128,19 +136,17 @@ public class UserDAO {
      */
     public User FindOne(String options) {
         User buscado = null;
-        QueryBuilder query_util = new QueryBuilder(options, null);
         PreparedStatement stm = null;
         ResultSet rst = null;
         try {
-            String sql = query_util.FindQuery();
-            String val = query_util.GetOptionValue();
+            String sql = query_util.FindQuery(options);
+            String val = query_util.GetOptionValue(options);
             stm = connector.prepareStatement(sql);
             stm.setString(1, val);
             rst = stm.executeQuery();
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
-            UserBuilder nUserBuilder = new UserBuilder(rst, lenght);
             while(rst.next()) {
-                buscado = nUserBuilder.CreateNewUser();
+                buscado = nUserBuilder.CreateNewUser(rst, lenght);
             }
         } catch(SQLException e) {
             System.out.println(e.getMessage());
@@ -174,15 +180,13 @@ public class UserDAO {
         User buscado = null;
         Statement stm = null;
         ResultSet rst = null;
-        QueryBuilder query_util = new QueryBuilder(options, null);
         try {
             stm = connector.createStatement();
-            String sql = query_util.FindColumnQuery();
+            String sql = query_util.FindColumnQuery(options);
             rst = stm.executeQuery(sql);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
-            UserBuilder nUserBuilder = new UserBuilder(rst, lenght);
             while(rst.next()) {
-                buscado = nUserBuilder.CreateNewUser();
+                buscado = nUserBuilder.CreateNewUser(rst, lenght);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -217,10 +221,9 @@ public class UserDAO {
         String result ="";
         Statement stm = null;
         ResultSet rst = null;
-        QueryBuilder query_util = new QueryBuilder(options, column);
         try {
             stm = connector.createStatement();
-            String sql = query_util.FindColumnValueQuery();
+            String sql = query_util.FindColumnValueQuery(options, column);
             // System.out.println(sql);
             rst = stm.executeQuery(sql);
             int len = 0;
@@ -277,7 +280,6 @@ public class UserDAO {
             // System.out.println(sql);
            User buscado = this.FindByColumnName("nombre: " + nUser.getNombre());
             if(buscado == null) {
-                QueryBuilder query_util = new QueryBuilder(null, null);
                 String sql = query_util.InsertRegisterQuery(nUser);
                 System.out.println(sql);
                 stm.executeUpdate(sql);
