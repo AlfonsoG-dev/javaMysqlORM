@@ -378,16 +378,51 @@ public class UserDAO {
      * @param options: columna con el valor para el condicional
      * @return true si elimina de lo contrario false
      * */
-    public boolean EliminarRegistro() throws SQLException {
+    public boolean EliminarRegistro(String options) throws SQLException {
         boolean eliminar = false;
         Statement stm = null;
         ResultSet rst = null;
         try {
+            if(options.isEmpty() == true || options == null) {
+                throw new Exception("no deberia ser null ni vacio");
+            }
+            stm = connector.createStatement();
+            User buscado = this.FindByColumnName(options.split(",")[0]);
+            if(buscado != null) {
+                String sql = query_util.EliminarRegistroQuery(options);
+                String[] columns = {"id"};
+                stm.executeUpdate(sql, columns);
+                rst = stm.getGeneratedKeys();
+                while(rst.next()) {
+                    System.out.println(sql);
+                    eliminar = true;
+                }
+            } else {
+                eliminar = false;
+                throw new Exception("no deberia ser null");
+            }
         } catch (Exception e ) {
 
+            System.err.println(e);
         } finally {
+            if(rst != null){
+                try{
+                    rst.close();
+                } catch ( Exception e) {
+                    System.err.println(e);
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch ( Exception e ) {
+                    System.err.println(e);
+                }
+                stm = null;
+            }
         }
-
+        assert eliminar == false: "no deberia ser false";
         return eliminar;
     }
 }

@@ -1,6 +1,8 @@
 package Utils;
 
 
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
+
 import Model.ModelMethods;
 
 public record QueryBuilder(String tb_name) {
@@ -162,8 +164,16 @@ public record QueryBuilder(String tb_name) {
     * @return la sentencia sql
     **/
    public String EliminarRegistroQuery(String options){
-       String sql = "delete "+ tb_name + " where nombre='alfonso'";
-       //TODO: crear la sentencia sql dinámica
+       String[] data = options.split(",");
+       String condicional = "";
+       for(String key_value: data) {
+           String key = key_value.split(":")[0].stripIndent();
+           String value = key_value.split(":")[1].stripIndent();
+           condicional += key +"=" + "'" + value +"'" + " and ";
+           
+       }
+       String clean_data = condicional.stripIndent().substring(0, condicional.length()-5);
+       String sql = "delete from " + tb_name + " where " + clean_data;
        return sql;
    }
 }
