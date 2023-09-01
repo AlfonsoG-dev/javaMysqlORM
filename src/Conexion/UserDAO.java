@@ -269,7 +269,7 @@ public class UserDAO {
      * @param nUser: el usuario a registrar
      * @return true si se registra de lo contrario false
      */
-    public boolean InsertNewRegister(User nUser) {
+    public boolean InsertNewRegister(User nUser) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         try {
@@ -310,16 +310,25 @@ public class UserDAO {
      * @param nUser: usuario con los datos a modificar
      * @return true si se modifican los datos de lo contrario false
      **/
-    public boolean UpdateRegister(User nUser) {
+    public boolean UpdateRegister(User nUser) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         try {
-            String sql = query_util.ModificarRegister(nUser, "nombre: alfonso, email: alf@gmail.com, password: 123asd");
+            if(nUser == null) {
+                throw new Exception("user no deberia ser null");
+            }
             stm = connector.createStatement();
-            stm.executeUpdate(sql);
-            registrado = true;
-            System.out.println(sql);
-        } catch( SQLException e) {
+            User buscado = this.FindByColumnName("nombre: " + nUser.getNombre());
+            if(buscado != null) {
+                String sql = query_util.ModificarRegister(nUser, "nombre: alfonso, email: alf@gmail.com, password: 123asd");
+                stm.executeUpdate(sql);
+                registrado = true;
+            } else {
+                registrado = false;
+                throw new Exception("usuario no deberia ser null");
+            }
+
+        } catch( Exception e) {
             System.out.println(e.getMessage());
         } finally {
             if(stm != null) {
@@ -332,7 +341,7 @@ public class UserDAO {
                 stm = null;
             }
         }
-
+        assert registrado == false : "deberia ser diferente de false";
         return registrado;
     }
 }

@@ -154,5 +154,5 @@ public record QueryBuilder() {
         String clean_condition = condition.stripIndent().substring(0, condition.length()-5);
         String sql = "update users set " +  clean_key_value + " where " + clean_condition;
         return sql;
-    }
+   }
 }
