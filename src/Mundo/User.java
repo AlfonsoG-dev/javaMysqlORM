@@ -63,16 +63,19 @@ public class User {
     }
 
     public String getCreate_at() {
-        assert create_at == null : "deberia estar inicializada";
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
-        LocalDateTime miDate = LocalDateTime.parse(create_at, dtf);  
-        return miDate.toString();    
+        String date = null;
+        if(create_at != null) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
+            LocalDateTime miDate = LocalDateTime.parse(create_at, dtf);  
+            date = dtf.format(miDate).toString();
+        }
+        return date;    
     }
 
-    public void setCreate_at(String ncreate_at) {
+    public void setCreate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
         LocalDateTime miDate = LocalDateTime.now();  
-        create_at = dtf.format(miDate);
+        create_at = dtf.format(miDate).toString();
     }
 
     public String getUpdate_at() {
@@ -80,26 +83,31 @@ public class User {
         if(update_at != null) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
             LocalDateTime miDate = LocalDateTime.parse(update_at, dtf);  
-            date = dtf.format(miDate);
-
+            date = dtf.format(miDate).toString();
         }
         return date;    
     }
 
-    public void setUpdate_at(String nupdate_at) {
+    public void setUpdate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
         LocalDateTime miDate = LocalDateTime.now();  
-        update_at = dtf.format(miDate);
+        update_at = dtf.format(miDate).toString();
     }
 
     public String GetAllProperties() {
-        String all =
-            "id: " +  this.getId_pk() + "\n" +
-            "nombre: " + this.getNombre() + "\n" +
-            "email: " + this.getEmail() + "\n" +
-            "password: " + this.getPassword() + "\n" +
-            "Rol: " + this.getRol() + "\n";
-
+        String all = "";
+        if(this.getNombre() != null && this.getNombre() != "" ) {
+            all +="nombre: " + this.getNombre() + "\n";
+        }
+        if(this.getEmail() != null && this.getEmail().isEmpty() == false){
+            all +="email: " + this.getEmail() + "\n";
+        }
+        if(this.getPassword() != null && this.getPassword().isEmpty() == false){
+            all +="password: " + this.getPassword() + "\n";
+        }
+        if(this.getRol() != null && this.getRol().isEmpty() == false){
+            all += "Rol: " + this.getRol() + "\n";
+        }
         if(this.getCreate_at() != null) {
             all += "create_at: " + this.getCreate_at() + "\n";
         }

@@ -129,4 +129,30 @@ public record QueryBuilder() {
         String sql = "insert into users (" + column +") values (" + clean_data + ")";
         return sql;
     }
+    /** 
+     * crear la sentencia sql para modificar los datos
+     * @param nUser: usuario con los datos a modificar
+     * @return la sentencia sql para modificar
+     */
+    public String ModificarRegister(User nUser, String condicional) {
+        String[] data = nUser.GetAllProperties().split("\n");
+        String key_value = "";
+        for(int i = 0; i < data.length; i++) {
+            String key = data[i].split(":")[0];
+            String value = data[i].split(":")[1];
+            key_value += key.stripIndent() +"="+ "'"+value.stripIndent()+"'"+ ", ";
+        }
+        String[] conditions = condicional.split(",");
+        String condition = "";
+        for(int i = 0; i < conditions.length; i++) {
+            String[] options = conditions[i].split(":");
+            String key = options[0].stripIndent();
+            String value = options[1].stripIndent();
+            condition += key +"=" + "'"+value+"'" + " and ";
+        }
+        String clean_key_value = key_value.substring(0, key_value.length()-2);
+        String clean_condition = condition.stripIndent().substring(0, condition.length()-5);
+        String sql = "update users set " +  clean_key_value + " where " + clean_condition;
+        return sql;
+    }
 }

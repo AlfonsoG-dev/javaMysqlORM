@@ -304,4 +304,35 @@ public class UserDAO {
         assert registrado == false : "deberia ser diferente de false";
         return registrado;
     }
+
+    /**
+     * modificar 1 registro de la base de datos por nombre, email y password
+     * @param nUser: usuario con los datos a modificar
+     * @return true si se modifican los datos de lo contrario false
+     **/
+    public boolean UpdateRegister(User nUser) {
+        boolean registrado = false;
+        Statement stm = null;
+        try {
+            String sql = query_util.ModificarRegister(nUser, "nombre: alfonso, email: alf@gmail.com, password: 123asd");
+            stm = connector.createStatement();
+            stm.executeUpdate(sql);
+            registrado = true;
+            System.out.println(sql);
+        } catch( SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+
+                } catch( Exception e2) {
+                    System.out.println(e2.getMessage());
+                }
+                stm = null;
+            }
+        }
+
+        return registrado;
+    }
 }
