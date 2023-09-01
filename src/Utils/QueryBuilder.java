@@ -1,5 +1,6 @@
 package Utils;
 
+import Model.ModelMethods;
 import Mundo.User;
 
 public record QueryBuilder(String tb_name) {
@@ -107,8 +108,8 @@ public record QueryBuilder(String tb_name) {
      * @param nUser: el usuario a registrar
      * @return la sentencia sql para registrar
      */
-    public String InsertRegisterQuery(User nUser) {
-        String[] data = nUser.GetAllProperties().split("\n");
+    public String InsertRegisterQuery(ModelMethods nObject) {
+        String[] data = nObject.GetAllProperties().split("\n");
         String column_name = "";
         for(int i = 0; i < data.length; i++) {
             column_name += data[i].split(":")[0].stripIndent() + ", ";
@@ -134,8 +135,8 @@ public record QueryBuilder(String tb_name) {
      * @param nUser: usuario con los datos a modificar
      * @return la sentencia sql para modificar
      */
-    public String ModificarRegisterQuery(User nUser, String condicional) {
-        String[] data = nUser.GetAllProperties().split("\n");
+    public String ModificarRegisterQuery(ModelMethods nObject, String condicional) {
+        String[] data = nObject.GetAllProperties().split("\n");
         String key_value = "";
         for(int i = 0; i < data.length; i++) {
             String key = data[i].split(":")[0];
@@ -161,7 +162,7 @@ public record QueryBuilder(String tb_name) {
     * @return la sentencia sql
     **/
    public String EliminarRegistroQuery(String options){
-       String sql = "delete users where nombre='alfonso'";
+       String sql = "delete "+ tb_name + " where nombre='alfonso'";
        //TODO: crear la sentencia sql dinámica
        return sql;
    }

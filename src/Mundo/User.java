@@ -1,9 +1,10 @@
 package Mundo;
 
-import java.time.format.DateTimeFormatter;  
+import java.time.format.DateTimeFormatter;
+import Model.ModelMethods;
 import java.time.LocalDateTime;
 
-public class User {
+public class User implements ModelMethods {
     //atributos
     private int id_pk;   
     private String nombre;
@@ -95,7 +96,7 @@ public class User {
     }
 
     public String GetAllProperties() {
-        String all = "";
+        String all = "id: " + this.getId_pk() + "\n";
         if(this.getNombre() != null && this.getNombre() != "" ) {
             all +="nombre: " + this.getNombre() + "\n";
         }

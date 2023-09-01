@@ -6,6 +6,9 @@ public class App {
         try {
             UserDAO miUserDAO = new UserDAO();
             System.out.println(miUserDAO.ReadAll()[0].GetAllProperties());
+            User nuevo = new User(0, "juan", "jl@gmail", "123", "test", null, null);
+            nuevo.setCreate_at();
+            miUserDAO.InsertNewRegister(nuevo);
         } catch (Exception e) {
             System.out.println(e);
         }
