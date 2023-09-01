@@ -28,6 +28,10 @@ public class UserDAO {
      * query builder
      */
     private QueryBuilder query_util;
+    /**
+     * query_execution
+     * */
+    private QueryExecution query_execution;
 
     //constructor
 
@@ -40,6 +44,7 @@ public class UserDAO {
         connector = new Conector().conectarMySQL();
         nUserBuilder = new UserBuilder();
         query_util = new QueryBuilder("users");
+        query_execution = new QueryExecution("users");
     }
 
 
@@ -51,12 +56,10 @@ public class UserDAO {
      */
     public int CountData(){
         int count = 1;
-        PreparedStatement stm = null;
+        PreparedStatement pstm = null;
         ResultSet rst = null;
         try{
-            String sql = "select count(id) from users";
-            stm = connector.prepareStatement(sql);
-            rst = stm.executeQuery();
+            rst = query_execution.CountData(pstm);
             do{
                 count++;
             }
@@ -72,13 +75,14 @@ public class UserDAO {
                 }
                 rst = null;
             }
-            if(stm != null) {
+
+            if(pstm != null) {
                 try {
-                    stm.close();
+                    pstm.close();
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-                stm = null;
+                pstm = null;
             }
         }
         assert count == 0 : "deberia ser mayor a 0";
@@ -89,13 +93,11 @@ public class UserDAO {
      * @return lista de usuarios
      */
     public User[] ReadAll() {
-        PreparedStatement stm = null;
+        PreparedStatement pstm = null;
         ResultSet rst = null;
         User[] users = null;
         try {
-            String sql = "select * from users";
-            stm = connector.prepareStatement(sql);
-            rst = stm.executeQuery();
+            rst = query_execution.ReadAll(pstm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             users = new User[CountData()];
             int cont = 0;
@@ -114,13 +116,13 @@ public class UserDAO {
                 }
                 rst = null;
             }
-            if(stm != null) {
+            if(pstm != null) {
                 try {
-                    stm.close();
+                    pstm.close();
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-                stm = null;
+                pstm = null;
             }
         }
         //System.out.println(users.length);
@@ -136,14 +138,10 @@ public class UserDAO {
      */
     public User FindOne(String options) {
         User buscado = null;
-        PreparedStatement stm = null;
         ResultSet rst = null;
+        PreparedStatement pstm = null;
         try {
-            String sql = query_util.FindQuery(options);
-            String val = query_util.GetOptionValue(options);
-            stm = connector.prepareStatement(sql);
-            stm.setString(1, val);
-            rst = stm.executeQuery();
+            rst = query_execution.FindOne(options, pstm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = nUserBuilder.CreateNewUser(rst, lenght);
@@ -159,13 +157,13 @@ public class UserDAO {
                 }
                 rst = null;
             }
-            if(stm != null) {
+            if(pstm != null) {
                 try {
-                    stm.close();
+                    pstm.close();
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-                stm = null;
+                pstm = null;
             }
         }
         assert buscado == null: "deberia ser diferente de null";
@@ -181,9 +179,7 @@ public class UserDAO {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            stm = connector.createStatement();
-            String sql = query_util.FindColumnQuery(options);
-            rst = stm.executeQuery(sql);
+            rst = query_execution.FindByColumnName(options, stm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = nUserBuilder.CreateNewUser(rst, lenght);
@@ -222,10 +218,7 @@ public class UserDAO {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            stm = connector.createStatement();
-            String sql = query_util.FindColumnValueQuery(options, column);
-            // System.out.println(sql);
-            rst = stm.executeQuery(sql);
+            rst = query_execution.GetValueOfColumnName(options, column, stm);
             int len = 0;
             if(column == null || column.isEmpty() == true) {
                 len = query_util.GetMetadataColumns(rst.getMetaData().toString());
@@ -277,16 +270,12 @@ public class UserDAO {
             if(nUser == null) {
                 throw new Exception("user no deberia ser null");
             }
-            stm = connector.createStatement();
             // System.out.println(sql);
             User buscado = this.FindByColumnName("nombre: " + nUser.getNombre());
             if(buscado == null) {
-                String sql = query_util.InsertRegisterQuery(nUser);
-                String[] columns = {"id"};
-                stm.executeUpdate(sql, columns);
-                rst = stm.getGeneratedKeys();
+                rst = query_execution.InsertNewRegister(stm, nUser);
                 while(rst.next()){
-                    System.out.println(sql);
+                    System.out.println(nUser.GetAllProperties());
                     registrado = true;
                 }
             } else {
@@ -331,15 +320,11 @@ public class UserDAO {
             if(nUser == null) {
                 throw new Exception("user no deberia ser null");
             }
-            stm = connector.createStatement();
             User buscado = this.FindByColumnName(conditions.split(",")[0]);
             if(buscado != null) {
-                String sql = query_util.ModificarRegisterQuery(nUser, conditions);
-                String[] columns = {"id"};
-                stm.executeUpdate(sql, columns);
-                rst = stm.getGeneratedKeys();
+                rst = query_execution.UpdateRegister(stm, nUser, conditions);
                 while(rst.next()) {
-                    System.out.println(sql);
+                    System.out.println(nUser.GetAllProperties());
                     registrado = true;
                 }
             } else {
@@ -389,12 +374,9 @@ public class UserDAO {
             stm = connector.createStatement();
             User buscado = this.FindByColumnName(options.split(",")[0]);
             if(buscado != null) {
-                String sql = query_util.EliminarRegistroQuery(options);
-                String[] columns = {"id"};
-                stm.executeUpdate(sql, columns);
-                rst = stm.getGeneratedKeys();
+                rst = query_execution.EliminarRegistro(stm, options);
                 while(rst.next()) {
-                    System.out.println(sql);
+                    System.out.println(options);
                     eliminar = true;
                 }
             } else {

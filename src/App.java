@@ -9,6 +9,7 @@ public class App {
             User nuevo = new User(0, "juan", "jl@gmail", "123", "test", null, null);
             nuevo.setCreate_at();
             //miUserDAO.InsertNewRegister(nuevo);
+            //miUserDAO.UpdateRegister(nuevo, "nombre: test");
             //miUserDAO.EliminarRegistro("nombre: juan");
         } catch (Exception e) {
             System.out.println(e);
