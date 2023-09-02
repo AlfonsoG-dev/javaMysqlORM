@@ -9,31 +9,77 @@ import java.sql.Statement;
 import Model.ModelMethods;
 import Utils.QueryBuilder;
 
+/**
+ * clase para crear la ejecución de las sentencias sql
+ * */
 public class QueryExecution {
 
-    private final static Conector con = new Conector();
-    private final static Connection connector = con.conectarMySQL();
+    //atributos
 
+    /**
+     * conector de mysql
+     * es único constante e inmutable
+     * */
+    private final static Conector con = new Conector();
+    /**
+     * instancia del connector de mysql
+     * es único, constante e inmutable
+     * */
+    private final static Connection connector = con.conectarMySQL();
+    /**
+     * nombre de la tabla en donde se ejecutan las sentencias sql
+     * no puede ser null ni Empty
+     * */
     private String table;
+    /**
+     * record que crea las sentencias sql
+     * */
     private QueryBuilder query_util;
 
+    //constructor
+
+    /**
+     * constructor de la clase
+     * @param tb_name: nombre de la tabla; tb_name != null && tb_name != ""
+     */
     public QueryExecution(String tb_name) {
         table = tb_name;
         query_util = new QueryBuilder(tb_name);
     }
+
+    //métodos
+
+    /**
+     * ejecuta el contador de resultados
+     * @param pstm: ejecutor de sentencias sql
+     * @return Resultado de la ejecución
+     * @throws SQLException error al ejecutar
+    */
     public ResultSet CountData(PreparedStatement pstm) throws SQLException {
         String sql = "select count(id) from " + table;
         pstm = connector.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
         return rst;
     }
+    /**
+     * ejecuta la lectura de datos
+     * @param pstm: ejecutor de sentencias sql
+     * @return resultado de la ejecución
+     * @throws SQLException error al ejecutar
+    */
     public ResultSet ReadAll(PreparedStatement pstm) throws SQLException {
         String sql = "select * from " + table;
         pstm = connector.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
         return rst;
     }
-
+    /**
+     * ejecuta la busqueda de 1 resultado por id
+     * @param options: id del registro buscado
+     * @param pstm: ejecutor de sentencia sql
+     * @return resultado de la ejecución
+     * @throws SQLException error de la ejecución
+    */
     public ResultSet FindOne(String options, PreparedStatement pstm) throws SQLException {
         String sql = query_util.FindQuery(options);
         String val = query_util.GetOptionValue(options);
@@ -42,21 +88,44 @@ public class QueryExecution {
         ResultSet rst = pstm.executeQuery();
         return rst;
     }
-
+    /**
+     * ejecuta la busqueda por nombre de columna
+     * puede recibir 1 o varias columnas con el valor
+     * @param options: nombre y valor de columna: "nombre: test, email: test@test"
+     * @param stm: ejecutor de sentencia sql
+     * @return resultado de la ejecución
+     * @throws SQLException error de la ejecución
+    */
     public ResultSet FindByColumnName(String options, Statement stm) throws SQLException {
         stm = connector.createStatement();
         String sql = query_util.FindColumnQuery(options);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
-
+    /**
+     * ejecuta la busqueda por columna y valor y retorna el valor de las columnas seleccionadas
+     * puede recibir 1 o varias columnas con el valor
+     * puede retornar 1 o varios valores de la columna seleccionada
+     * @param options: nombre y valor de la columna: "nombre: test, email: test@test"
+     * @param column: columna a conocer el valor: "id, rol"
+     * @param stm: ejecutor de sentencia sql
+     * @return resultado de la ejecución
+     * @throws SQLException error de la ejecución
+    */
     public ResultSet GetValueOfColumnName (String options, String column, Statement stm) throws SQLException {
         stm = connector.createStatement();
         String sql = query_util.FindColumnValueQuery(options, column);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
-
+    /**
+     * ejecuta el registro de un nuevo elemento 
+     * solo puede registrar 1 elemento a la vez
+     * @param stm: ejecutor de sentencia sql
+     * @param nObject: elemento a registrar
+     * @return resultado de la ejecución
+     * @throws SQLException error de la ejecución
+    */
     public ResultSet InsertNewRegister(Statement stm, ModelMethods nObject) throws SQLException {
         String sql = query_util.InsertRegisterQuery(nObject);
         String[] columns = {"id"};
@@ -65,6 +134,15 @@ public class QueryExecution {
         ResultSet rst = stm.getGeneratedKeys();
         return rst;
     }
+    /**
+     * ejecuta la modificación de 1 registro
+     * puede modificar cualquier valor valido del registro
+     * @param stm: ejecutor de la sentencia sql
+     * @param nObject: elemento a modificar
+     * @param conditions: condiciones de query; "nombre: test, email: test"
+     * @return resultado de la ejecución
+     * @throws SQLException error de la ejecución
+    */
     public ResultSet UpdateRegister(Statement stm, ModelMethods nObject, String conditions) throws SQLException {
         stm = connector.createStatement();
         String sql = query_util.ModificarRegisterQuery(nObject, conditions);
@@ -73,7 +151,14 @@ public class QueryExecution {
         ResultSet rst = stm.getGeneratedKeys();
         return rst;
     }
-
+    /**
+     * ejecuta la eliminación de un registro
+     * puede eliminar varios registros según las options
+     * @param stm: ejecutor de la sentencia sql
+     * @param options: opciones de condición: "nombre: test, email: test@test"
+     * @return resultado de la ejecución & !por el momento no funciona ya que la ejecución no retorna un resultado
+     * @throws SQLException error al ejecutar
+    */
     public ResultSet EliminarRegistro(Statement stm ,String options) throws SQLException {
         stm = connector.createStatement();
         String sql = query_util.EliminarRegistroQuery(options);

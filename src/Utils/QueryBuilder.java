@@ -1,9 +1,11 @@
 package Utils;
 
-
-
 import Model.ModelMethods;
 
+/**
+ * record con los métodos para crear las queries para las consultas sql
+ * @param tb_name: nombre de la tabla en la cual se ejecutan las sentencias sql
+ * */
 public record QueryBuilder(String tb_name) {
     /**
      * combina las options & valores en 1 solo String
@@ -106,7 +108,7 @@ public record QueryBuilder(String tb_name) {
     }
     /**
      * crea la sentencia sql para el registro de datos
-     * @param nUser: el usuario a registrar
+     * @param nObject: objeto con el método para crear la sentencia sql
      * @return la sentencia sql para registrar
      */
     public String InsertRegisterQuery(ModelMethods nObject) {
@@ -133,7 +135,8 @@ public record QueryBuilder(String tb_name) {
     }
     /** 
      * crear la sentencia sql para modificar los datos
-     * @param nUser: usuario con los datos a modificar
+     * @param nObject: objeto con los métodos para crear la sentencia sql
+     * @param condicional: propiedades para la condición de la sentencia sql
      * @return la sentencia sql para modificar
      */
     public String ModificarRegisterQuery(ModelMethods nObject, String condicional) {

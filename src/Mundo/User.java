@@ -4,17 +4,58 @@ import java.time.format.DateTimeFormatter;
 import Model.ModelMethods;
 import java.time.LocalDateTime;
 
+/**
+ * clase representante del usuario
+ * implementa el método que genera las propiedades del objeto
+ * */
 public class User implements ModelMethods {
+
     //atributos
+
+    /**
+     * id del usuario
+     * solo posee método get
+    * */
     private int id_pk;   
+    /**
+     * nombre del usuario
+     * */
     private String nombre;
+    /**
+     * email del usuario
+     * */
     private String email;
+    /**
+     * password del usuario
+     * */
     private String password;
+    /**
+     * rol del usuario
+     * puede ser null
+     * */
     private String rol;
+    /**
+     * fecha de creación del usuario
+     * */
     private String create_at;
+    /**
+     * fecha de modificación del usuario
+     * pude ser null
+     * */
     private String update_at;
 
     //constructor
+
+    /**
+     * constructor del usuario
+     * @param nId_pk
+     * @param nNombre
+     * @param nEmail
+     * @param nPassword
+     * @param nRol
+     * @param nCreate_at
+     * @param nUpdate_at
+     */
     public User(int nId_pk, String nNombre, String nEmail, String nPassword, String nRol, String nCreate_at, String nUpdate_at) {
         id_pk = nId_pk;
         nombre = nNombre;
@@ -63,6 +104,10 @@ public class User implements ModelMethods {
         rol = nrol;
     }
 
+    /**
+     * da formato a la fecha de creación del usuario
+     * @return fecha de creación del usuario
+    */
     public String getCreate_at() {
         String date = null;
         if(create_at != null) {
@@ -73,12 +118,19 @@ public class User implements ModelMethods {
         return date;    
     }
 
+    /**
+     * inicializa la fecha de creación del usuario
+     * */
     public void setCreate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
         LocalDateTime miDate = LocalDateTime.now();  
         create_at = dtf.format(miDate).toString();
     }
 
+    /**
+     * da formato a la fecha de modificación del usuario
+     * @return fecha de modificación del usuario
+    */
     public String getUpdate_at() {
         String date = null;
         if(update_at != null) {
@@ -89,12 +141,19 @@ public class User implements ModelMethods {
         return date;    
     }
 
+    /**
+     * inicializa la fecha de modificación del usuario
+     * */
     public void setUpdate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
         LocalDateTime miDate = LocalDateTime.now();  
         update_at = dtf.format(miDate).toString();
     }
 
+    /**
+     * método que retorna todas las propiedades del usuario en orden
+     * @return String con las propiedades del usuario ordenadas
+     * */
     public String GetAllProperties() {
         String all = "id: " + this.getId_pk() + "\n";
         if(this.getNombre() != null && this.getNombre() != "" ) {

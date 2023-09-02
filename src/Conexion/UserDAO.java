@@ -1,6 +1,5 @@
 package Conexion;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,12 +11,6 @@ import Utils.UserBuilder;
 
 public class UserDAO {
     //atributos
-
-
-    /**
-     * conector de mysql
-     */
-    private Connection connector;
 
     /**
      * user builder
@@ -41,7 +34,6 @@ public class UserDAO {
      * inicializa el conector de mysql
      */
     public UserDAO() {
-        connector = new Conector().conectarMySQL();
         nUserBuilder = new UserBuilder();
         query_util = new QueryBuilder("users");
         query_execution = new QueryExecution("users");
@@ -65,13 +57,13 @@ public class UserDAO {
             }
             while(rst.next());
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         } finally {
             if(rst != null) {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 rst = null;
             }
@@ -80,7 +72,7 @@ public class UserDAO {
                 try {
                     pstm.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 pstm = null;
             }
@@ -106,13 +98,13 @@ public class UserDAO {
                 cont++;
             }
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         } finally {
             if(rst != null) {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 rst = null;
             }
@@ -120,7 +112,7 @@ public class UserDAO {
                 try {
                     pstm.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 pstm = null;
             }
@@ -147,13 +139,13 @@ public class UserDAO {
                 buscado = nUserBuilder.CreateNewUser(rst, lenght);
             }
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         } finally {
             if(rst != null) {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 rst = null;
             }
@@ -161,7 +153,7 @@ public class UserDAO {
                 try {
                     pstm.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 pstm = null;
             }
@@ -185,13 +177,13 @@ public class UserDAO {
                 buscado = nUserBuilder.CreateNewUser(rst, lenght);
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         } finally {
             if(rst != null) {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 rst = null;
             }
@@ -199,7 +191,7 @@ public class UserDAO {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 stm = null;
             }
@@ -232,13 +224,13 @@ public class UserDAO {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         } finally{
             if(rst != null) {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 rst = null;
             }
@@ -246,7 +238,7 @@ public class UserDAO {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 stm = null;
             }
@@ -284,13 +276,13 @@ public class UserDAO {
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         } finally{
             if(rst != null) {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 rst = null;
             }
@@ -298,7 +290,7 @@ public class UserDAO {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
                 stm = null;
             }
@@ -333,14 +325,14 @@ public class UserDAO {
             }
 
         } catch( Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         } finally {
             if(rst != null){
                 try {
                     rst.close();
 
                 } catch( Exception e2) {
-                    System.out.println(e2.getMessage());
+                    System.err.println(e2.getMessage());
                 }
                 rst = null;
             }
@@ -350,7 +342,7 @@ public class UserDAO {
                     stm.close();
 
                 } catch( Exception e2) {
-                    System.out.println(e2.getMessage());
+                    System.err.println(e2.getMessage());
                 }
                 stm = null;
             }
@@ -371,7 +363,6 @@ public class UserDAO {
             if(options.isEmpty() == true || options == null) {
                 throw new Exception("no deberia ser null ni vacio");
             }
-            stm = connector.createStatement();
             User buscado = this.FindByColumnName(options.split(",")[0]);
             if(buscado != null) {
                 rst = query_execution.EliminarRegistro(stm, options);
