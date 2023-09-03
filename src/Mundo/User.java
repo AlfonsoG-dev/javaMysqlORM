@@ -154,6 +154,7 @@ public class User implements ModelMethods {
      * método que retorna todas las propiedades del usuario en orden
      * @return String con las propiedades del usuario ordenadas
      * */
+    @Override
     public String GetAllProperties() {
         String all = "id: " + this.getId_pk() + "\n";
         if(this.getNombre() != null && this.getNombre() != "" ) {
