@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
 import Mundo.User;
 import Utils.QueryBuilder;
@@ -90,7 +91,11 @@ public class UserDAO {
         try {
             rst = query_execution.ExecuteReadAll(pstm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
-            users = new User[CountData()];
+            users = new User[1];
+            while(CountData() > users.length) {
+                User[] nueva = Arrays.copyOf(users, CountData());
+                users = nueva;
+            }
             int cont = 0;
             while(rst.next()) {
                 users[cont] = nUserBuilder.CreateNewUser(rst, lenght);

@@ -5,12 +5,12 @@ public class App {
     public static void main(String[] args) {
         try {
             UserDAO miUserDAO = new UserDAO();
-            System.out.println(miUserDAO.ReadAll()[0].GetAllProperties());
-            User nuevo = new User(0, "juan", "jl@gmail", "123", "test", null, null);
+            System.out.println("usuarios: " + miUserDAO.ReadAll().length);
+            User nuevo = new User(0, "juan", "jl@gmail", "123", "user", null, null);
             nuevo.setCreate_at();
             //miUserDAO.InsertNewRegister(nuevo);
-            //miUserDAO.UpdateRegister(nuevo, "nombre: test");
-            //miUserDAO.EliminarRegistro("nombre: juan");
+            //miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123");
+           //miUserDAO.EliminarRegistro("nombre: juan");
         } catch (Exception e) {
             System.out.println(e);
         }

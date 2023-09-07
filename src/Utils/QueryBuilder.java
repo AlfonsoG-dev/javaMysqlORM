@@ -164,7 +164,7 @@ public record QueryBuilder(String tb_name) {
             String value = options[1].stripIndent();
             condition += key +"=" + "'"+value+"'" + " and ";
         }
-        String clean_key_value = this.CleanValues(key_value, 1);
+        String clean_key_value = this.CleanValues(key_value, 2);
         String clean_condition = this.CleanValues(condition, 5);
         String sql = "update " + tb_name + " set " +  clean_key_value + " where " + clean_condition;
         return sql;
