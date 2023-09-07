@@ -47,15 +47,14 @@ public class UserDAO {
      * @return cantidad de datos
      */
     public int CountData(){
-        int count = 1;
+        int count = 0;
         PreparedStatement pstm = null;
         ResultSet rst = null;
         try{
             rst = query_execution.ExecuteCountData(pstm);
-            do{
+            while(rst.next()) {
                 count++;
             }
-            while(rst.next());
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         } finally {
