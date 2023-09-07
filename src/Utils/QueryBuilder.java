@@ -43,7 +43,7 @@ public record QueryBuilder(String tb_name) {
      * @param options: las columnas a buscar por key, value
      * @return: el usuario buscado
      */
-    public String FindColumnQuery(String options) {
+    public String FindByColumnQuery(String options) {
         String[] div = options.split(",");
         String values = "";
 
@@ -90,7 +90,7 @@ public record QueryBuilder(String tb_name) {
      * @param metadata: datos de la sentencia sql
      * @return cantidad de columnas en la sentencia sql
      */
-    public int GetMetadataColumns(String metadata){
+    public int GetMetadataColumns(String metadata) {
         String values = metadata.split(":")[1];
         String[] columns = values.split("=");
         int cont = 0;

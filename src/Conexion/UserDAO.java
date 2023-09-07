@@ -51,7 +51,7 @@ public class UserDAO {
         PreparedStatement pstm = null;
         ResultSet rst = null;
         try{
-            rst = query_execution.CountData(pstm);
+            rst = query_execution.ExecuteCountData(pstm);
             do{
                 count++;
             }
@@ -89,7 +89,7 @@ public class UserDAO {
         ResultSet rst = null;
         User[] users = null;
         try {
-            rst = query_execution.ReadAll(pstm);
+            rst = query_execution.ExecuteReadAll(pstm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             users = new User[CountData()];
             int cont = 0;
@@ -171,7 +171,7 @@ public class UserDAO {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = query_execution.FindByColumnName(options, stm);
+            rst = query_execution.ExecuteFindByColumnName(options, stm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = nUserBuilder.CreateNewUser(rst, lenght);
@@ -210,7 +210,7 @@ public class UserDAO {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = query_execution.GetValueOfColumnName(options, column, stm);
+            rst = query_execution.ExecuteGetValueOfColumnName(options, column, stm);
             int len = 0;
             if(column == null || column.isEmpty() == true) {
                 len = query_util.GetMetadataColumns(rst.getMetaData().toString());
@@ -265,7 +265,7 @@ public class UserDAO {
             // System.out.println(sql);
             User buscado = this.FindByColumnName("nombre: " + nUser.getNombre());
             if(buscado == null) {
-                rst = query_execution.InsertNewRegister(stm, nUser);
+                rst = query_execution.ExecuteInsertNewRegister(stm, nUser);
                 while(rst.next()){
                     System.out.println(nUser.GetAllProperties());
                     registrado = true;
@@ -314,7 +314,7 @@ public class UserDAO {
             }
             User buscado = this.FindByColumnName(conditions.split(",")[0]);
             if(buscado != null) {
-                rst = query_execution.UpdateRegister(stm, nUser, conditions);
+                rst = query_execution.ExecuteUpdateRegister(stm, nUser, conditions);
                 while(rst.next()) {
                     System.out.println(nUser.GetAllProperties());
                     registrado = true;
@@ -365,7 +365,7 @@ public class UserDAO {
             }
             User buscado = this.FindByColumnName(options.split(",")[0]);
             if(buscado != null) {
-                rst = query_execution.EliminarRegistro(stm, options);
+                rst = query_execution.ExecuteEliminarRegistro(stm, options);
                 while(rst.next()) {
                     System.out.println(options);
                     eliminar = true;

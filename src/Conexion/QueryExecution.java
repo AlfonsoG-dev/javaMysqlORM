@@ -55,7 +55,7 @@ public class QueryExecution {
      * @return Resultado de la ejecución
      * @throws SQLException error al ejecutar
     */
-    public ResultSet CountData(PreparedStatement pstm) throws SQLException {
+    public ResultSet ExecuteCountData(PreparedStatement pstm) throws SQLException {
         String sql = "select count(id) from " + table;
         pstm = connector.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
@@ -67,7 +67,7 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error al ejecutar
     */
-    public ResultSet ReadAll(PreparedStatement pstm) throws SQLException {
+    public ResultSet ExecuteReadAll(PreparedStatement pstm) throws SQLException {
         String sql = "select * from " + table;
         pstm = connector.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
@@ -80,7 +80,7 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet FindOne(String options, PreparedStatement pstm) throws SQLException {
+    public ResultSet ExecuteFindOne(String options, PreparedStatement pstm) throws SQLException {
         String sql = query_util.FindQuery(options);
         String val = query_util.GetOptionValue(options);
         pstm = connector.prepareStatement(sql);
@@ -96,9 +96,9 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet FindByColumnName(String options, Statement stm) throws SQLException {
+    public ResultSet ExecuteFindByColumnName(String options, Statement stm) throws SQLException {
         stm = connector.createStatement();
-        String sql = query_util.FindColumnQuery(options);
+        String sql = query_util.FindByColumnQuery(options);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -112,7 +112,7 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet GetValueOfColumnName (String options, String column, Statement stm) throws SQLException {
+    public ResultSet ExecuteGetValueOfColumnName (String options, String column, Statement stm) throws SQLException {
         stm = connector.createStatement();
         String sql = query_util.FindColumnValueQuery(options, column);
         ResultSet rst = stm.executeQuery(sql);
@@ -126,7 +126,7 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet InsertNewRegister(Statement stm, ModelMethods nObject) throws SQLException {
+    public ResultSet ExecuteInsertNewRegister(Statement stm, ModelMethods nObject) throws SQLException {
         String sql = query_util.InsertRegisterQuery(nObject);
         String[] columns = {"id"};
         stm = connector.createStatement();
@@ -143,7 +143,7 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet UpdateRegister(Statement stm, ModelMethods nObject, String conditions) throws SQLException {
+    public ResultSet ExecuteUpdateRegister(Statement stm, ModelMethods nObject, String conditions) throws SQLException {
         stm = connector.createStatement();
         String sql = query_util.ModificarRegisterQuery(nObject, conditions);
         String[] columns = {"id"};
@@ -159,7 +159,7 @@ public class QueryExecution {
      * @return resultado de la ejecución & !por el momento no funciona ya que la ejecución no retorna un resultado
      * @throws SQLException error al ejecutar
     */
-    public ResultSet EliminarRegistro(Statement stm ,String options) throws SQLException {
+    public ResultSet ExecuteEliminarRegistro(Statement stm ,String options) throws SQLException {
         stm = connector.createStatement();
         String sql = query_util.EliminarRegistroQuery(options);
         String[] columns = {"id"};
