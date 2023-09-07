@@ -8,6 +8,15 @@ import Model.ModelMethods;
  * */
 public record QueryBuilder(String tb_name) {
     /**
+     * reduce el string por un valor especifico
+     * @param options: los valores a limpiar
+     * @param val: valor especifico
+     * @return los valores limpios
+    */
+    private String CleanValues(String options, int val) {
+        return options.substring(0, options.length()-val);
+    }
+    /**
      * combina las options & valores en 1 solo String
      * @param options: los valores a limpiar
      * @return los valores limpios y combinados
@@ -19,7 +28,7 @@ public record QueryBuilder(String tb_name) {
             values += val.split(":")[1] +",";
         }
         assert values == "" : "deberia ser diferente a \"\"";
-        String clean_values = values.substring(0, values.length()-1);
+        String clean_values = this.CleanValues(values, 1);
         return clean_values;
     }
     /**
@@ -34,7 +43,7 @@ public record QueryBuilder(String tb_name) {
             values += val.split(":")[0] + " =" + "?" + " and";
         }
         assert values == "" : "deberia ser diferente a \"\"";
-        String clean_values = values.substring(0, values.length()-3);
+        String clean_values = this.CleanValues(values, 3);
         String sql = "select *" + " from "+ tb_name+ " where " + clean_values;
         return sql;
     }
@@ -54,7 +63,7 @@ public record QueryBuilder(String tb_name) {
             "'" + " and";
         }
         assert values == "" : "deberia ser diferente a \"\"";
-        String clean_values = values.substring(0, values.length()-3);
+        String clean_values = this.CleanValues(values, 3);
         String sql = "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         return sql;
     }
@@ -74,7 +83,7 @@ public record QueryBuilder(String tb_name) {
             "'" + " and";
         }
         assert values == "" : "deberia ser diferente a \"\"";
-        String clean_values = values.substring(0, values.length()-3);
+        String clean_values = this.CleanValues(values, 3);
         String sql = "";
 
         if( column == null || column.isEmpty() == true) {
@@ -128,8 +137,8 @@ public record QueryBuilder(String tb_name) {
             user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
         }
         assert user_data == "" : "deberia tener la información del usuario nuevo";
-        String clean_data = user_data.substring(0, user_data.length()-1);
-        String column = clean_colunm_name.substring(0, clean_colunm_name.length()-4);
+        String clean_data = this.CleanValues(user_data, 1);
+        String column = this.CleanValues(clean_colunm_name, 4);
         String sql = "insert into " + tb_name + " (" + column +") values (" + clean_data + ")";
         return sql;
     }
@@ -155,8 +164,8 @@ public record QueryBuilder(String tb_name) {
             String value = options[1].stripIndent();
             condition += key +"=" + "'"+value+"'" + " and ";
         }
-        String clean_key_value = key_value.substring(0, key_value.length()-2);
-        String clean_condition = condition.stripIndent().substring(0, condition.length()-5);
+        String clean_key_value = this.CleanValues(key_value, 1);
+        String clean_condition = this.CleanValues(condition, 5);
         String sql = "update " + tb_name + " set " +  clean_key_value + " where " + clean_condition;
         return sql;
    }
@@ -174,7 +183,7 @@ public record QueryBuilder(String tb_name) {
            condicional += key +"=" + "'" + value +"'" + " and ";
            
        }
-       String clean_data = condicional.stripIndent().substring(0, condicional.length()-5);
+       String clean_data = this.CleanValues(condicional, 5);
        String sql = "delete from " + tb_name + " where " + clean_data;
        return sql;
    }
