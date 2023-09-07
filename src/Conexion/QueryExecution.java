@@ -56,7 +56,7 @@ public class QueryExecution {
      * @throws SQLException error al ejecutar
     */
     public ResultSet ExecuteCountData(PreparedStatement pstm) throws SQLException {
-        String sql = "select count(id) from " + table;
+        String sql = "select count(*) from " + table;
         pstm = connector.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
         return rst;

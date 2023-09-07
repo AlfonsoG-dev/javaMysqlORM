@@ -6,25 +6,25 @@ import java.sql.SQLException;
 public class Conector {
 
     // Librería de MySQL
-    public String driver = "com.mysql.cj.jdbc.Driver";
+    private final static String driver = "com.mysql.cj.jdbc.Driver";
 
     // Nombre de la base de datos
-    public String database = "consulta";
+    private final static String database = "consulta";
 
     // Host
-    public String hostname = "localhost";
+    private final static String hostname = "localhost";
 
     // Puerto
-    public String port = "3306";
+    private final static String port = "3306";
 
     // Ruta de nuestra base de datos (desactivamos el uso de SSL con "?useSSL=false")
-    public String url = "jdbc:mysql://" + hostname + ":" + port + "/" + database;
+    private final static String url = "jdbc:mysql://" + hostname + ":" + port + "/" + database;
 
     // Nombre de usuario
-    public String username = "test_user";
+    private final static String username = "test_user";
 
     // Clave de usuario
-    public String password = "5x5W12";
+    private final static String password = "5x5W12";
 
     public Connection conectarMySQL() {
         Connection conn = null;

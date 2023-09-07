@@ -133,7 +133,7 @@ public class UserDAO {
         ResultSet rst = null;
         PreparedStatement pstm = null;
         try {
-            rst = query_execution.FindOne(options, pstm);
+            rst = query_execution.ExecuteFindOne(options, pstm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = nUserBuilder.CreateNewUser(rst, lenght);
