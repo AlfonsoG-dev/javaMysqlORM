@@ -104,9 +104,4 @@ public record QueryUtils() {
         String clean_values = this.CleanValues(key_value, 2);
         return clean_values;
     }
-    /**
-     */
-    public String GetAsignValue() {
-        return "";
-    }
 }
