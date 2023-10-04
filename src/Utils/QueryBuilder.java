@@ -142,6 +142,16 @@ public record QueryBuilder(String tb_name) {
         String sql = "insert into " + tb_name + " (" + column +") values (" + clean_data + ")";
         return sql;
     }
+    /**
+     * crea la sentencia sql para el inner join
+     * @param ref_table: tabla a la que se hace referencia
+     * @param RefModel: modelo que posee los datos de referencia
+     * @return la sentencia sql para inner join
+     */
+    public String InnerJoinQuery(String ref_table, ModelMethods RefModel, ModelMethods localModel) {
+        //TODO: imnplementar inner join
+        return "select ref_columns, local_columns from local_table inner join ref_table on ref_table.id_fk = local_table.id_pk";
+    }
     /** 
      * crear la sentencia sql para modificar los datos
      * @param nObject: objeto con los métodos para crear la sentencia sql

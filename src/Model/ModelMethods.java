@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.HashMap;
+
 /**
  * interface con el método que retorna las propiedades de la clase
  * */
@@ -10,5 +12,11 @@ public interface ModelMethods {
      * @return String con las propiedades ordenadas
     */
     public String GetAllProperties();
+
+    /**
+     * crea un HashMap de Strings con las propiedades del modelo de base de datos
+     * @return HashMap con el modelo de la base de datos
+     */
+    public HashMap<String, String> InitModel();
 
 }

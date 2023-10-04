@@ -134,6 +134,14 @@ public class QueryExecution {
         ResultSet rst = stm.getGeneratedKeys();
         return rst;
     }
+    public ResultSet ExecuteInnerJoin(String tb_name, Statement stm, ModelMethods refObject, ModelMethods localObject) throws SQLException {
+        String sql = query_util.InnerJoinQuery(tb_name, refObject, localObject);
+        String[] columns = {"id"};
+        stm = connector.createStatement();
+        stm.executeUpdate(sql, columns);
+        ResultSet rst = stm.getGeneratedKeys();
+        return rst;
+    }
     /**
      * ejecuta la modificación de 1 registro
      * puede modificar cualquier valor valido del registro

@@ -1,6 +1,8 @@
 package Mundo;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+
 import Model.ModelMethods;
 import java.time.LocalDateTime;
 
@@ -176,5 +178,35 @@ public class User implements ModelMethods {
             all += "update_at: " + this.getUpdate_at();
         }
         return all;
+    }
+    /**
+     * método que inicializa las propiedades del modelo de base de datos
+     * @return HashMap con las propiedades del modelo de base de datos
+     */
+    @Override
+    public HashMap<String, String> InitModel() {
+        HashMap<String, String> initDB = new HashMap<String, String>();
+        String[] columns = {
+            "id_pk",
+            "nombre",
+            "email",
+            "password",
+            "rol",
+            "create_at",
+            "update_at"
+        };
+        String[] values = {
+            "int not null unique primary key autoincrement",
+            "varchar(100) not null unique",
+            "varchar(100) not null unique",
+            "varchar(100) not null",
+            "varchar(50)",
+            "datetime not null",
+            "datetime"
+        };
+        for(int i = 0; i < columns.length; i++) {
+            initDB.put(columns[i], values[i]);
+        }
+        return initDB;
     }
 }
