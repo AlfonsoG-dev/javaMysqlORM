@@ -124,15 +124,20 @@ public record QueryUtils() {
         String clean_values = this.CleanValues(build, 2);
         return clean_values;
     }
+    /**
+     * genera el condicional para innerjoin utilizando la fk del modelo de referencia y la pk del modelo primario
+     * @param local: modelo primario
+     * @param ref: modelo de referencia
+     * @param local_tb: tabla primaria
+     * @param ref_tb: tabla de referencia
+     * @return el condicional del inner join
+     */
     public String InnerJoinConditional(ModelMethods local, ModelMethods ref, String local_tb, String ref_tb) {
-        String[] data_local = local.GetAllProperties().split("\n");
-        String[] data_ref = ref.GetAllProperties().split("\n");
         String pk = "", fk = "", build = "";
         pk = this.GetPkFk(local).get("pk");
         fk = this.GetPkFk(ref).get("fk");
         build += ref_tb + "." + fk +"="+ local_tb +"."+ pk;
         return build;
-
     }
     /**
      * obtiene la pk o fk de la lista de columnas del modelo
