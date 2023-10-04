@@ -1,7 +1,6 @@
 package Mundo;
 
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 
 import Model.ModelMethods;
 import java.time.LocalDateTime;
@@ -184,8 +183,8 @@ public class User implements ModelMethods {
      * @return HashMap con las propiedades del modelo de base de datos
      */
     @Override
-    public HashMap<String, String> InitModel() {
-        HashMap<String, String> initDB = new HashMap<String, String>();
+    public String InitModel() {
+        String build = "";
         String[] columns = {
             "id_pk",
             "nombre",
@@ -205,8 +204,8 @@ public class User implements ModelMethods {
             "datetime"
         };
         for(int i = 0; i < columns.length; i++) {
-            initDB.put(columns[i], values[i]);
+            build += columns[i] + ": " + values[i] + "\n";
         }
-        return initDB;
+        return build;
     }
 }
