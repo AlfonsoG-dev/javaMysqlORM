@@ -1,5 +1,7 @@
 package Utils;
 
+import java.util.HashMap;
+
 import Model.ModelMethods;
 
 public record QueryUtils() {
@@ -103,5 +105,52 @@ public record QueryUtils() {
         }
         String clean_values = this.CleanValues(key_value, 2);
         return clean_values;
+    }
+    /**
+     * asignar el nombre de la tabla a las columnas del modelo
+     * @param tb_name: nombre a asignar
+     * @param model: modelo con las columnas
+     * @return columnas asignadas el nombre de la tabla
+     */
+    public String AsignTableNameToColumns(String tb_name, ModelMethods model) {
+        String[] data = model.GetAllProperties().split("\n");
+        String build = "";
+        for(String l: data) {
+            String key = l.split(":")[0];
+            if(key.contains("pk") == false && key.contains("fk") == false) {
+                build += tb_name + "." + key + " as " + tb_name +"_"+ key +", ";
+            }
+        }
+        String clean_values = this.CleanValues(build, 2);
+        return clean_values;
+    }
+    public String InnerJoinConditional(ModelMethods local, ModelMethods ref, String local_tb, String ref_tb) {
+        String[] data_local = local.GetAllProperties().split("\n");
+        String[] data_ref = ref.GetAllProperties().split("\n");
+        String pk = "", fk = "", build = "";
+        pk = this.GetPkFk(local).get("pk");
+        fk = this.GetPkFk(ref).get("fk");
+        build += ref_tb + "." + fk +"="+ local_tb +"."+ pk;
+        return build;
+
+    }
+    /**
+     * obtiene la pk o fk de la lista de columnas del modelo
+     * @param model: el modelo con la lista de columnas
+     * @return pk o fk
+     */
+    public HashMap<String, String> GetPkFk(ModelMethods model) {
+        HashMap<String, String> pkfk = new HashMap<String, String>();
+        String[] data = model.GetAllProperties().split("\n");
+        for(int i=0; i<data.length; ++i) {
+            String key = data[i].split(":")[0];
+            if(key.contains("pk")) {
+                pkfk.put("pk", key);
+            }
+            if(key.contains("fk")) {
+                pkfk.put("fk", key);
+            }
+        }
+        return pkfk;
     }
 }

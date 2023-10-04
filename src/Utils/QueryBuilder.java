@@ -86,8 +86,12 @@ public record QueryBuilder(String tb_name) {
      * @return la sentencia sql para inner join
      */
     public String InnerJoinQuery(String ref_table, ModelMethods RefModel, ModelMethods localModel) {
-        //TODO: imnplementar inner join
-        return "select ref_columns, local_columns from local_table inner join ref_table on ref_table.id_fk = local_table.id_pk";
+        String ref_nombres = query_util.AsignTableNameToColumns("cuentas", RefModel);
+        String local_nombres = query_util.AsignTableNameToColumns("users", localModel);
+        String pk_fk = query_util.InnerJoinConditional(localModel, RefModel, this.tb_name, ref_table);
+        String sql = "select " + local_nombres + ", " + ref_nombres + " from " + this.tb_name + " inner join " + ref_table + " on " + pk_fk;
+        System.out.println(sql);
+        return "";
     }
     /** 
      * crear la sentencia sql para modificar los datos

@@ -158,7 +158,7 @@ public class User implements ModelMethods {
      * */
     @Override
     public String GetAllProperties() {
-        String all = "id: " + this.getId_pk() + "\n";
+        String all = "id_pk: " + this.getId_pk() + "\n";
         if(this.getNombre() != null && this.getNombre() != "" ) {
             all +="nombre: " + this.getNombre() + "\n";
         }
