@@ -8,6 +8,7 @@ import java.sql.Statement;
 
 import Model.ModelMethods;
 import Utils.QueryBuilder;
+import Utils.QueryUtils;
 
 /**
  * clase para crear la ejecución de las sentencias sql
@@ -35,6 +36,9 @@ public class QueryExecution {
      * record que crea las sentencias sql
      * */
     private QueryBuilder query_builder;
+    /**
+     */
+    private QueryUtils query_util = new QueryUtils();
 
     //constructor
 
@@ -82,7 +86,7 @@ public class QueryExecution {
     */
     public ResultSet ExecuteFindOne(String options, PreparedStatement pstm) throws SQLException {
         String sql = query_builder.FindQuery(options);
-        String val = query_builder.GetOptionValue(options);
+        String val = query_util.GetOptionValue(options);
         pstm = connector.prepareStatement(sql);
         pstm.setString(1, val);
         ResultSet rst = pstm.executeQuery();

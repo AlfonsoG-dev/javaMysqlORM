@@ -8,42 +8,16 @@ import Model.ModelMethods;
  * */
 public record QueryBuilder(String tb_name) {
     /**
-     * reduce el string por un valor especifico
-     * @param options: los valores a limpiar
-     * @param val: valor especifico
-     * @return los valores limpios
-    */
-    private String CleanValues(String options, int val) {
-        return options.substring(0, options.length()-val);
-    }
-    /**
-     * combina las options & valores en 1 solo String
-     * @param options: los valores a limpiar
-     * @return los valores limpios y combinados
+     * utilidades para las querys
      */
-    public String GetOptionValue(String options) {
-        String[] div = options.split(",");
-        String values = "";
-        for(String val: div) {
-            values += val.split(":")[1] +",";
-        }
-        assert values == "" : "deberia ser diferente a \"\"";
-        String clean_values = this.CleanValues(values, 1);
-        return clean_values;
-    }
+    private static QueryUtils query_util = new QueryUtils();
     /**
      * crea la query para la sentencia de FindOne
      * @param: options: las columnas a buscar por key, value
      * @return: el usuario buscado
      */
     public String FindQuery(String options) {
-        String[] div = options.split(",");
-        String values = "";
-        for(String val: div) {
-            values += val.split(":")[0] + " =" + "?" + " and";
-        }
-        assert values == "" : "deberia ser diferente a \"\"";
-        String clean_values = this.CleanValues(values, 3);
+        String clean_values = query_util.GetPrepareConditional(options);
         String sql = "select *" + " from "+ tb_name+ " where " + clean_values;
         return sql;
     }
@@ -53,17 +27,7 @@ public record QueryBuilder(String tb_name) {
      * @return: el usuario buscado
      */
     public String FindByColumnQuery(String options) {
-        String[] div = options.split(",");
-        String values = "";
-
-        for(String val: div) {
-            values += val.split(":")[0] +
-            "="+ "'"+
-            val.split(":")[1].stripIndent()+
-            "'" + " and";
-        }
-        assert values == "" : "deberia ser diferente a \"\"";
-        String clean_values = this.CleanValues(values, 3);
+        String clean_values = query_util.GetNormalConditional(options);
         String sql = "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         return sql;
     }
@@ -74,18 +38,8 @@ public record QueryBuilder(String tb_name) {
      * @return la sentencia sql con los valores a retornar y los valores de condicion
      */
     public String FindColumnValueQuery(String options, String column) {
-        String[] div = options.split(",");
-        String values = "";
-        for(String val: div) {
-            values += val.split(":")[0]+ 
-            "=" + "'"+
-            val.split(":")[1].stripIndent() +
-            "'" + " and";
-        }
-        assert values == "" : "deberia ser diferente a \"\"";
-        String clean_values = this.CleanValues(values, 3);
         String sql = "";
-
+        String clean_values = query_util.GetNormalConditional(options);
         if( column == null || column.isEmpty() == true) {
             sql =  "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         }
@@ -112,7 +66,6 @@ public record QueryBuilder(String tb_name) {
                 }
             }
         }
-        assert cont == 0 : "deberi ser mayor a 0";
         return cont;
     }
     /**
@@ -121,24 +74,8 @@ public record QueryBuilder(String tb_name) {
      * @return la sentencia sql para registrar
      */
     public String InsertRegisterQuery(ModelMethods nObject) {
-        String[] data = nObject.GetAllProperties().split("\n");
-        String column_name = "";
-        for(int i = 0; i < data.length; i++) {
-            column_name += data[i].split(":")[0].stripIndent() + ", ";
-        }
-        String[] columns = column_name.split(",");
-        String clean_colunm_name = "";
-        for(int i = 1; i < columns.length; i++) {
-            clean_colunm_name += columns[i].stripIndent() + ", ";
-        }
-
-        String user_data = "";
-        for(int i = 1; i < data.length; i++) {
-            user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
-        }
-        assert user_data == "" : "deberia tener la información del usuario nuevo";
-        String clean_data = this.CleanValues(user_data, 1);
-        String column = this.CleanValues(clean_colunm_name, 4);
+        String clean_data = query_util.GetModelType(nObject);
+        String column = query_util.GetModelColumns(nObject);
         String sql = "insert into " + tb_name + " (" + column +") values (" + clean_data + ")";
         return sql;
     }
@@ -159,24 +96,9 @@ public record QueryBuilder(String tb_name) {
      * @return la sentencia sql para modificar
      */
     public String ModificarRegisterQuery(ModelMethods nObject, String condicional) {
-        String[] data = nObject.GetAllProperties().split("\n");
-        String key_value = "";
-        for(int i = 1; i < data.length; i++) {
-            String key = data[i].split(":")[0];
-            String value = data[i].split(":")[1];
-            key_value += key.stripIndent() +"="+ "'"+value.stripIndent()+"'"+ ", ";
-        }
-        String[] conditions = condicional.split(",");
-        String condition = "";
-        for(int i = 0; i < conditions.length; i++) {
-            String[] options = conditions[i].split(":");
-            String key = options[0].stripIndent();
-            String value = options[1].stripIndent();
-            condition += key +"=" + "'"+value+"'" + " and ";
-        }
-        String clean_key_value = this.CleanValues(key_value, 2);
-        String clean_condition = this.CleanValues(condition, 5);
-        String sql = "update " + tb_name + " set " +  clean_key_value + " where " + clean_condition;
+        String condition = query_util.GetNormalConditional(condicional);
+        String clean_key_value = query_util.GetAsignModelValues(nObject);
+        String sql = "update " + tb_name + " set " +  clean_key_value + " where " + condition;
         return sql;
    }
    /**
@@ -185,16 +107,8 @@ public record QueryBuilder(String tb_name) {
     * @return la sentencia sql
     **/
    public String EliminarRegistroQuery(String options) {
-       String[] data = options.split(",");
-       String condicional = "";
-       for(String key_value: data) {
-           String key = key_value.split(":")[0].stripIndent();
-           String value = key_value.split(":")[1].stripIndent();
-           condicional += key +"=" + "'" + value +"'" + " and ";
-           
-       }
-       String clean_data = this.CleanValues(condicional, 5);
-       String sql = "delete from " + tb_name + " where " + clean_data;
+       String condicional = query_util.GetNormalConditional(options);
+       String sql = "delete from " + tb_name + " where " + condicional;
        return sql;
    }
 }
