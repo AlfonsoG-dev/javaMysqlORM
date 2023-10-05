@@ -46,4 +46,41 @@ public class MigrationBuilder extends QueryBuilder {
         String sql = "create table if not exists " + this.tableName + clear_values ;
         return sql;
     }
+    /**
+     */
+    public String CreateAlterTableQuery() {
+        //TODO: implementar la creación de alter table
+        return "";
+    }
+    /**
+     */
+    public String CreateAddColumnQuery() {
+        //TODO: implementar la creación de add column
+        return "";
+    }
+    /**
+     */
+    public String CreateRenameColumnQuery() {
+        //TODO: implemnetar la creación de renameColumn
+        return "";
+    }
+    /**
+     */
+    public String CreateDeleteColumnQuery() {
+        //TODO: implementar la creación de delete column
+        return "";
+    }
+    /**
+     */
+    public String GetConstraint() {
+        //TODO: implementar la obtencion de constraint
+        return "";
+    }
+    /**
+     */
+    public String CreateConstraintQuery() {
+        //TODO: implementar la creación de constraint
+        return "";
+    }
+
 }
