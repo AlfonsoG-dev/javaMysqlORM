@@ -86,8 +86,8 @@ public class QueryBuilder {
      * @return la sentencia sql para registrar
      */
     public String CreateInsertRegisterQuery(ModelMethods nObject) {
-        String clean_data = query_util.GetModelType(nObject);
-        String column = query_util.GetModelColumns(nObject);
+        String clean_data = query_util.GetModelType(nObject.GetAllProperties());
+        String column = query_util.GetModelColumns(nObject.GetAllProperties());
         String sql = "insert into " + tb_name + " (" + column +") values (" + clean_data + ")";
         return sql;
     }
@@ -98,8 +98,8 @@ public class QueryBuilder {
      * @return la sentencia sql para inner join
      */
     public String CreateInnerJoinQuery(String ref_table, ModelMethods RefModel, ModelMethods localModel) {
-        String ref_nombres = query_util.AsignTableNameToColumns("cuentas", RefModel);
-        String local_nombres = query_util.AsignTableNameToColumns("users", localModel);
+        String ref_nombres = query_util.AsignTableNameToColumns("cuentas", RefModel.GetAllProperties());
+        String local_nombres = query_util.AsignTableNameToColumns("users", localModel.GetAllProperties());
         String pk_fk = query_util.InnerJoinConditional(localModel, RefModel, this.tb_name, ref_table);
         String sql = "select " + local_nombres + ", " + ref_nombres + " from " + this.tb_name + " inner join " + ref_table + " on " + pk_fk;
         System.out.println(sql);
@@ -113,7 +113,7 @@ public class QueryBuilder {
      */
     public String CreateModifyRegisterQuery(ModelMethods nObject, String condicional) {
         String condition = query_util.GetNormalConditional(condicional);
-        String clean_key_value = query_util.GetAsignModelValues(nObject);
+        String clean_key_value = query_util.GetAsignModelValues(nObject.GetAllProperties());
         String sql = "update " + tb_name + " set " +  clean_key_value + " where " + condition;
         return sql;
    }

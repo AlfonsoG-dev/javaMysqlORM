@@ -4,14 +4,15 @@ import java.util.HashMap;
 
 import Model.ModelMethods;
 
+
 public record QueryUtils() {
     /**
      * obtener las columnas de los datos del modelo
      * @param nObject: objeto con los datos del modelo
      * @return las columnas del modelo
      */
-    public String GetModelColumns(ModelMethods nObject) {
-        String[] data = nObject.GetAllProperties().split("\n");
+    public String GetModelColumns(String ModelProperties) {
+        String[] data = ModelProperties.split("\n");
         String column_name = "";
         for(int i = 0; i < data.length; i++) {
             column_name += data[i].split(":")[0].stripIndent() + ", ";
@@ -28,8 +29,8 @@ public record QueryUtils() {
      * @param nObject: objeto con los datos del modelo
      * @return los tipos de dato por columna
      */
-    public String GetModelType(ModelMethods nObject){
-        String[] data = nObject.GetAllProperties().split("\n");
+    public String GetModelType(String ModelProperties){
+        String[] data = ModelProperties.split("\n");
         String user_data = "";
         for(int i = 1; i < data.length; i++) {
             user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
@@ -95,8 +96,8 @@ public record QueryUtils() {
      * @param nObject: objeto que contiene la información del modelo
      * @return los valores asignados a la columna
      */
-    public String GetAsignModelValues(ModelMethods nObject) {
-        String[] data = nObject.GetAllProperties().split("\n");
+    public String GetAsignModelValues(String ModelProperties) {
+        String[] data = ModelProperties.split("\n");
         String key_value = "";
         for(int i = 1; i < data.length; i++) {
             String key = data[i].split(":")[0];
@@ -112,8 +113,8 @@ public record QueryUtils() {
      * @param model: modelo con las columnas
      * @return columnas asignadas el nombre de la tabla
      */
-    public String AsignTableNameToColumns(String tb_name, ModelMethods model) {
-        String[] data = model.GetAllProperties().split("\n");
+    public String AsignTableNameToColumns(String tb_name, String ModelProperties) {
+        String[] data = ModelProperties.split("\n");
         String build = "";
         for(String l: data) {
             String key = l.split(":")[0];
@@ -134,8 +135,8 @@ public record QueryUtils() {
      */
     public String InnerJoinConditional(ModelMethods local, ModelMethods ref, String local_tb, String ref_tb) {
         String pk = "", fk = "", build = "";
-        pk = this.GetPkFk(local).get("pk");
-        fk = this.GetPkFk(ref).get("fk");
+        pk = this.GetPkFk(local.GetAllProperties()).get("pk");
+        fk = this.GetPkFk(ref.GetAllProperties()).get("fk");
         build += ref_tb + "." + fk +"="+ local_tb +"."+ pk;
         return build;
     }
@@ -144,9 +145,9 @@ public record QueryUtils() {
      * @param model: el modelo con la lista de columnas
      * @return pk o fk
      */
-    public HashMap<String, String> GetPkFk(ModelMethods model) {
+    public HashMap<String, String> GetPkFk(String ModelProperties) {
         HashMap<String, String> pkfk = new HashMap<String, String>();
-        String[] data = model.GetAllProperties().split("\n");
+        String[] data = ModelProperties.split("\n");
         for(int i=0; i<data.length; ++i) {
             String key = data[i].split(":")[0];
             if(key.contains("pk")) {
