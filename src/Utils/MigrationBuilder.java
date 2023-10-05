@@ -21,21 +21,30 @@ public class MigrationBuilder extends QueryBuilder {
         query_util = new QueryUtils();
     }
     /**
+     * crear la base de datos si no existe
+     * @param DbName: nombre de la base de datos
+     * @return la sentencia sql para crear la base de datos
      */
     public String CreateDataBaseQuery(String DbName) {
         String sql = "create database if not exists " + DbName;
         return sql;
     }
     /**
+     * crear la tabla de datos si no existe
+     * @param model: modelo con los datos de las columnas y typo de dato para la tabla
+     * @return la sentencia sql para crear la tabla de datos
      */
-    public String CreateTableQuery(String TableName, ModelMethods model) {
-        //TODO: implementar la creación de la tabla si no eixste
+    public String CreateTableQuery(ModelMethods model) {
         String[] columns = query_util.GetModelColumns(model.InitModel(), true).split(", ");
         String[] types = query_util.GetModelType(model.InitModel(), true).split(",");
+        String values = "(";
         for(int i = 0; i < columns.length; ++i) {
-            System.out.println(columns[i]);
+            String clear_types = types[i].replace("'", "");
+            values += columns[i] + " " + clear_types +", ";
         }
-        return "create table if not exists tablename(table properties)";
+        String clear_values = query_util.CleanValues(values, 2)+ ")";
+        String sql = "create table if not exists " + this.tableName + clear_values ;
+        return sql;
     }
     /**
      */
