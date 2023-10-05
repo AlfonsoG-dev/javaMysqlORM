@@ -86,8 +86,8 @@ public class QueryBuilder {
      * @return la sentencia sql para registrar
      */
     public String CreateInsertRegisterQuery(ModelMethods nObject) {
-        String clean_data = query_util.GetModelType(nObject.GetAllProperties());
-        String column = query_util.GetModelColumns(nObject.GetAllProperties());
+        String clean_data = query_util.GetModelType(nObject.GetAllProperties(), false);
+        String column = query_util.GetModelColumns(nObject.GetAllProperties(), false);
         String sql = "insert into " + tb_name + " (" + column +") values (" + clean_data + ")";
         return sql;
     }

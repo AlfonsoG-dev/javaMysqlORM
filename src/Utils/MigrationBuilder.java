@@ -8,12 +8,17 @@ public class MigrationBuilder extends QueryBuilder {
      */
     private String tableName;
     /**
+     * utilidades para query
+     */
+    private QueryUtils query_util;
+    /**
      * metodo constructor
      * @param nTableName: nombre de la tabla que se utiliza para la creación de la query
      */
     public MigrationBuilder(String nTableName) {
         super(nTableName);
         tableName = nTableName;
+        query_util = new QueryUtils();
     }
     /**
      */
@@ -25,6 +30,11 @@ public class MigrationBuilder extends QueryBuilder {
      */
     public String CreateTableQuery(String TableName, ModelMethods model) {
         //TODO: implementar la creación de la tabla si no eixste
+        String[] columns = query_util.GetModelColumns(model.InitModel(), true).split(", ");
+        String[] types = query_util.GetModelType(model.InitModel(), true).split(",");
+        for(int i = 0; i < columns.length; ++i) {
+            System.out.println(columns[i]);
+        }
         return "create table if not exists tablename(table properties)";
     }
     /**

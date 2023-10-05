@@ -11,7 +11,7 @@ public record QueryUtils() {
      * @param nObject: objeto con los datos del modelo
      * @return las columnas del modelo
      */
-    public String GetModelColumns(String ModelProperties) {
+    public String GetModelColumns(String ModelProperties, boolean includePKFK) {
         String[] data = ModelProperties.split("\n");
         String column_name = "";
         for(int i = 0; i < data.length; i++) {
@@ -19,8 +19,15 @@ public record QueryUtils() {
         }
         String[] columns = column_name.split(",");
         String clean_colunm_name = "";
-        for(int i = 1; i < columns.length; i++) {
-            clean_colunm_name += columns[i].stripIndent() + ", ";
+        if(includePKFK == false) {
+            for(int i = 1; i < columns.length; i++) {
+                clean_colunm_name += columns[i].stripIndent() + ", ";
+            }
+        }
+        else {
+            for(int i = 0; i < columns.length; i++) {
+                clean_colunm_name += columns[i].stripIndent() + ", ";
+            }
         }
         return this.CleanValues(clean_colunm_name, 4);
     }
@@ -29,11 +36,18 @@ public record QueryUtils() {
      * @param nObject: objeto con los datos del modelo
      * @return los tipos de dato por columna
      */
-    public String GetModelType(String ModelProperties){
+    public String GetModelType(String ModelProperties, boolean includePKFK){
         String[] data = ModelProperties.split("\n");
         String user_data = "";
-        for(int i = 1; i < data.length; i++) {
-            user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
+        if(includePKFK == false) {
+            for(int i = 1; i < data.length; i++) {
+                user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
+            }
+        }
+        else {
+            for(int i = 0; i < data.length; i++) {
+                user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
+            }
         }
         return this.CleanValues(user_data, 1);
     }
