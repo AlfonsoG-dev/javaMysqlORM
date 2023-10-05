@@ -6,17 +6,29 @@ import Model.ModelMethods;
  * record con los métodos para crear las queries para las consultas sql
  * @param tb_name: nombre de la tabla en la cual se ejecutan las sentencias sql
  * */
-public record QueryBuilder(String tb_name) {
+public class QueryBuilder {
     /**
      * utilidades para las querys
      */
-    private static QueryUtils query_util = new QueryUtils();
+    private static QueryUtils query_util;
+    /**
+     * nombre de la tabla en base de datos
+     */
+    private String tb_name;
+    /**
+     * metodo constructor
+     * @param nTableName: nombre de la tabla que se utiliza para la creación de la query
+     */
+    public QueryBuilder(String nTableName) {
+        query_util = new QueryUtils();
+        tb_name = nTableName;
+    }
     /**
      * crea la query para la sentencia de FindOne
      * @param: options: las columnas a buscar por key, value
      * @return: el usuario buscado
      */
-    public String FindQuery(String options) {
+    public String CreateFindQuery(String options) {
         String clean_values = query_util.GetPrepareConditional(options);
         String sql = "select *" + " from "+ tb_name+ " where " + clean_values;
         return sql;
@@ -37,7 +49,7 @@ public record QueryBuilder(String tb_name) {
      * @param column: los valores a retornar
      * @return la sentencia sql con los valores a retornar y los valores de condicion
      */
-    public String FindColumnValueQuery(String options, String column) {
+    public String CreateFindColumnValueQuery(String options, String column) {
         String sql = "";
         String clean_values = query_util.GetNormalConditional(options);
         if( column == null || column.isEmpty() == true) {
@@ -73,7 +85,7 @@ public record QueryBuilder(String tb_name) {
      * @param nObject: objeto con el método para crear la sentencia sql
      * @return la sentencia sql para registrar
      */
-    public String InsertRegisterQuery(ModelMethods nObject) {
+    public String CreateInsertRegisterQuery(ModelMethods nObject) {
         String clean_data = query_util.GetModelType(nObject);
         String column = query_util.GetModelColumns(nObject);
         String sql = "insert into " + tb_name + " (" + column +") values (" + clean_data + ")";
@@ -85,7 +97,7 @@ public record QueryBuilder(String tb_name) {
      * @param RefModel: modelo que posee los datos de referencia
      * @return la sentencia sql para inner join
      */
-    public String InnerJoinQuery(String ref_table, ModelMethods RefModel, ModelMethods localModel) {
+    public String CreateInnerJoinQuery(String ref_table, ModelMethods RefModel, ModelMethods localModel) {
         String ref_nombres = query_util.AsignTableNameToColumns("cuentas", RefModel);
         String local_nombres = query_util.AsignTableNameToColumns("users", localModel);
         String pk_fk = query_util.InnerJoinConditional(localModel, RefModel, this.tb_name, ref_table);
@@ -99,7 +111,7 @@ public record QueryBuilder(String tb_name) {
      * @param condicional: propiedades para la condición de la sentencia sql
      * @return la sentencia sql para modificar
      */
-    public String ModificarRegisterQuery(ModelMethods nObject, String condicional) {
+    public String CreateModifyRegisterQuery(ModelMethods nObject, String condicional) {
         String condition = query_util.GetNormalConditional(condicional);
         String clean_key_value = query_util.GetAsignModelValues(nObject);
         String sql = "update " + tb_name + " set " +  clean_key_value + " where " + condition;
@@ -110,7 +122,7 @@ public record QueryBuilder(String tb_name) {
     * @param options: las columnas con los valores para el condicional
     * @return la sentencia sql
     **/
-   public String EliminarRegistroQuery(String options) {
+   public String CreateDeleteRegisterQuery(String options) {
        String condicional = query_util.GetNormalConditional(options);
        String sql = "delete from " + tb_name + " where " + condicional;
        return sql;
