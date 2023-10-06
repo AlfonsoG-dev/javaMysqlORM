@@ -38,7 +38,7 @@ public class QueryBuilder {
      * @param options: las columnas a buscar por key, value
      * @return: el usuario buscado
      */
-    public String FindByColumnQuery(String options) {
+    public String CreateFindByColumnQuery(String options) {
         String clean_values = query_util.GetNormalConditional(options);
         String sql = "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         return sql;
@@ -59,26 +59,6 @@ public class QueryBuilder {
             sql =  "select "+ column +" from " + tb_name + " where " + clean_values.stripIndent();
         }
         return sql;
-    }
-    /**
-     * regresa la cantidad de columnas en la sentencia sql
-     * @param metadata: datos de la sentencia sql
-     * @return cantidad de columnas en la sentencia sql
-     */
-    public int GetMetadataColumns(String metadata) {
-        String values = metadata.split(":")[1];
-        String[] columns = values.split("=");
-        int cont = 0;
-        for(int i = 0; i < columns.length; i++) {
-            String[] name = columns[i].split(",");
-            for(int j = 0; j < name.length; j++) {
-                //System.out.println(name[j]);
-                if(name[j].equalsIgnoreCase("columnName") == true) {
-                    cont++;
-                }
-            }
-        }
-        return cont;
     }
     /**
      * crea la sentencia sql para el registro de datos

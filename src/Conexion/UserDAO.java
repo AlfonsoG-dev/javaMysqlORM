@@ -9,27 +9,24 @@ import java.util.Arrays;
 import Mundo.User;
 import Utils.QueryBuilder;
 import Utils.UserBuilder;
+import Utils.QueryUtils;
 
 public class UserDAO {
-    //atributos
-
     /**
      * user builder
      */
     private UserBuilder nUserBuilder;
-
     /**
      * query builder
      */
     private QueryBuilder query_builder;
     /**
      * query_execution
-     * */
+     */
     private QueryExecution query_execution;
-
-    //constructor
-
-
+    /**
+     */
+    private QueryUtils query_util;
     /**
      * Data Acces Object of User
      * inicializa el conector de mysql
@@ -90,7 +87,7 @@ public class UserDAO {
         User[] users = null;
         try {
             rst = query_execution.ExecuteReadAll(pstm);
-            int lenght = query_builder.GetMetadataColumns(rst.getMetaData().toString());
+            int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             users = new User[1];
             while(CountData() > users.length) {
                 User[] nueva = Arrays.copyOf(users, CountData());
@@ -138,7 +135,7 @@ public class UserDAO {
         PreparedStatement pstm = null;
         try {
             rst = query_execution.ExecuteFindOne(options, pstm);
-            int lenght = query_builder.GetMetadataColumns(rst.getMetaData().toString());
+            int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = nUserBuilder.CreateNewUser(rst, lenght);
             }
@@ -176,7 +173,7 @@ public class UserDAO {
         ResultSet rst = null;
         try {
             rst = query_execution.ExecuteFindByColumnName(options, stm);
-            int lenght = query_builder.GetMetadataColumns(rst.getMetaData().toString());
+            int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = nUserBuilder.CreateNewUser(rst, lenght);
             }
@@ -217,7 +214,7 @@ public class UserDAO {
             rst = query_execution.ExecuteGetValueOfColumnName(options, column, stm);
             int len = 0;
             if(column == null || column.isEmpty() == true) {
-                len = query_builder.GetMetadataColumns(rst.getMetaData().toString());
+                len = query_util.GetMetadataColumns(rst.getMetaData().toString());
             }
             else if(column != null || column.isEmpty() == false) {
                 len = column.split(",").length;

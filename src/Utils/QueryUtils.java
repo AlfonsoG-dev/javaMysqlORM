@@ -7,6 +7,26 @@ import Model.ModelMethods;
 
 public record QueryUtils() {
     /**
+     * regresa la cantidad de columnas en la sentencia sql
+     * @param metadata: datos de la sentencia sql
+     * @return cantidad de columnas en la sentencia sql
+     */
+    public int GetMetadataColumns(String metadata) {
+        String values = metadata.split(":")[1];
+        String[] columns = values.split("=");
+        int cont = 0;
+        for(int i = 0; i < columns.length; i++) {
+            String[] name = columns[i].split(",");
+            for(int j = 0; j < name.length; j++) {
+                //System.out.println(name[j]);
+                if(name[j].equalsIgnoreCase("columnName") == true) {
+                    cont++;
+                }
+            }
+        }
+        return cont;
+    }
+    /**
      * obtener las columnas de los datos del modelo
      * @param nObject: objeto con los datos del modelo
      * @return las columnas del modelo

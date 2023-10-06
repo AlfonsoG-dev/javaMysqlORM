@@ -66,6 +66,18 @@ public class QueryExecution {
         return rst;
     }
     /**
+     * show table data
+     * @param stm: ejecutor de la sentencias sql
+     * @return resultado de la ejecución
+     * @throws SQLException error al ejecutar
+     */
+    public ResultSet ExecuteShowTableData(Statement stm) throws SQLException {
+        String sql = "show columns from " + this.table;
+        stm = connector.createStatement();
+        ResultSet rst = stm.executeQuery(sql);
+        return rst;
+    }
+    /**
      * ejecuta la lectura de datos
      * @param pstm: ejecutor de sentencias sql
      * @return resultado de la ejecución
