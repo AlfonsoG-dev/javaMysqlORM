@@ -79,7 +79,7 @@ public class UserDAO {
         ResultSet rst = null;
         try {
             rst = query_execution.ExecuteShowTableData(stm);
-            query_util.GetTableColumns(rst, rst.getMetaData().toString());
+            query_util.GetTableColumns(rst).get("tipos");
         } catch (Exception e) {
             System.err.println(e);
         } finally {

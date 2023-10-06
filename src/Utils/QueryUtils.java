@@ -58,18 +58,52 @@ public record QueryUtils() {
      * @param rst: resultado de la consulta a la bd
      * @return la lista de columnas de la tabla
      */
-    public String[] GetTableColumns(ResultSet rst, String metadata) throws SQLException {
+    public HashMap<String, String[]> GetTableColumns(ResultSet rst) throws SQLException {
+        HashMap<String, String[]> DatosTable = new HashMap<>();
         String[] columns = new String[7];
+        String[] types = new String[7];
         int i = 0;
+        int j = 0;
         while(rst.next()) {
             String[] data = rst.getString(1).split("\n");
             for(String k: data) {
                 columns[i] = k;
                 i++;
             }
+            String[] tipos = rst.getString(2).split("\n");
+            String[] null_co = rst.getString(3).split("\n");
+            String[] key_co = rst.getString(4).split("\n");
+            String[] extra = rst.getString(6).split("\n");
+            for(int k = 0; k < tipos.length; ++k) {
+                String tipo = "";
+                if(tipos[k] != null) {
+                    tipo += tipos[k];
+                }
+                if(null_co[k] != null && null_co[k].contains("NO")) {
+                    tipo += " not null";
+                }
+                if(key_co[k] != null) {
+                    if(key_co[k].contains("PRI")) {
+                        tipo += " unique primary key";
+                    }
+                    if(key_co[k].contains("MUL")) {
+                        tipo += " unique foreign key";
+                    }
+                    if(key_co[k].contains("UNI")) {
+                        tipo += " unique";
+                    }
+                }
+                if(extra[k] != null) {
+                    tipo += " " +extra[k];
+                }
+                types[j] = tipo;
+            }
+            j++;
 
         }
-        return columns;
+        DatosTable.put("columns", columns);
+        DatosTable.put("tipos", types);
+        return DatosTable;
     }
     /**
      * obtener el tipo por cada columna del modelo
