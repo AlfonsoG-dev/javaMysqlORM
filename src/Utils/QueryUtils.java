@@ -247,4 +247,22 @@ public record QueryUtils() {
         }
         return pkfk;
     }
+    /**
+     */
+    public String GetColumnFaltante() {
+        //TODO: implementar
+        return "";
+    }
+    /**
+     */
+    public String CompareColumnName() {
+        //TODO: implementar
+        return "";
+    }
+    /**
+     */
+    public String CompareColumnType() {
+        //TODO: implementar
+        return "";
+    }
 }
