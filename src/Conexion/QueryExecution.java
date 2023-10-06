@@ -114,7 +114,7 @@ public class QueryExecution {
     */
     public ResultSet ExecuteFindByColumnName(String options, Statement stm) throws SQLException {
         stm = connector.createStatement();
-        String sql = query_builder.FindByColumnQuery(options);
+        String sql = query_builder.CreateFindByColumnQuery(options);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }

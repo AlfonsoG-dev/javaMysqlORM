@@ -1,5 +1,7 @@
 package Utils;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import Model.ModelMethods;
@@ -50,6 +52,24 @@ public record QueryUtils() {
             }
         }
         return this.CleanValues(clean_colunm_name, 4);
+    }
+    /**
+     * obtener las columnas de la tabla
+     * @param rst: resultado de la consulta a la bd
+     * @return la lista de columnas de la tabla
+     */
+    public String[] GetTableColumns(ResultSet rst, String metadata) throws SQLException {
+        String[] columns = new String[7];
+        int i = 0;
+        while(rst.next()) {
+            String[] data = rst.getString(1).split("\n");
+            for(String k: data) {
+                columns[i] = k;
+                i++;
+            }
+
+        }
+        return columns;
     }
     /**
      * obtener el tipo por cada columna del modelo

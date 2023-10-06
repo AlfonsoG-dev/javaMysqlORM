@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.Arrays;
 
 import Mundo.User;
-import Utils.QueryBuilder;
 import Utils.UserBuilder;
 import Utils.QueryUtils;
 
@@ -16,10 +15,6 @@ public class UserDAO {
      * user builder
      */
     private UserBuilder nUserBuilder;
-    /**
-     * query builder
-     */
-    private QueryBuilder query_builder;
     /**
      * query_execution
      */
@@ -33,8 +28,8 @@ public class UserDAO {
      */
     public UserDAO() {
         nUserBuilder = new UserBuilder();
-        query_builder = new QueryBuilder("users");
         query_execution = new QueryExecution("users");
+        query_util = new QueryUtils();
     }
 
 
@@ -76,6 +71,35 @@ public class UserDAO {
         }
         assert count == 0 : "deberia ser mayor a 0";
         return count;
+    }
+    /**
+     */
+    public void ShowTableData() {
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = query_execution.ExecuteShowTableData(stm);
+            query_util.GetTableColumns(rst, rst.getMetaData().toString());
+        } catch (Exception e) {
+            System.err.println(e);
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    System.err.println(e);
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    System.err.println(e);
+                }
+                stm = null;
+            }
+        }
     }
     /**
      * crea una lista de usuarios con los datos de la bd
