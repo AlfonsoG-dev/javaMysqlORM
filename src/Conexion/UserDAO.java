@@ -81,7 +81,7 @@ public class UserDAO {
         ResultSet rst = null;
         try {
             rst = query_execution.ExecuteShowTableData(stm);
-            query_util.CompareColumnName(model.InitModel(), rst);
+            query_util.CompareColumnType(model.InitModel(), rst);
 
         } catch (Exception e) {
             System.err.println(e);

@@ -195,7 +195,7 @@ public class User implements ModelMethods {
             "update_at"
         };
         String[] values = {
-            "int not null unique primary key autoincrement",
+            "int not null unique primary key auto_increment",
             "varchar(100) not null unique",
             "varchar(100) not null unique",
             "varchar(100) not null",

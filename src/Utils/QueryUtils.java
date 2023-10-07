@@ -44,15 +44,15 @@ public record QueryUtils() {
         String clean_colunm_name = "";
         if(includePKFK == false) {
             for(int i = 1; i < columns.length; i++) {
-                clean_colunm_name += columns[i].stripIndent() + ", ";
+                clean_colunm_name += columns[i].stripIndent() + ",";
             }
         }
         else {
             for(int i = 0; i < columns.length; i++) {
-                clean_colunm_name += columns[i].stripIndent() + ", ";
+                clean_colunm_name += columns[i].stripIndent() + ",";
             }
         }
-        return this.CleanValues(clean_colunm_name, 4);
+        return this.CleanValues(clean_colunm_name, 1);
     }
     /**
      * obtener las columnas de la tabla
@@ -92,9 +92,9 @@ public record QueryUtils() {
                     }
                 }
                 if(extra[k] != null) {
-                    tipo += " " +extra[k];
+                    tipo += " " + extra[k];
                 }
-                types.add(tipo);
+                types.add(tipo.trim());
             }
 
         }
@@ -245,19 +245,13 @@ public record QueryUtils() {
         return pkfk;
     }
     /**
-     */
-    public String GetColumnFaltante() {
-        //TODO: implementar
-        return "";
-    }
-    /**
      * crea un ArrayList en base a las columnas del modelo
      * @param model_properties: propiedades del modelo
      * @return la lista de las columnas del modelo
      */
-    public ArrayList<String> AuxiliarModelColumns(String model_properties) {
+    public ArrayList<String> AuxiliarModelProperties(String model_properties) {
         ArrayList<String> columns =  new ArrayList<>();
-        String[] model_columns = this.GetModelColumns(model_properties, true).split(", ");
+        String[] model_columns = model_properties.split(",");
         for(String k: model_columns) {
             columns.add(k);
         }
@@ -270,7 +264,8 @@ public record QueryUtils() {
      * @return retorna las columnas a eliminar, agregar o renombrar
      */
     public HashMap<String, String> CompareColumnName(String model_properties, ResultSet rst) throws SQLException {
-        ArrayList<String> model_columns = this.AuxiliarModelColumns(model_properties);
+        String local_p = this.GetModelColumns(model_properties, true);
+        ArrayList<String> model_columns = this.AuxiliarModelProperties(local_p);
         ArrayList<String> table_columns = this.GetTableData(rst).get("columns");
         HashMap<String, String> resultado = new HashMap<>();
         if(model_columns.size() == table_columns.size()) {
@@ -282,7 +277,7 @@ public record QueryUtils() {
             }
             resultado.put("rename", rename);
         }
-        if(model_columns.size() > table_columns.size()) {
+        else if(model_columns.size() > table_columns.size()) {
             String agregar = "";
             for(int i=0; i<model_columns.size(); i++) {
                 if(table_columns.contains(model_columns.get(i)) == false) {
@@ -291,7 +286,7 @@ public record QueryUtils() {
             }
             resultado.put("agregar", agregar);
         }
-        if(table_columns.size() > model_columns.size()) {
+        else if(table_columns.size() > model_columns.size()) {
             String eliminar = "";
             for(int i=0; i<table_columns.size(); i++) {
                 if(model_columns.contains(table_columns.get(i)) == false) {
@@ -300,12 +295,31 @@ public record QueryUtils() {
             }
             resultado.put("eliminar", eliminar);
         }
+        System.out.println(resultado.get("rename"));
         return resultado;
     }
     /**
+     * compara los tipos de datos del modelo con la tabla y regresa el distinto
+     * @param model_properties: propiedades del modelo
+     * @param rst: resultado de la consulta sql 
+     * @throws SQLException: error de la consulta sql
+     * @return las columnas con el tipo de dato a cambiar
      */
-    public String CompareColumnType() {
-        //TODO: implementar
-        return "";
+    public HashMap<String, String> CompareColumnType(String model_properties, ResultSet rst) throws SQLException {
+        String local_t = this.GetModelType(model_properties, true);
+        ArrayList<String> table_types = this.GetTableData(rst).get("tipos");
+        ArrayList<String> model_types = this.AuxiliarModelProperties(local_t);
+        HashMap<String, String> resultado = new HashMap<>();
+        if(model_types.size() == table_types.size()) {
+            String rename = "";
+            for(int i=0; i<model_types.size(); ++i) {
+                String clean_types = model_types.get(i).replace("'", "");
+                if(table_types.contains(clean_types) == false) {
+                    rename += "column_type: " + clean_types + ", " + "column_index: " + i + "\n";
+                }
+            }
+            resultado.put("rename", rename);
+        }
+        return resultado;
     }
 }
