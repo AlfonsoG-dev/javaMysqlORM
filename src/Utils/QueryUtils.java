@@ -2,6 +2,7 @@ package Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import Model.ModelMethods;
@@ -58,18 +59,14 @@ public record QueryUtils() {
      * @param rst: resultado de la consulta a la bd
      * @return la lista de columnas de la tabla
      */
-    public HashMap<String, String[]> GetTableData(ResultSet rst) throws SQLException {
-        HashMap<String, String[]> DatosTable = new HashMap<>();
-        int capacity = this.GetMetadataColumns(rst.getMetaData().toString())+1;
-        String[] columns = new String[capacity];
-        String[] types = new String[capacity];
-        int i = 0;
-        int j = 0;
+    public HashMap<String, ArrayList<String>> GetTableData(ResultSet rst) throws SQLException {
+        HashMap<String, ArrayList<String>> DatosTable = new HashMap<>();
+        ArrayList<String> columns = new ArrayList<>();
+        ArrayList<String> types = new ArrayList<>();
         while(rst.next()) {
             String[] data = rst.getString(1).split("\n");
             for(String k: data) {
-                columns[i] = k;
-                i++;
+                columns.add(k);
             }
             String[] tipos = rst.getString(2).split("\n");
             String[] null_co = rst.getString(3).split("\n");
@@ -97,9 +94,8 @@ public record QueryUtils() {
                 if(extra[k] != null) {
                     tipo += " " +extra[k];
                 }
-                types[j] = tipo;
+                types.add(tipo);
             }
-            j++;
 
         }
         DatosTable.put("columns", columns);
@@ -255,28 +251,53 @@ public record QueryUtils() {
         return "";
     }
     /**
+     * crea un ArrayList en base a las columnas del modelo
+     * @param model_properties: propiedades del modelo
+     * @return la lista de las columnas del modelo
+     */
+    public ArrayList<String> AuxiliarModelColumns(String model_properties) {
+        ArrayList<String> columns =  new ArrayList<>();
+        String[] model_columns = this.GetModelColumns(model_properties, true).split(", ");
+        for(String k: model_columns) {
+            columns.add(k);
+        }
+        return columns;
+    }
+    /**
+     * compara el nombre de las columnas del modelo con la tabla y ordena entre: agregar, eliminar y renombrar
+     * @param model_properties: propiedades del modelo
+     * @param rst: resultado de la ejecución de la sentencia sql
+     * @return retorna las columnas a eliminar, agregar o renombrar
      */
     public HashMap<String, String> CompareColumnName(String model_properties, ResultSet rst) throws SQLException {
-        String[] model_columns = this.GetModelColumns(model_properties, true).split(", ");
-        String[] table_columns = this.GetTableData(rst).get("columns");
+        ArrayList<String> model_columns = this.AuxiliarModelColumns(model_properties);
+        ArrayList<String> table_columns = this.GetTableData(rst).get("columns");
         HashMap<String, String> resultado = new HashMap<>();
-        if(model_columns.length == table_columns.length) {
+        if(model_columns.size() == table_columns.size()) {
             String rename = "";
-            for(int i=0; i<model_columns.length; ++i) {
-                if(table_columns[i].contains(model_columns[i]) == false) {
-                    rename += "model_column: " + model_columns[i] + ", " + "column_index: " + i  + "\n";
+            for(int i=0; i<model_columns.size(); ++i) {
+                if(table_columns.get(i).contains(model_columns.get(i)) == false) {
+                    rename += "model_column: " + model_columns.get(i) + ", " + "column_index: " + i  + "\n";
                 }
             }
             resultado.put("rename", rename);
         }
-        if(model_columns.length > table_columns.length) {
-            //TODO: implementar la busuqeda de la columna que no esta presente en la tabla
+        if(model_columns.size() > table_columns.size()) {
             String agregar = "";
+            for(int i=0; i<model_columns.size(); i++) {
+                if(table_columns.contains(model_columns.get(i)) == false) {
+                    agregar += "model_column: " + model_columns.get(i) + ", " + "column_index: " + i + "\n";
+                }
+            }
             resultado.put("agregar", agregar);
         }
-        if(table_columns.length > model_columns.length) {
-            //TODO: implementar la busuqeda de la columna que no esta presente en el modelo
+        if(table_columns.size() > model_columns.size()) {
             String eliminar = "";
+            for(int i=0; i<table_columns.size(); i++) {
+                if(model_columns.contains(table_columns.get(i)) == false) {
+                    eliminar += "tabla_column: " + table_columns.get(i) + ", " + "column_index: " + i + "\n";
+                }
+            }
             resultado.put("eliminar", eliminar);
         }
         return resultado;
