@@ -58,10 +58,11 @@ public record QueryUtils() {
      * @param rst: resultado de la consulta a la bd
      * @return la lista de columnas de la tabla
      */
-    public HashMap<String, String[]> GetTableColumns(ResultSet rst) throws SQLException {
+    public HashMap<String, String[]> GetTableData(ResultSet rst) throws SQLException {
         HashMap<String, String[]> DatosTable = new HashMap<>();
-        String[] columns = new String[7];
-        String[] types = new String[7];
+        int capacity = this.GetMetadataColumns(rst.getMetaData().toString())+1;
+        String[] columns = new String[capacity];
+        String[] types = new String[capacity];
         int i = 0;
         int j = 0;
         while(rst.next()) {
@@ -255,9 +256,30 @@ public record QueryUtils() {
     }
     /**
      */
-    public String CompareColumnName() {
-        //TODO: implementar
-        return "";
+    public HashMap<String, String> CompareColumnName(String model_properties, ResultSet rst) throws SQLException {
+        String[] model_columns = this.GetModelColumns(model_properties, true).split(", ");
+        String[] table_columns = this.GetTableData(rst).get("columns");
+        HashMap<String, String> resultado = new HashMap<>();
+        if(model_columns.length == table_columns.length) {
+            String rename = "";
+            for(int i=0; i<model_columns.length; ++i) {
+                if(table_columns[i].contains(model_columns[i]) == false) {
+                    rename += "model_column: " + model_columns[i] + ", " + "column_index: " + i  + "\n";
+                }
+            }
+            resultado.put("rename", rename);
+        }
+        if(model_columns.length > table_columns.length) {
+            //TODO: implementar la busuqeda de la columna que no esta presente en la tabla
+            String agregar = "";
+            resultado.put("agregar", agregar);
+        }
+        if(table_columns.length > model_columns.length) {
+            //TODO: implementar la busuqeda de la columna que no esta presente en el modelo
+            String eliminar = "";
+            resultado.put("eliminar", eliminar);
+        }
+        return resultado;
     }
     /**
      */

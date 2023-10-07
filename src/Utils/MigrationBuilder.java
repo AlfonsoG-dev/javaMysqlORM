@@ -47,10 +47,12 @@ public class MigrationBuilder extends QueryBuilder {
         return sql;
     }
     /**
+     * crear la sentencia para alterar la tabla
+     * @param AlterOperation: tipo de operacíon a realizar
+     * @return sentencia para alterar la tabla
      */
-    public String CreateAlterTableQuery() {
-        //TODO: implementar la creación de alter table
-        return "";
+    public String CreateAlterTableQuery(String AlterOperation) {
+        return "alter table " + this.tableName + " " + AlterOperation;
     }
     /**
      */

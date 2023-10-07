@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
+import Model.ModelMethods;
 import Mundo.User;
 import Utils.UserBuilder;
 import Utils.QueryUtils;
@@ -73,13 +74,15 @@ public class UserDAO {
         return count;
     }
     /**
+     * muestra los datos de la tabla
      */
-    public void ShowTableData() {
+    public void ShowTableData(ModelMethods model) {
         Statement stm = null;
         ResultSet rst = null;
         try {
             rst = query_execution.ExecuteShowTableData(stm);
-            query_util.GetTableColumns(rst).get("tipos");
+            query_util.CompareColumnName(model.InitModel(), rst).get("rename");
+
         } catch (Exception e) {
             System.err.println(e);
         } finally {
