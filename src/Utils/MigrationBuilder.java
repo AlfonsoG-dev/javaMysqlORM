@@ -113,14 +113,8 @@ public class MigrationBuilder extends QueryBuilder {
     }
     /**
      */
-    public String GetConstraint() {
+    public String CreateAddPKFKColumn() {
         //TODO: implementar la obtencion de constraint
-        return "";
-    }
-    /**
-     */
-    public String CreateConstraintQuery() {
-        //TODO: implementar la creación de constraint
         return "";
     }
 
