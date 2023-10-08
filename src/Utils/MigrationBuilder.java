@@ -1,5 +1,8 @@
 package Utils;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import Model.ModelMethods;
 
 public class MigrationBuilder extends QueryBuilder {
@@ -51,14 +54,32 @@ public class MigrationBuilder extends QueryBuilder {
      * @param AlterOperation: tipo de operacíon a realizar
      * @return sentencia para alterar la tabla
      */
-    public String CreateAlterTableQuery(String AlterOperation) {
+    private final String CreateAlterTableQuery(String AlterOperation) {
         return "alter table " + this.tableName + " " + AlterOperation;
     }
     /**
+     * crea la sentencia sql para agregar una columna a la tabla
+     * @param model_properties: propiedades del modelo
+     * @param rst: resultado de la consulta sql
+     * @throws SQLException: error de la sentencia sql
+     * @return la sentencia sql para agregar una columna a la tabla
      */
-    public String CreateAddColumnQuery() {
-        //TODO: implementar la creación de add column
-        return "";
+    public String CreateAddColumnQuery(String model_properties, ResultSet rst) throws SQLException {
+        String sql = "";
+        String add_columns = query_util.CompareColumnName(model_properties, rst).get("agregar");
+        if(add_columns != null) {
+            String columns = query_util.GetModelColumns(add_columns, true);
+            String[] clean_columns = query_util.CleanValues(columns, 2).split(",");
+            String[] model_types = query_util.GetModelType(model_properties, true).split(",");
+            String[] model_columns = query_util.GetModelColumns(model_properties, true).split(",");
+            for(String k: clean_columns) {
+                int index_type = query_util.SearchColumnType(k, model_properties);
+                String clear_types = model_types[index_type].replace("'", "");
+                sql += "add column " + k + " " + clear_types + " after " + model_columns[index_type-1] + ", ";
+            }
+        }
+        String clear_sql = query_util.CleanValues(sql, 2);
+        return this.CreateAlterTableQuery(clear_sql);
     }
     /**
      */

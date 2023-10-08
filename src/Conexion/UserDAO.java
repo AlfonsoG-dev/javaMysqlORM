@@ -9,6 +9,7 @@ import java.util.Arrays;
 import Model.ModelMethods;
 import Mundo.User;
 import Utils.UserBuilder;
+import Utils.MigrationBuilder;
 import Utils.QueryUtils;
 
 public class UserDAO {
@@ -81,7 +82,8 @@ public class UserDAO {
         ResultSet rst = null;
         try {
             rst = query_execution.ExecuteShowTableData(stm);
-            query_util.CompareColumnType(model.InitModel(), rst);
+            MigrationBuilder mg = new MigrationBuilder("users");
+            mg.CreateAddColumnQuery(model.InitModel(), rst);
 
         } catch (Exception e) {
             System.err.println(e);

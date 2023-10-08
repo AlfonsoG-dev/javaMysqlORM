@@ -10,6 +10,15 @@ import Model.ModelMethods;
 
 public record QueryUtils() {
     /**
+     * reduce el string por un valor especifico
+     * @param options: los valores a limpiar
+     * @param val: valor especifico
+     * @return los valores limpios
+    */
+    public String CleanValues(String options, int val) {
+        return options.substring(0, options.length()-val);
+    }
+    /**
      * regresa la cantidad de columnas en la sentencia sql
      * @param metadata: datos de la sentencia sql
      * @return cantidad de columnas en la sentencia sql
@@ -122,14 +131,15 @@ public record QueryUtils() {
         }
         return this.CleanValues(user_data, 1);
     }
-    /**
-     * reduce el string por un valor especifico
-     * @param options: los valores a limpiar
-     * @param val: valor especifico
-     * @return los valores limpios
-    */
-    public String CleanValues(String options, int val) {
-        return options.substring(0, options.length()-val);
+    public int SearchColumnType(String column, String model_properties) {
+        String[] model_columns = this.GetModelColumns(model_properties, true).split(",");
+        int res = 0;
+        for(int i=0; i<model_columns.length; ++i) {
+            if(model_columns[i].contains(column)) {
+                res = i;
+            }
+        }
+        return res;
     }
     /**
      * combina las options & valores en 1 solo String
@@ -272,7 +282,7 @@ public record QueryUtils() {
             String rename = "";
             for(int i=0; i<model_columns.size(); ++i) {
                 if(table_columns.get(i).contains(model_columns.get(i)) == false) {
-                    rename += "model_column: " + model_columns.get(i) + ", " + "column_index: " + i  + "\n";
+                    rename += model_columns.get(i) + ", ";
                 }
             }
             resultado.put("rename", rename);
@@ -281,7 +291,7 @@ public record QueryUtils() {
             String agregar = "";
             for(int i=0; i<model_columns.size(); i++) {
                 if(table_columns.contains(model_columns.get(i)) == false) {
-                    agregar += "model_column: " + model_columns.get(i) + ", " + "column_index: " + i + "\n";
+                    agregar += model_columns.get(i) + ", ";
                 }
             }
             resultado.put("agregar", agregar);
@@ -290,12 +300,11 @@ public record QueryUtils() {
             String eliminar = "";
             for(int i=0; i<table_columns.size(); i++) {
                 if(model_columns.contains(table_columns.get(i)) == false) {
-                    eliminar += "tabla_column: " + table_columns.get(i) + ", " + "column_index: " + i + "\n";
+                    eliminar += table_columns.get(i) + ", ";
                 }
             }
             resultado.put("eliminar", eliminar);
         }
-        System.out.println(resultado.get("rename"));
         return resultado;
     }
     /**
@@ -315,7 +324,7 @@ public record QueryUtils() {
             for(int i=0; i<model_types.size(); ++i) {
                 String clean_types = model_types.get(i).replace("'", "");
                 if(table_types.contains(clean_types) == false) {
-                    rename += "column_type: " + clean_types + ", " + "column_index: " + i + "\n";
+                    rename += clean_types + ", ";
                 }
             }
             resultado.put("rename", rename);
