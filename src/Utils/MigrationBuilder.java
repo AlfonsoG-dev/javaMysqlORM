@@ -2,6 +2,7 @@ package Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import Model.ModelMethods;
 
@@ -67,7 +68,7 @@ public class MigrationBuilder extends QueryBuilder {
     public String CreateAddColumnQuery(String model_properties, ResultSet rst) throws SQLException {
         String sql = "";
         String add_columns = query_util.CompareColumnName(model_properties, rst).get("agregar");
-        if(add_columns != null) {
+        if(add_columns != "" && add_columns != null) {
             String columns = query_util.GetModelColumns(add_columns, true);
             String[] clean_columns = query_util.CleanValues(columns, 2).split(",");
             String[] model_types = query_util.GetModelType(model_properties, true).split(",");
@@ -82,10 +83,27 @@ public class MigrationBuilder extends QueryBuilder {
         return this.CreateAlterTableQuery(clear_sql);
     }
     /**
+     * crea la sentencia sql para renombrar las columnas de la tabla
+     * @param model_properties: propiedades del modelo
+     * @param rst: resultado de la consulta sql
+     * @throws SQLException: error de la sentencia sql
+     * @return la sentencia sql para renombrar columnas
      */
-    public String CreateRenameColumnQuery() {
-        //TODO: implemnetar la creación de renameColumn
-        return "";
+    public String CreateRenameColumnQuery(String model_properties, ResultSet rst) throws SQLException {
+        String sql = "";
+        String rename_columns = query_util.CompareColumnName(model_properties, rst).get("rename");
+        if(rename_columns != "" && rename_columns != null) {
+            String[] keys = rename_columns.split(", ");
+            for(String co: keys) {
+                String[] values = co.split(":");
+                for(int i=1; i < values.length; ++i) {
+                    sql += "rename column " + values[0] + " to " + values[1] +  ", ";
+                }
+            }
+        }
+        String clear_sql = query_util.CleanValues(sql, 2);
+        System.out.println(this.CreateAlterTableQuery(clear_sql));
+        return sql;
     }
     /**
      */

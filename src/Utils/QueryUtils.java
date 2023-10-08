@@ -282,7 +282,7 @@ public record QueryUtils() {
             String rename = "";
             for(int i=0; i<model_columns.size(); ++i) {
                 if(table_columns.get(i).contains(model_columns.get(i)) == false) {
-                    rename += model_columns.get(i) + ", ";
+                    rename += model_columns.get(i) + ":" + table_columns.get(i) + ", ";
                 }
             }
             resultado.put("rename", rename);

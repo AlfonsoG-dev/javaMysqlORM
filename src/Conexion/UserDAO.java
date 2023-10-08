@@ -18,6 +18,9 @@ public class UserDAO {
      */
     private UserBuilder nUserBuilder;
     /**
+     */
+    MigrationBuilder migrate;
+    /**
      * query_execution
      */
     private QueryExecution query_execution;
@@ -32,6 +35,7 @@ public class UserDAO {
         nUserBuilder = new UserBuilder();
         query_execution = new QueryExecution("users");
         query_util = new QueryUtils();
+        migrate = new MigrationBuilder("users");
     }
 
 
@@ -76,35 +80,37 @@ public class UserDAO {
     }
     /**
      * muestra los datos de la tabla
+     * @param model: modelo con los datos
+     * @return resultado de la consulta
      */
-    public void ShowTableData(ModelMethods model) {
+    public ResultSet ShowTableData(ModelMethods model) {
         Statement stm = null;
         ResultSet rst = null;
         try {
             rst = query_execution.ExecuteShowTableData(stm);
-            MigrationBuilder mg = new MigrationBuilder("users");
-            mg.CreateAddColumnQuery(model.InitModel(), rst);
-
+            migrate.CreateRenameColumnQuery(model.InitModel(), rst);
         } catch (Exception e) {
             System.err.println(e);
+        
         } finally {
             if(rst != null) {
                 try {
                     rst.close();
-                } catch(Exception e) {
-                    System.err.println(e);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
                 }
                 rst = null;
             }
             if(stm != null) {
                 try {
                     stm.close();
-                } catch(Exception e) {
-                    System.err.println(e);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
                 }
                 stm = null;
             }
         }
+        return rst;
     }
     /**
      * crea una lista de usuarios con los datos de la bd
