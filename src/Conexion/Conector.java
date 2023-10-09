@@ -26,6 +26,10 @@ public class Conector {
     // Clave de usuario
     private final static String password = "5x5W12";
 
+    /**
+     * crea la conexión a la base de datos
+     * @return conexión de la base de datos
+     */
     public Connection conectarMySQL() {
         Connection conn = null;
 

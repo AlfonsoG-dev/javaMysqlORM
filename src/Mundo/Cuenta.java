@@ -6,13 +6,39 @@ import java.time.format.DateTimeFormatter;
 import Model.ModelMethods;
 
 public class Cuenta implements ModelMethods {
+    /**
+     * id de la cuenta
+     */
     private int id_pk;
+    /**
+     * nombre de la cuenta
+     */
     private String nombre;
+    /**
+     * email de la cuenta
+     */
     private String email;
+    /**
+     * foreign key de la cuenta al usuario
+     */
     private int user_id_fk;
+    /**
+     * fecha de creación de la cuenta
+     */
     private String create_at;
+    /**
+     * fecha de modificación de la cuenta
+     */
     private String update_at;
     
+    /**
+     * @param nId
+     * @param nNombre
+     * @param nEmail
+     * @param nFk
+     * @param nCreate_at
+     * @param nUpdate_at
+     */
     public Cuenta(int nId, String nNombre, String nEmail, int nFk, String nCreate_at, String nUpdate_at) {
         id_pk = nId;
         nombre = nNombre;
@@ -110,6 +136,10 @@ public class Cuenta implements ModelMethods {
     }
 
 
+    /**
+     * crear una cadena de texto con las propiedades del usuario
+     * @return String con las propiedades del usuario
+     */
     @Override
     public String GetAllProperties() {
         String all = "id_pk: " + this.getId_pk() + "\n";
@@ -131,6 +161,10 @@ public class Cuenta implements ModelMethods {
         return all;
     }
 
+    /**
+     * crea una cadena de texto con los valores para inicializar el modelo
+     * @return String con los valores para inicializar el modelo
+     */
     @Override
     public String InitModel() {
         String build = "";

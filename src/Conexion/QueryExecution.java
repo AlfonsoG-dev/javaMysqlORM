@@ -150,6 +150,15 @@ public class QueryExecution {
         ResultSet rst = stm.getGeneratedKeys();
         return rst;
     }
+    /**
+     * ejecuta la consulta tipo inner join
+     * @param tb_name: nombre de la tabla local
+     * @param stm: ejecutor de sentencias sql
+     * @param refObject: modelo de referencia
+     * @param localObject: modelo local
+     * @throws SQLException error al ejecutar la sentencia sql
+     * @return el resultado de la ejecución
+     */
     public ResultSet ExecuteInnerJoin(String tb_name, Statement stm, ModelMethods refObject, ModelMethods localObject) throws SQLException {
         String sql = query_builder.CreateInnerJoinQuery(tb_name, refObject, localObject);
         String[] columns = {"id"};
