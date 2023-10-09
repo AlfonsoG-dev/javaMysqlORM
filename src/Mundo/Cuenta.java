@@ -112,14 +112,48 @@ public class Cuenta implements ModelMethods {
 
     @Override
     public String GetAllProperties() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'GetAllProperties'");
+        String all = "id_pk: " + this.getId_pk() + "\n";
+        if(this.getNombre() != null && this.getNombre() != "" ) {
+            all +="nombre: " + this.getNombre() + "\n";
+        }
+        if(this.getEmail() != null && this.getEmail().isEmpty() == false){
+            all +="email: " + this.getEmail() + "\n";
+        }
+        if(this.getUser_id_fk() != 0){
+            all +="user_id_fk: " + this.getUser_id_fk() + "\n";
+        }
+        if(this.getCreate_at() != null) {
+            all += "create_at: " + this.getCreate_at() + "\n";
+        }
+        if(this.getUpdate_at() != null) {
+            all += "update_at: " + this.getUpdate_at();
+        }
+        return all;
     }
 
     @Override
     public String InitModel() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'InitModel'");
+        String build = "";
+        String[] columns = {
+            "id_pk",
+            "nombre",
+            "email",
+            "user_id_fk",
+            "create_at",
+            "update_at"
+        };
+        String[] values = {
+            "int not null unique primary key auto_increment",
+            "varchar(100) not null",
+            "varchar(100) not null",
+            "int not null, constraint user_id_fk foreign key (user_id_fk) references users(id_pk)",
+            "datetime not null",
+            "datetime"
+        };
+        for(int i = 0; i < columns.length; i++) {
+            build += columns[i] + ": " + values[i] + "\n";
+        }
+        return build;
     }
 
 }
