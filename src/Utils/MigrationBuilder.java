@@ -2,7 +2,6 @@ package Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import Model.ModelMethods;
 
@@ -79,8 +78,13 @@ public class MigrationBuilder extends QueryBuilder {
                 sql += "add column " + k + " " + clear_types + " after " + model_columns[index_type-1] + ", ";
             }
         }
-        String clear_sql = query_util.CleanValues(sql, 2);
-        return this.CreateAlterTableQuery(clear_sql);
+        String clear_sql = "";
+        String res = "";
+        if(sql != "" && sql != null) {
+            clear_sql = query_util.CleanValues(sql, 2);
+            res = this.CreateAlterTableQuery(clear_sql);
+        }
+        return res;
     }
     /**
      * crea la sentencia sql para renombrar las columnas de la tabla
@@ -101,19 +105,41 @@ public class MigrationBuilder extends QueryBuilder {
                 }
             }
         }
-        String clear_sql = query_util.CleanValues(sql, 2);
-        System.out.println(this.CreateAlterTableQuery(clear_sql));
-        return sql;
+        String clear_sql = "";
+        String res = "";
+        if(sql != "" && sql != null) {
+            clear_sql = query_util.CleanValues(sql, 2);
+            res = this.CreateAlterTableQuery(clear_sql);
+        }
+        return res;
+    }
+    /**
+     * crea la sentencia sql para eliminar una columna de la tabla
+     * @param model_properties: propiedades del modelo
+     * @param rst: resultado de la consulta sql
+     * @throws SQLException: error de la sentencia sql
+     * @return la sentencia sql para eliminar columnas
+     */
+    public String CreateDeleteColumnQuery(String model_properties, ResultSet rst) throws SQLException {
+        String sql = "";
+        String delete_columns = query_util.CompareColumnName(model_properties, rst).get("eliminar");
+        if(delete_columns != "" && delete_columns != null) {
+            String[] columns = delete_columns.split(", ");
+            for(String k: columns) {
+                sql += "drop column "  + k + ", ";
+            }
+        }
+        String clear_sql = "";
+        String res = "";
+        if(sql != "" && sql != null) {
+            clear_sql = query_util.CleanValues(sql, 2);
+            res = this.CreateAlterTableQuery(clear_sql);
+        }
+        return res;
     }
     /**
      */
-    public String CreateDeleteColumnQuery() {
-        //TODO: implementar la creación de delete column
-        return "";
-    }
-    /**
-     */
-    public String CreateAddPKFKColumn() {
+    public String CreateAddPKFKColumnQuery() {
         //TODO: implementar la obtencion de constraint
         return "";
     }
