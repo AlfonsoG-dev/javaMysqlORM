@@ -138,6 +138,11 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
+     * crea la sentencia sql para eliminar el constraint de la pk o fk
+     * @param model_properties: propiedades del modelo
+     * @param rst: resultado de la consulta sql
+     * @throws SQLException: error de la consulta sql
+     * @return la sentencia sql para eliminar el constraint de la pk o fk
      */
     public String CreateDeleteConstraintQuery(String model_properties, ResultSet rst) throws SQLException {
         String sql = "";
