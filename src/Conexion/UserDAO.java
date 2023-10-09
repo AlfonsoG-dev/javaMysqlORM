@@ -88,7 +88,7 @@ public class UserDAO {
         ResultSet rst = null;
         try {
             rst = query_execution.ExecuteShowTableData(stm);
-            migrate.CreateRenameColumnQuery(model.InitModel(), rst);
+            migrate.CreateDeleteConstraintQuery(model.InitModel(), rst);
         } catch (Exception e) {
             System.err.println(e);
         

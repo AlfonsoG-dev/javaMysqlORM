@@ -139,9 +139,30 @@ public class MigrationBuilder extends QueryBuilder {
     }
     /**
      */
-    public String CreateAddPKFKColumnQuery() {
-        //TODO: implementar la obtencion de constraint
-        return "";
+    public String CreateDeleteConstraintQuery(String model_properties, ResultSet rst) throws SQLException {
+        String sql = "";
+        String delete_columns = query_util.CompareColumnName(model_properties, rst).get("eliminar");
+        if(delete_columns != "" && delete_columns != null) {
+            String k1 = delete_columns.split(", ")[0];
+            String[] k2 = k1.split(":");
+            String[] model_types = query_util.GetModelType(model_properties, true).split(",");
+            String[] model_columns = query_util.GetModelColumns(model_properties, true).split(",");
+            int index = Integer.parseInt(k2[1]);
+            if(model_types[index].contains("primary key")) {
+                sql += "drop primary key , ";
+            }
+            if(model_types[index].contains("foreign key")) {
+                sql += "drop foreign key " + model_columns[index] + ", ";
+            }
+
+        }
+        String clear_sql = "";
+        String res = "";
+        if(sql != "" && sql != null) {
+            clear_sql = query_util.CleanValues(sql, 2);
+            res = this.CreateAlterTableQuery(clear_sql);
+        }
+        return res;
     }
 
 }

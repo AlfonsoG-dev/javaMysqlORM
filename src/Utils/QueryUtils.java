@@ -131,11 +131,18 @@ public record QueryUtils() {
         }
         return this.CleanValues(user_data, 1);
     }
+    /**
+     * buscar el typo de dato de una columna
+     * @param column: columna a buscar el tipo de dato
+     * @param model_properties: propiedades del modelo
+     * @return el indice o index del typo de dato
+     */
     public int SearchColumnType(String column, String model_properties) {
         String[] model_columns = this.GetModelColumns(model_properties, true).split(",");
         int res = 0;
         for(int i=0; i<model_columns.length; ++i) {
             if(model_columns[i].contains(column)) {
+                System.out.println(i);
                 res = i;
             }
         }
@@ -300,7 +307,7 @@ public record QueryUtils() {
             String eliminar = "";
             for(int i=0; i<table_columns.size(); i++) {
                 if(model_columns.contains(table_columns.get(i)) == false) {
-                    eliminar += table_columns.get(i) + ", ";
+                    eliminar += table_columns.get(i) + ":" + i + ", ";
                 }
             }
             resultado.put("eliminar", eliminar);
