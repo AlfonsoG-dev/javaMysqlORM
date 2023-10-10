@@ -114,6 +114,12 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
+     */
+    public String CreateChangeTypeQuery() {
+        //TODO: implementar
+        return "";
+    }
+    /**
      * crea la sentencia sql para eliminar una columna de la tabla
      * @param model_properties: propiedades del modelo
      * @param rst: resultado de la consulta sql
@@ -136,6 +142,12 @@ public class MigrationBuilder extends QueryBuilder {
             res = this.CreateAlterTableQuery(clear_sql);
         }
         return res;
+    }
+    /**
+     */
+    public String CreateAddConstraintQuery() {
+        //TODO: implementar
+        return "";
     }
     /**
      * crea la sentencia sql para eliminar el constraint de la pk o fk
