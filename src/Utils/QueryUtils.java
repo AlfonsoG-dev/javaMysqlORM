@@ -331,7 +331,7 @@ public record QueryUtils() {
             for(int i=0; i<model_types.size(); ++i) {
                 String clean_types = model_types.get(i).replace("'", "");
                 if(table_types.contains(clean_types) == false) {
-                    rename += clean_types + ", ";
+                    rename += clean_types + ":" + i + ", ";
                 }
             }
             resultado.put("rename", rename);

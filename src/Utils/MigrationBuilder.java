@@ -114,10 +114,28 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
+     * crea la sentencia sql para modificar el tipo de dato de una columna
+     * @param model_properties: propiedades del modelo
      */
-    public String CreateChangeTypeQuery() {
-        //TODO: implementar
-        return "";
+    public String CreateChangeTypeQuery(String model_properties, ResultSet rst) throws SQLException {
+        String sql = "";
+        String rename_types = query_util.CompareColumnType(model_properties, rst).get("rename");
+        if(rename_types != "" && rename_types != null) {
+            String[] types = rename_types.split(", ");
+            String[] model_columns = query_util.GetModelColumns(model_properties, true).split(",");
+            for(String t: types) {
+                String type = t.split(":")[0];
+                int index = Integer.parseInt(t.split(":")[1]);
+                sql += "modify column " + model_columns[index] + " " + type + ", ";
+            }
+        }
+        String clear_sql = "";
+        String res = "";
+        if(sql != "" && sql != null) {
+            clear_sql = query_util.CleanValues(sql, 2);
+            res = this.CreateAlterTableQuery(clear_sql);
+        }
+        return res;
     }
     /**
      * crea la sentencia sql para eliminar una columna de la tabla
@@ -146,7 +164,9 @@ public class MigrationBuilder extends QueryBuilder {
     /**
      * crea la sentencia sql para agregar constraint  de la pk o fk
      * @param model_properties: propiedades del modelo
+     * @param ref_model: propiedades del modelo de referencia
      * @param rst: resultado de la consulta sql
+     * @param ref_table: nombre de la tabla de referencia
      * @throws SQLException error de la consulta sql
      * @return la sentencia sql para agregar constraint de la pk o fk
      */
@@ -161,7 +181,7 @@ public class MigrationBuilder extends QueryBuilder {
                     sql += "add constraint " + columns[i] + " primary key(" + columns[i] +"), ";
                 }
                 if(columns[i].contains("fk") == true) {
-                    sql += "add constraint " + columns[i] + " foreign key(" + columns[i] +") references " + ref_table + "(" + ref_pk + ")";
+                    sql += "add constraint " + columns[i] + " foreign key(" + columns[i] +") references " + ref_table + "(" + ref_pk + "), ";
                 }
             }
         }
