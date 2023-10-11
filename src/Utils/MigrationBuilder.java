@@ -181,7 +181,7 @@ public class MigrationBuilder extends QueryBuilder {
                     sql += "add constraint " + columns[i] + " primary key(" + columns[i] +"), ";
                 }
                 if(columns[i].contains("fk") == true) {
-                    sql += "add constraint " + columns[i] + " foreign key(" + columns[i] +") references " + ref_table + "(" + ref_pk + "), ";
+                    sql += "add constraint " + columns[i] + " foreign key(" + columns[i] +") references " + ref_table + "(" + ref_pk + ") on delete cascade on update cascade, ";
                 }
             }
         }
