@@ -144,10 +144,34 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
+     * crea la sentencia sql para agregar constraint  de la pk o fk
+     * @param model_properties: propiedades del modelo
+     * @param rst: resultado de la consulta sql
+     * @throws SQLException error de la consulta sql
+     * @return la sentencia sql para agregar constraint de la pk o fk
      */
-    public String CreateAddConstraintQuery() {
-        //TODO: implementar
-        return "";
+    public String CreateAddConstraintQuery(String model_properties, String ref_model, ResultSet rst, String ref_table) throws SQLException {
+        String sql = "";
+        String add_columns = query_util.CompareColumnName(model_properties, rst).get("agregar");
+        String ref_pk = query_util.GetPkFk(ref_model).get("pk");
+        if(add_columns != "" && add_columns != null) {
+            String[] columns = add_columns.split(", ");
+            for(int i=0; i<columns.length; ++i) {
+                if(columns[i].contains("pk") == true) {
+                    sql += "add constraint " + columns[i] + " primary key(" + columns[i] +"), ";
+                }
+                if(columns[i].contains("fk") == true) {
+                    sql += "add constraint " + columns[i] + " foreign key(" + columns[i] +") references " + ref_table + "(" + ref_pk + ")";
+                }
+            }
+        }
+        String clear_sql = "";
+        String res = "";
+        if(sql != "" && sql != null) {
+            clear_sql = query_util.CleanValues(sql, 2);
+            res = this.CreateAlterTableQuery(clear_sql);
+        }
+        return res;
     }
     /**
      * crea la sentencia sql para eliminar el constraint de la pk o fk
