@@ -61,18 +61,21 @@ public class QueryBuilder {
         return sql;
     }
     /**
+     * crea la query para la buscar un registro dentro de varias posibilidades
      */
     public String CreateFindInQuery() {
         //TODO: implementar select * where column in (more columns)
         return "";
     }
     /**
+     * crea la query para buscar un registro usando un patron
      */
     public String CreateFindPatternQuery() {
         //TODO: implementar select * where condición like 'pattern'
         return "";
     }
     /**
+     * crea la query para buscar el min o max de la tabla
      */
     public String CreateFindMinMaxQuery() {
         //TODO: implementar select min(column) or select max(column)
