@@ -61,6 +61,24 @@ public class QueryBuilder {
         return sql;
     }
     /**
+     */
+    public String CreateFindInQuery() {
+        //TODO: implementar select * where column in (more columns)
+        return "";
+    }
+    /**
+     */
+    public String CreateFindPatternQuery() {
+        //TODO: implementar select * where condición like 'pattern'
+        return "";
+    }
+    /**
+     */
+    public String CreateFindMinMaxQuery() {
+        //TODO: implementar select min(column) or select max(column)
+        return "";
+    }
+    /**
      * crea la sentencia sql para el registro de datos
      * @param nObject: objeto con el método para crear la sentencia sql
      * @return la sentencia sql para registrar
