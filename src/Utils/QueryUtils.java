@@ -228,6 +228,20 @@ public record QueryUtils() {
         return clean_values;
     }
     /**
+     * genera el condicional de la búsqueda por patrón
+     * @param pattern: patrón a buscar
+     * @param columns: columnas cuyo dato tiene el patrón
+     * @return la condición del patrón
+     */
+    public String GetPatternCondition(String pattern, String[] columns) {
+        String res = "";
+        for(String k: columns) {
+            res += k + " like " + pattern + ", ";
+        }
+        String clean_res = this.CleanValues(res, 2);
+        return clean_res;
+    }
+    /**
      * genera el condicional para innerjoin utilizando la fk del modelo de referencia y la pk del modelo primario
      * @param local: modelo primario
      * @param ref: modelo de referencia

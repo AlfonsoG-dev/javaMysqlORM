@@ -62,17 +62,29 @@ public class QueryBuilder {
     }
     /**
      * crea la query para la buscar un registro dentro de varias posibilidades
+     * @param column: columna cuyo dato se encuentra entre las opciones
+     * @param options: opciones para el dato de la columna
+     * @return la sentencia sql para buscar dentro de una lista de datos
      */
-    public String CreateFindInQuery() {
-        //TODO: implementar select * where column in (more columns)
-        return "";
+    public String CreateFindInQuery(String column, String[] options) {
+        String res = "";
+        for(String o: options) {
+            res += "'" + o + "'" + ", ";
+        }
+        String clean_res = query_util.CleanValues(res, 2);
+        String sql = "select * from " + this.tb_name + " where " + column + "(" + clean_res + ")";
+        return sql;
     }
     /**
      * crea la query para buscar un registro usando un patron
+     * @param pattern: patrón a buscar
+     * @param columns: columnas con los datos
+     * @return la sentencia sql para buscar por patrón
      */
-    public String CreateFindPatternQuery() {
-        //TODO: implementar select * where condición like 'pattern'
-        return "";
+    public String CreateFindPatternQuery(String pattern, String[] columns) {
+        String pattern_condition = query_util.GetPatternCondition(pattern, columns);
+        String sql = "select * from "  + this.tb_name + " where " + pattern_condition;
+        return sql;
     }
     /**
      * crea la query para buscar el min o max de la tabla
