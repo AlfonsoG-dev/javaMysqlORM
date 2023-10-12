@@ -167,11 +167,11 @@ public record QueryUtils() {
      * @param values:  las columnas a asignadas  el valor
      * @return las columnas asignadas el valor
      */
-    public String GetPrepareConditional(String values) {
+    public String GetPrepareConditional(String values, String type) {
         String conditionalValue = "";
         String[] div = values.split(",");
         for(String val: div) {
-            conditionalValue += val.split(":")[0] + "=" + "?" + " and";
+            conditionalValue += val.split(":")[0] + "=" + "?" + " " + type;
         }
         String clean_values = this.CleanValues(conditionalValue, 3);
         return clean_values;
@@ -181,14 +181,14 @@ public record QueryUtils() {
      * @param values: las columnas para asignar el valor
      * @return las columnas asignadas el valor
      */
-    public String GetNormalConditional(String values) {
+    public String GetNormalConditional(String values, String type) {
         String conditionalValue = "";
         String[] div = values.split(",");
         for(String val: div) {
             conditionalValue += val.split(":")[0] +
             "="+ "'"+
             val.split(":")[1].stripIndent()+
-            "'" + " and";
+            "'" + " " + type;
         }
         String clean_values = this.CleanValues(conditionalValue, 3);
         return clean_values;

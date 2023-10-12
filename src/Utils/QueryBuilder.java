@@ -29,7 +29,7 @@ public class QueryBuilder {
      * @return: el usuario buscado
      */
     public String CreateFindQuery(String options) {
-        String clean_values = query_util.GetPrepareConditional(options);
+        String clean_values = query_util.GetPrepareConditional(options, "and");
         String sql = "select *" + " from "+ tb_name+ " where " + clean_values;
         return sql;
     }
@@ -39,7 +39,7 @@ public class QueryBuilder {
      * @return: el usuario buscado
      */
     public String CreateFindByColumnQuery(String options) {
-        String clean_values = query_util.GetNormalConditional(options);
+        String clean_values = query_util.GetNormalConditional(options, "and");
         String sql = "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         return sql;
     }
@@ -51,7 +51,7 @@ public class QueryBuilder {
      */
     public String CreateFindColumnValueQuery(String options, String column) {
         String sql = "";
-        String clean_values = query_util.GetNormalConditional(options);
+        String clean_values = query_util.GetNormalConditional(options, "and");
         if( column == null || column.isEmpty() == true) {
             sql =  "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         }
@@ -125,7 +125,7 @@ public class QueryBuilder {
      * @return la sentencia sql para modificar
      */
     public String CreateModifyRegisterQuery(ModelMethods nObject, String condicional) {
-        String condition = query_util.GetNormalConditional(condicional);
+        String condition = query_util.GetNormalConditional(condicional, "and");
         String clean_key_value = query_util.GetAsignModelValues(nObject.GetAllProperties());
         String sql = "update " + tb_name + " set " +  clean_key_value + " where " + condition;
         return sql;
@@ -136,7 +136,7 @@ public class QueryBuilder {
     * @return la sentencia sql
     **/
    public String CreateDeleteRegisterQuery(String options) {
-       String condicional = query_util.GetNormalConditional(options);
+       String condicional = query_util.GetNormalConditional(options, "and");
        String sql = "delete from " + tb_name + " where " + condicional;
        return sql;
    }
