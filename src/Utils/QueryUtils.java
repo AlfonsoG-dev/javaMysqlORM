@@ -243,6 +243,7 @@ public record QueryUtils() {
     }
     /**
      * genera el condicional para innerjoin utilizando la fk del modelo de referencia y la pk del modelo primario
+     * <br> pre: </br> la condición solo utiliza la fk del modelo de referencia y la pk del modelo local
      * @param local: modelo primario
      * @param ref: modelo de referencia
      * @param local_tb: tabla primaria

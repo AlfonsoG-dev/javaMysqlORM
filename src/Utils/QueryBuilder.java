@@ -88,6 +88,7 @@ public class QueryBuilder {
     }
     /**
      * crea la query para buscar el min o max de la tabla
+     * <br> pre: </br> solo se debe utilizar para datos numéricos
      */
     public String CreateFindMinMaxQuery() {
         //TODO: implementar select min(column) or select max(column)
