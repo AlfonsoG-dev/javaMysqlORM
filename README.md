@@ -40,15 +40,15 @@ public static void main(String[] args) {
         UserBuilder builder = new UserBuilder();
 
         //método para registrar datos de la tabla
-        nuevo.setCreate_at();
-        //QueryDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), builder);
+        nuevo.setCreate_at(); // asigna la fecha actual
+        QueryDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), builder);
 
         // método para actualizar datos de la tabla
-        //nuevo.setUpdate_at();
-        //QueryDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", builder);
+        nuevo.setUpdate_at(); // asigna la fecha actual
+        QueryDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", builder);
 
         // método para eliminar los datos de una tabla
-        //QueryDAO.EliminarRegistro("nombre: juan", builder);
+        QueryDAO.EliminarRegistro("nombre: juan", builder);
     } catch (Exception e) {
         System.out.println(e);
     }
