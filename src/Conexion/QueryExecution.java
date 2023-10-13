@@ -144,7 +144,7 @@ public class QueryExecution {
     */
     public ResultSet ExecuteInsertNewRegister(Statement stm, ModelMethods nObject) throws SQLException {
         String sql = query_builder.CreateInsertRegisterQuery(nObject);
-        String[] columns = {"id"};
+        String[] columns = {"id_pk"};
         stm = connector.createStatement();
         stm.executeUpdate(sql, columns);
         ResultSet rst = stm.getGeneratedKeys();
@@ -161,7 +161,7 @@ public class QueryExecution {
      */
     public ResultSet ExecuteInnerJoin(String tb_name, Statement stm, ModelMethods refObject, ModelMethods localObject) throws SQLException {
         String sql = query_builder.CreateInnerJoinQuery(tb_name, refObject, localObject);
-        String[] columns = {"id"};
+        String[] columns = {"id_pk"};
         stm = connector.createStatement();
         stm.executeUpdate(sql, columns);
         ResultSet rst = stm.getGeneratedKeys();
@@ -179,7 +179,7 @@ public class QueryExecution {
     public ResultSet ExecuteUpdateRegister(Statement stm, ModelMethods nObject, String conditions) throws SQLException {
         stm = connector.createStatement();
         String sql = query_builder.CreateModifyRegisterQuery(nObject, conditions);
-        String[] columns = {"id"};
+        String[] columns = {"id_pk"};
         stm.executeUpdate(sql, columns);
         ResultSet rst = stm.getGeneratedKeys();
         return rst;
@@ -195,7 +195,7 @@ public class QueryExecution {
     public ResultSet ExecuteEliminarRegistro(Statement stm ,String options) throws SQLException {
         stm = connector.createStatement();
         String sql = query_builder.CreateDeleteRegisterQuery(options);
-        String[] columns = {"id"};
+        String[] columns = {"id_pk"};
         stm.executeUpdate(sql, columns);
         ResultSet rst = stm.getGeneratedKeys();
         return rst;

@@ -4,19 +4,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
+import java.util.ArrayList;
 
+import Model.ModelBuilderMethods;
 import Model.ModelMethods;
-import Mundo.User;
-import Utils.UserBuilder;
 import Utils.MigrationBuilder;
 import Utils.QueryUtils;
 
-public class UserDAO {
-    /**
-     * user builder
-     */
-    private UserBuilder nUserBuilder;
+public class QueryDAO<T> {
     /**
      * migración del modelo a la base de datos
      */
@@ -32,8 +27,7 @@ public class UserDAO {
      * Data Acces Object of User
      * inicializa el conector de mysql
      */
-    public UserDAO() {
-        nUserBuilder = new UserBuilder();
+    public QueryDAO() {
         query_execution = new QueryExecution("users");
         query_util = new QueryUtils();
         migrate = new MigrationBuilder("users");
@@ -75,7 +69,6 @@ public class UserDAO {
                 pstm = null;
             }
         }
-        assert count == 0 : "deberia ser mayor a 0";
         return count;
     }
     /**
@@ -116,22 +109,15 @@ public class UserDAO {
      * crea una lista de usuarios con los datos de la bd
      * @return lista de usuarios
      */
-    public User[] ReadAll() {
+    public ArrayList<T> ReadAll(ModelBuilderMethods<T> model_builder_methods) {
         PreparedStatement pstm = null;
         ResultSet rst = null;
-        User[] users = null;
+        ArrayList<T> resultados = new ArrayList<T>();
         try {
             rst = query_execution.ExecuteReadAll(pstm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
-            users = new User[1];
-            while(CountData() > users.length) {
-                User[] nueva = Arrays.copyOf(users, CountData());
-                users = nueva;
-            }
-            int cont = 0;
             while(rst.next()) {
-                users[cont] = nUserBuilder.CreateFromRST(rst, lenght);
-                cont++;
+                resultados.add(model_builder_methods.CreateFromRST(rst, lenght));
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -153,10 +139,7 @@ public class UserDAO {
                 pstm = null;
             }
         }
-        //System.out.println(users.length);
-        assert users == null : "deberia ser diferente de null";
-        assert users.length == 0 : "deberia ser mayor a 0";
-        return users;
+        return resultados;
     }
 
     /**
@@ -164,15 +147,15 @@ public class UserDAO {
      * @param options: las obciones de busqueda
      * @return el usuario buscado
      */
-    public User FindOne(String options) {
-        User buscado = null;
+    public T FindOne(String options, ModelBuilderMethods<T> model_builder_methods) {
+        T buscado = null;
         ResultSet rst = null;
         PreparedStatement pstm = null;
         try {
             rst = query_execution.ExecuteFindOne(options, pstm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                buscado = nUserBuilder.CreateFromRST(rst, lenght);
+                buscado = model_builder_methods.CreateFromRST(rst, lenght);
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -194,7 +177,6 @@ public class UserDAO {
                 pstm = null;
             }
         }
-        assert buscado == null: "deberia ser diferente de null";
         return buscado;
     }
     /**
@@ -202,15 +184,15 @@ public class UserDAO {
      * @param options: las opciones de busqueda
      * @return el usuario buscado
      */
-    public User FindByColumnName(String options) {
-        User buscado = null;
+    public T FindByColumnName(String options, ModelBuilderMethods<T> model_builder_methods) {
+        T buscado = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
             rst = query_execution.ExecuteFindByColumnName(options, stm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                buscado = nUserBuilder.CreateFromRST(rst, lenght);
+                buscado = model_builder_methods.CreateFromRST(rst, lenght);
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -232,7 +214,6 @@ public class UserDAO {
                 stm = null;
             }
         }
-        assert buscado == null : "deberia ser diferente de null";
         return buscado;
     }
     /**
@@ -282,7 +263,6 @@ public class UserDAO {
         if(result == "") {
             result = null;
         }
-        assert result == null : "deberia ser diferente de null";
         return result.substring(0, result.length()-2);
     }
     /**
@@ -290,25 +270,24 @@ public class UserDAO {
      * @param nUser: el usuario a registrar
      * @return true si se registra de lo contrario false
      */
-    public boolean InsertNewRegister(User nUser) throws SQLException {
+    public boolean InsertNewRegister(ModelMethods nObject, String condition, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            if(nUser == null) {
-                throw new Exception("user no deberia ser null");
+            if(nObject == null) {
+                throw new Exception("el objeto no deberia ser null");
             }
-            // System.out.println(sql);
-            User buscado = this.FindByColumnName("nombre: " + nUser.getNombre());
+            T buscado = this.FindByColumnName(condition, model_builder_methods);
             if(buscado == null) {
-                rst = query_execution.ExecuteInsertNewRegister(stm, nUser);
+                rst = query_execution.ExecuteInsertNewRegister(stm, nObject);
                 while(rst.next()){
-                    System.out.println(nUser.GetAllProperties());
+                    System.out.println(nObject.GetAllProperties());
                     registrado = true;
                 }
             } else {
                 registrado = false;
-                throw new Exception("usuario deberia ser null");
+                throw new Exception("el objeto deberia ser null");
             }
 
         } catch (Exception e) {
@@ -331,7 +310,6 @@ public class UserDAO {
                 stm = null;
             }
         }
-        assert registrado == false : "deberia ser diferente de false";
         return registrado;
     }
 
@@ -340,19 +318,19 @@ public class UserDAO {
      * @param nUser: usuario con los datos a modificar
      * @return true si se modifican los datos de lo contrario false
      **/
-    public boolean UpdateRegister(User nUser, String conditions) throws SQLException {
+    public boolean UpdateRegister(ModelMethods nObject, String conditions, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            if(nUser == null) {
+            if(nObject == null) {
                 throw new Exception("user no deberia ser null");
             }
-            User buscado = this.FindByColumnName(conditions.split(",")[0]);
+            T buscado = this.FindByColumnName(conditions.split(",")[0], model_builder_methods);
             if(buscado != null) {
-                rst = query_execution.ExecuteUpdateRegister(stm, nUser, conditions);
+                rst = query_execution.ExecuteUpdateRegister(stm, nObject, conditions);
                 while(rst.next()) {
-                    System.out.println(nUser.GetAllProperties());
+                    System.out.println(nObject.GetAllProperties());
                     registrado = true;
                 }
             } else {
@@ -383,7 +361,6 @@ public class UserDAO {
                 stm = null;
             }
         }
-        assert registrado == false : "deberia ser diferente de false";
         return registrado;
     }
     /**
@@ -391,7 +368,7 @@ public class UserDAO {
      * @param options: columna con el valor para el condicional
      * @return true si elimina de lo contrario false
      * */
-    public boolean EliminarRegistro(String options) throws SQLException {
+    public boolean EliminarRegistro(String options, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
         boolean eliminar = false;
         Statement stm = null;
         ResultSet rst = null;
@@ -399,7 +376,7 @@ public class UserDAO {
             if(options.isEmpty() == true || options == null) {
                 throw new Exception("no deberia ser null ni vacio");
             }
-            User buscado = this.FindByColumnName(options.split(",")[0]);
+            T buscado = this.FindByColumnName(options.split(",")[0], model_builder_methods);
             if(buscado != null) {
                 rst = query_execution.ExecuteEliminarRegistro(stm, options);
                 while(rst.next()) {
@@ -431,7 +408,6 @@ public class UserDAO {
                 stm = null;
             }
         }
-        assert eliminar == false: "no deberia ser false";
         return eliminar;
     }
 }

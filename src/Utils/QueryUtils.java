@@ -61,7 +61,7 @@ public record QueryUtils() {
                 clean_colunm_name += columns[i].stripIndent() + ",";
             }
         }
-        return this.CleanValues(clean_colunm_name, 1);
+        return this.CleanValues(clean_colunm_name, 2);
     }
     /**
      * obtener las columnas de la tabla

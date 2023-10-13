@@ -31,6 +31,7 @@ public class UserBuilder implements ModelBuilderMethods<User>{
      * @param capacity: tamaño de la lista de datos
      * @return usuario creado con los datos
      */
+    @Override
     public User CreateFromRST(ResultSet rst, int capacity) throws SQLException {
         String[] data = this.ResultDataValidator(rst, capacity);
         User nUser = new User(Integer.parseInt(data[1]), data[2], data[3], data[4], data[5], data[6], data[7]);
@@ -41,6 +42,7 @@ public class UserBuilder implements ModelBuilderMethods<User>{
      * @param datos: datos del usuario a crear
      * @return el usuario creado a partir de los daots
      */
+    @Override
     public User CreateFromSTR(String datos) {
         String[] validate = datos.split(",");
         User nUser = new User(Integer.parseInt(validate[0]), validate[1], validate[2], validate[3], validate[4], validate[5], validate[6]);
