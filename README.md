@@ -42,14 +42,14 @@ public static void main(String[] args) {
 
         //método para registrar datos de la tabla
         nuevo.setCreate_at(); // asigna la fecha actual
-        QueryDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), builder);
+        miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), builder);
 
         // método para actualizar datos de la tabla
         nuevo.setUpdate_at(); // asigna la fecha actual
-        QueryDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", builder);
+        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", builder);
 
         // método para eliminar los datos de una tabla
-        QueryDAO.EliminarRegistro("nombre: juan", builder);
+        miUserDAO.EliminarRegistro("nombre: juan", builder);
     } catch (Exception e) {
         System.out.println(e);
     }
