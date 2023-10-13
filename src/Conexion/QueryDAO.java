@@ -28,8 +28,8 @@ public class QueryDAO<T> {
      * Data Acces Object of GenericObject
      * inicializa el conector de mysql
      */
-    public QueryDAO(String table_name) {
-        query_execution = new QueryExecution(table_name);
+    public QueryDAO(String table_name, String database, String hostname, String port, String username, String password) {
+        query_execution = new QueryExecution(table_name, database, hostname, port, username, password);
         query_util = new QueryUtils();
         migrate = new MigrationBuilder(table_name);
     }

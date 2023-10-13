@@ -5,41 +5,61 @@ import java.sql.SQLException;
 
 public class Conector {
 
-    // Librería de MySQL
-    private final static String driver = "com.mysql.cj.jdbc.Driver";
+    // driver de MySQL
+    private final static String mysql_driver = "com.mysql.cj.jdbc.Driver";
+
+    // driver de postgresql 
+    private final static String postgresql_driver = "org.postgresql.Driver";
 
     // Nombre de la base de datos
-    private final static String database = "consulta";
+    private String database;
 
     // Host
-    private final static String hostname = "localhost";
+    private String hostname;
 
     // Puerto
-    private final static String port = "3306";
+    private String port;
 
     // Ruta de nuestra base de datos (desactivamos el uso de SSL con "?useSSL=false")
-    private final static String url = "jdbc:mysql://" + hostname + ":" + port + "/" + database;
+    private String url;
 
     // Nombre de usuario
-    private final static String username = "test_user";
+    private String username;
 
     // Clave de usuario
-    private final static String password = "5x5W12";
+    private String password;
 
+    /**
+     * @param nDatabase
+     * @param nHostname
+     * @param nPort
+     * @param nUrl
+     * @param nUserName
+     * @param nPassword
+     */
+    public Conector(String nDatabase, String nHostname, String nPort, String nUserName, String nPassword) {
+        database = nDatabase;
+        hostname = nHostname;
+        port = nPort;
+        username = nUserName;
+        password = nPassword;
+    }
+    private String SetUrlConnection(String type) {
+       this.url = "jdbc:" + type +"://" + this.hostname + ":" + this.port + "/" + this.database;
+        return this.url;
+    }
     /**
      * crea la conexión a la base de datos
      * @return conexión de la base de datos
      */
     public Connection conectarMySQL() {
         Connection conn = null;
-
         try {
-            Class.forName(driver);
-            conn = DriverManager.getConnection(url, username, password);
+            Class.forName(mysql_driver);
+            conn = DriverManager.getConnection(this.SetUrlConnection("mysql"), this.username, this.password);
         } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
-        assert conn == null : "deberia ser diferente de null";
         return conn;
     }
 
