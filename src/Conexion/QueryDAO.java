@@ -17,14 +17,15 @@ public class QueryDAO<T> {
      */
     private MigrationBuilder migrate;
     /**
-     * query_execution
+     * auxiliar para la ejecución de las querys
      */
     private QueryExecution query_execution;
     /**
+     * herramientas para la creacion de las querys
      */
     private QueryUtils query_util;
     /**
-     * Data Acces Object of User
+     * Data Acces Object of GenericObject
      * inicializa el conector de mysql
      */
     public QueryDAO(String table_name) {
@@ -106,8 +107,9 @@ public class QueryDAO<T> {
         return rst;
     }
     /**
-     * crea una lista de usuarios con los datos de la bd
-     * @return lista de usuarios
+     * crea una lista de registros con los datos de la bd
+     * @param model_builder_methods: opciones para utilizar los registros
+     * @return lista de registros
      */
     public ArrayList<T> ReadAll(ModelBuilderMethods<T> model_builder_methods) {
         PreparedStatement pstm = null;
@@ -143,8 +145,9 @@ public class QueryDAO<T> {
     }
 
     /**
-     * busca el usuario por primary key
+     * busca el registro por primary key
      * @param options: las obciones de busqueda
+     * @param model_builder_methods: opciones para utilizar los registros
      * @return el usuario buscado
      */
     public T FindOne(String options, ModelBuilderMethods<T> model_builder_methods) {
@@ -180,9 +183,10 @@ public class QueryDAO<T> {
         return buscado;
     }
     /**
-     * busca el usuario por cualquier nombre de columna
+     * busca el registro por cualquier nombre de columna
      * @param options: las opciones de busqueda
-     * @return el usuario buscado
+     * @param model_builder_methods: opciones para utilizar los registros
+     * @return el registro buscado
      */
     public T FindByColumnName(String options, ModelBuilderMethods<T> model_builder_methods) {
         T buscado = null;
@@ -266,8 +270,10 @@ public class QueryDAO<T> {
         return result.substring(0, result.length()-2);
     }
     /**
-     * ingresar un registro de users
-     * @param nUser: el usuario a registrar
+     * ingresar un registro de GenericObjects
+     * @param nObject: el objeto a registrar
+     * @param condition: condición para buscar el registro
+     * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se registra de lo contrario false
      */
     public boolean InsertNewRegister(ModelMethods nObject, String condition, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
@@ -314,8 +320,9 @@ public class QueryDAO<T> {
     }
 
     /**
-     * modificar 1 registro de la base de datos por nombre, email y password
-     * @param nUser: usuario con los datos a modificar
+     * modificar 1 registro de la base de datos
+     * @param nObject: usuario con los datos a modificar
+     * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se modifican los datos de lo contrario false
      **/
     public boolean UpdateRegister(ModelMethods nObject, String conditions, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
@@ -324,7 +331,7 @@ public class QueryDAO<T> {
         ResultSet rst = null;
         try {
             if(nObject == null) {
-                throw new Exception("user no deberia ser null");
+                throw new Exception("nObject no deberia ser null");
             }
             T buscado = this.FindByColumnName(conditions.split(",")[0], model_builder_methods);
             if(buscado != null) {
@@ -335,7 +342,7 @@ public class QueryDAO<T> {
                 }
             } else {
                 registrado = false;
-                throw new Exception("usuario no deberia ser null");
+                throw new Exception("nObject no deberia ser null");
             }
 
         } catch( Exception e) {
@@ -366,6 +373,7 @@ public class QueryDAO<T> {
     /**
      * eliminar un registro por cualquier columna valida de la bd
      * @param options: columna con el valor para el condicional
+     * @param model_builder_methods: opciones para utilizar los registros
      * @return true si elimina de lo contrario false
      * */
     public boolean EliminarRegistro(String options, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
