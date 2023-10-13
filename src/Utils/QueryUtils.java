@@ -8,6 +8,9 @@ import java.util.HashMap;
 import Model.ModelMethods;
 
 
+/**
+ * record con las herramientas para crear las sentencias sql según los datos del modelo y tabla
+ */
 public record QueryUtils() {
     /**
      * reduce el string por un valor especifico

@@ -11,6 +11,9 @@ import Model.ModelMethods;
 import Utils.MigrationBuilder;
 import Utils.QueryUtils;
 
+/**
+ * clase para realizar el DAO de las consultas sql según el modelo
+ */
 public class QueryDAO<T> {
     /**
      * migración del modelo a la base de datos

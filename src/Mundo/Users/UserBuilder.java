@@ -5,8 +5,7 @@ import java.sql.SQLException;
 import Model.ModelBuilderMethods;
 
 /**
- * record para crear los usuarios con los datos del ResutlSet
- * @param rst: ResultSet de la base de datos
+ * clase para crear los registros
  */
 public class UserBuilder implements ModelBuilderMethods<User>{
     /**

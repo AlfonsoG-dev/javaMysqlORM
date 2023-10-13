@@ -1,6 +1,9 @@
 import Conexion.QueryDAO;
 import Mundo.Users.*;
 
+/**
+ * clase principal de la APP
+ */
 public class App {
     public static void main(String[] args) {
         try {

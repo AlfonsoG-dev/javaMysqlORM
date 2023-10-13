@@ -5,6 +5,9 @@ import java.sql.SQLException;
 
 import Model.ModelMethods;
 
+/**
+ * clase para crear las sentencias sql de migracion de datos según el modelo
+ */
 public class MigrationBuilder extends QueryBuilder {
     /**
      * la tabla en base de datos

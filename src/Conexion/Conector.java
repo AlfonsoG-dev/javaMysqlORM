@@ -3,6 +3,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * clase para crear la conexión según el driver
+ */
 public class Conector {
 
     // driver de MySQL

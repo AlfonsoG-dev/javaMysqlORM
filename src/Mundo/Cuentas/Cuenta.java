@@ -5,6 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 import Model.ModelMethods;
 
+/**
+ * clase que representa el modelo de cuentas
+ */
 public class Cuenta implements ModelMethods {
     /**
      * id de la cuenta
