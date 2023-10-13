@@ -18,8 +18,9 @@ public class UserDAO {
      */
     private UserBuilder nUserBuilder;
     /**
+     * migración del modelo a la base de datos
      */
-    MigrationBuilder migrate;
+    private MigrationBuilder migrate;
     /**
      * query_execution
      */
@@ -38,14 +39,13 @@ public class UserDAO {
         migrate = new MigrationBuilder("users");
     }
 
-
     //métodos
 
     /**
      * se utiliza para dar la cantidad de datos en la tabla
      * @return cantidad de datos
      */
-    public int CountData(){
+    public int CountData() {
         int count = 0;
         PreparedStatement pstm = null;
         ResultSet rst = null;
