@@ -10,10 +10,10 @@ public class App {
             UserBuilder builder = new UserBuilder();
             nuevo.setCreate_at();
             System.out.println(miUserDAO.ReadAll(builder).get(1).getNombre());
-            //miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), builder);
+            //QueryDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), builder);
             //nuevo.setUpdate_at();
-            //miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", builder);
-            //miUserDAO.EliminarRegistro("nombre: juan", builder);
+            //QueryDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", builder);
+            //QueryDAO.EliminarRegistro("nombre: juan", builder);
         } catch (Exception e) {
             System.out.println(e);
         }
