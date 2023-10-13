@@ -27,21 +27,28 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ```java
 public static void main(String[] args) {
     try {
-        UserDAO miUserDAO = new UserDAO();
-        System.out.println("usuarios: " + miUserDAO.ReadAll().length);
-        //modelo de la tabla
-        User nuevo = new User(0, "juan", "jl@gmail", "123", "user", null, null);
-        // se asigna la fecha actual
-        nuevo.setCreate_at();
-        
-        //ingreso de un nuevo registro
-        miUserDAO.InsertNewRegister(nuevo);
-        
-        //actualizar un registro
-        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123");
+        // Clase DAO para la Query según el tipo de dato generico asignado
+        QueryDAO<User> miUserDAO = new QueryDAO<User>();
 
-        //eliminar un registro
-        miUserDAO.EliminarRegistro("nombre: juan");
+        // verificar si existen datos y seleccionar 1 para comprobar el nombre
+        System.out.println(miUserDAO.ReadAll(builder).get(1).getNombre());
+
+        // Clase que representa el tipo de dato para la clase DAO
+        User nuevo = new User(0, "juan", "jl@gmail", "123", "user", null, null);
+
+        //clase Builder del Usuario 
+        UserBuilder builder = new UserBuilder();
+
+        //método para registrar datos de la tabla
+        nuevo.setCreate_at();
+        //QueryDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), builder);
+
+        // método para actualizar datos de la tabla
+        //nuevo.setUpdate_at();
+        //QueryDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", builder);
+
+        // método para eliminar los datos de una tabla
+        //QueryDAO.EliminarRegistro("nombre: juan", builder);
     } catch (Exception e) {
         System.out.println(e);
     }
