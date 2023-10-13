@@ -30,12 +30,11 @@ public class Conector {
     private String password;
 
     /**
-     * @param nDatabase
-     * @param nHostname
-     * @param nPort
-     * @param nUrl
-     * @param nUserName
-     * @param nPassword
+     * @param nDatabase: nombre de la base de datos
+     * @param nHostname: nombre de la dirección ip de la base de datos
+     * @param nPort: puerto en donde se ejecuta la base de datos
+     * @param nUserName: nombre del usuario de base de datos
+     * @param nPassword: contraseña del usuario de base de datos
      */
     public Conector(String nDatabase, String nHostname, String nPort, String nUserName, String nPassword) {
         database = nDatabase;
