@@ -130,7 +130,7 @@ public class UserDAO {
             }
             int cont = 0;
             while(rst.next()) {
-                users[cont] = nUserBuilder.CreateNewUserFromRST(rst, lenght);
+                users[cont] = nUserBuilder.CreateFromRST(rst, lenght);
                 cont++;
             }
         } catch(SQLException e) {
@@ -172,7 +172,7 @@ public class UserDAO {
             rst = query_execution.ExecuteFindOne(options, pstm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                buscado = nUserBuilder.CreateNewUserFromRST(rst, lenght);
+                buscado = nUserBuilder.CreateFromRST(rst, lenght);
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -210,7 +210,7 @@ public class UserDAO {
             rst = query_execution.ExecuteFindByColumnName(options, stm);
             int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                buscado = nUserBuilder.CreateNewUserFromRST(rst, lenght);
+                buscado = nUserBuilder.CreateFromRST(rst, lenght);
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
