@@ -1,114 +1,98 @@
-package Mundo;
+package Mundo.Cuentas;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import Model.ModelMethods;
-import java.time.LocalDateTime;
 
-/**
- * clase representante del usuario
- * implementa el método que genera las propiedades del objeto
- * */
-public class User implements ModelMethods {
-
-    //atributos
-
+public class Cuenta implements ModelMethods {
     /**
-     * id del usuario
-     * solo posee método get
-    * */
-    private int id_pk;   
+     * id de la cuenta
+     */
+    private int id_pk;
     /**
-     * nombre del usuario
-     * */
+     * nombre de la cuenta
+     */
     private String nombre;
     /**
-     * email del usuario
-     * */
+     * email de la cuenta
+     */
     private String email;
     /**
-     * password del usuario
-     * */
-    private String password;
+     * foreign key de la cuenta al usuario
+     */
+    private int user_id_fk;
     /**
-     * rol del usuario
-     * puede ser null
-     * */
-    private String rol;
-    /**
-     * fecha de creación del usuario
-     * */
+     * fecha de creación de la cuenta
+     */
     private String create_at;
     /**
-     * fecha de modificación del usuario
-     * pude ser null
-     * */
+     * fecha de modificación de la cuenta
+     */
     private String update_at;
-
-    //constructor
-
+    
     /**
-     * constructor del usuario
-     * @param nId_pk
+     * @param nId
      * @param nNombre
      * @param nEmail
-     * @param nPassword
-     * @param nRol
+     * @param nFk
      * @param nCreate_at
      * @param nUpdate_at
      */
-    public User(int nId_pk, String nNombre, String nEmail, String nPassword, String nRol, String nCreate_at, String nUpdate_at) {
-        id_pk = nId_pk;
+    public Cuenta(int nId, String nNombre, String nEmail, int nFk, String nCreate_at, String nUpdate_at) {
+        id_pk = nId;
         nombre = nNombre;
         email = nEmail;
-        password = nPassword;
-        rol = nRol;
+        user_id_fk = nFk;
         create_at = nCreate_at;
         update_at = nUpdate_at;
     }
-
-    //métodos
-
+    /**
+     * @return the id_pk
+     */
     public int getId_pk() {
         return id_pk;
     }
 
+    /**
+     * @return the nombre
+     */
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nNombre) {
-        nombre = nNombre;
+    /**
+     * @param nombre the nombre to set
+     */
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
+    /**
+     * @return the email
+     */
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String nemail) {
-        email = nemail;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String npassword) {
-        password = npassword;
-    }
-
-    public String getRol() {
-        return rol;
-    }
-
-    public void setRol(String nrol) {
-        rol = nrol;
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     /**
-     * da formato a la fecha de creación del usuario
-     * @return fecha de creación del usuario
-    */
+     * @return the user_id_fk
+     */
+    public int getUser_id_fk() {
+        return user_id_fk;
+    }
+
+
+    /**
+     * @return the create_at
+     */
     public String getCreate_at() {
         String date = null;
         if(create_at != null) {
@@ -120,18 +104,17 @@ public class User implements ModelMethods {
     }
 
     /**
-     * inicializa la fecha de creación del usuario
-     * */
-    public void setCreate_at() {
+     * @param create_at the create_at to set
+     */
+    public void setCreate_at(String create_at) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
         LocalDateTime miDate = LocalDateTime.now();  
         create_at = dtf.format(miDate).toString();
     }
 
     /**
-     * da formato a la fecha de modificación del usuario
-     * @return fecha de modificación del usuario
-    */
+     * @return the update_at
+     */
     public String getUpdate_at() {
         String date = null;
         if(update_at != null) {
@@ -142,19 +125,21 @@ public class User implements ModelMethods {
         return date;    
     }
 
-    /**
-     * inicializa la fecha de modificación del usuario
-     * */
-    public void setUpdate_at() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
-        LocalDateTime miDate = LocalDateTime.now();  
-        update_at = dtf.format(miDate).toString();
-    }
 
     /**
-     * método que retorna todas las propiedades del usuario en orden
-     * @return String con las propiedades del usuario ordenadas
-     * */
+     * @param update_at the update_at to set
+     */
+    public void setUpdate_at(String update_at) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
+        LocalDateTime miDate = LocalDateTime.now();  
+        create_at = dtf.format(miDate).toString();
+    }
+
+
+    /**
+     * crear una cadena de texto con las propiedades del usuario
+     * @return String con las propiedades del usuario
+     */
     @Override
     public String GetAllProperties() {
         String all = "id_pk: " + this.getId_pk() + "\n";
@@ -164,11 +149,8 @@ public class User implements ModelMethods {
         if(this.getEmail() != null && this.getEmail().isEmpty() == false){
             all +="email: " + this.getEmail() + "\n";
         }
-        if(this.getPassword() != null && this.getPassword().isEmpty() == false){
-            all +="password: " + this.getPassword() + "\n";
-        }
-        if(this.getRol() != null && this.getRol().isEmpty() == false){
-            all += "Rol: " + this.getRol() + "\n";
+        if(this.getUser_id_fk() != 0){
+            all +="user_id_fk: " + this.getUser_id_fk() + "\n";
         }
         if(this.getCreate_at() != null) {
             all += "create_at: " + this.getCreate_at() + "\n";
@@ -178,9 +160,10 @@ public class User implements ModelMethods {
         }
         return all;
     }
+
     /**
-     * método que inicializa las propiedades del modelo de base de datos
-     * @return HashMap con las propiedades del modelo de base de datos
+     * crea una cadena de texto con los valores para inicializar el modelo
+     * @return String con los valores para inicializar el modelo
      */
     @Override
     public String InitModel() {
@@ -189,17 +172,15 @@ public class User implements ModelMethods {
             "id_pk",
             "nombre",
             "email",
-            "password",
-            "rol",
+            "user_id_fk",
             "create_at",
             "update_at"
         };
         String[] values = {
             "int not null unique primary key auto_increment",
-            "varchar(100) not null unique",
-            "varchar(100) not null unique",
             "varchar(100) not null",
-            "varchar(50)",
+            "varchar(100) not null",
+            "int not null, constraint user_id_fk foreign key (user_id_fk) references users(id_pk)",
             "datetime not null",
             "datetime"
         };
@@ -208,4 +189,5 @@ public class User implements ModelMethods {
         }
         return build;
     }
+
 }

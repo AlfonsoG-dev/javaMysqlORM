@@ -1,8 +1,7 @@
-package Utils;
+package Mundo.Users;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import Mundo.User;
 import Model.ModelBuilderMethods;
 
 /**

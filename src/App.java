@@ -1,6 +1,6 @@
-import Conexion.*;
-import Mundo.User;
-import Utils.UserBuilder;
+import Conexion.QueryDAO;
+import Mundo.Users.User;
+import Mundo.Users.UserBuilder;
 
 public class App {
     public static void main(String[] args) {
