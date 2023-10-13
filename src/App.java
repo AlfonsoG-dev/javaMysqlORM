@@ -5,7 +5,7 @@ import Utils.UserBuilder;
 public class App {
     public static void main(String[] args) {
         try {
-            QueryDAO<User> miUserDAO = new QueryDAO<User>();
+            QueryDAO<User> miUserDAO = new QueryDAO<User>("users");
             User nuevo = new User(0, "juan", "jl@gmail", "123", "user", null, null);
             UserBuilder builder = new UserBuilder();
             nuevo.setCreate_at();

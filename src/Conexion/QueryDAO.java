@@ -27,10 +27,10 @@ public class QueryDAO<T> {
      * Data Acces Object of User
      * inicializa el conector de mysql
      */
-    public QueryDAO() {
-        query_execution = new QueryExecution("users");
+    public QueryDAO(String table_name) {
+        query_execution = new QueryExecution(table_name);
         query_util = new QueryUtils();
-        migrate = new MigrationBuilder("users");
+        migrate = new MigrationBuilder(table_name);
     }
 
     //métodos
