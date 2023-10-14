@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import Config.DbConfig;
 import Model.ModelMethods;
 import Utils.QueryBuilder;
 import Utils.QueryUtils;
@@ -47,11 +48,11 @@ public class QueryExecution {
      * constructor de la clase
      * @param tb_name: nombre de la tabla; tb_name != null && tb_name != ""
      */
-    public QueryExecution(String tb_name, String database, String hostname, String port, String username, String password) {
+    public QueryExecution(String tb_name, DbConfig miConfig) {
         table = tb_name;
         query_builder = new QueryBuilder(tb_name);
         query_util = new QueryUtils();
-        miConector = new Conector(database, hostname, port, username, password);
+        miConector = new Conector(miConfig);
         cursor = miConector.conectarMySQL();
     }
 

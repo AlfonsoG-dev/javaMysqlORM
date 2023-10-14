@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import Config.DbConfig;
 import Model.ModelBuilderMethods;
 import Model.ModelMethods;
 import Utils.MigrationBuilder;
@@ -31,8 +32,8 @@ public class QueryDAO<T> {
      * Data Acces Object of GenericObject
      * inicializa el conector de mysql
      */
-    public QueryDAO(String table_name, String database, String hostname, String port, String username, String password) {
-        query_execution = new QueryExecution(table_name, database, hostname, port, username, password);
+    public QueryDAO(String table_name, DbConfig miConfig) {
+        query_execution = new QueryExecution(table_name, miConfig);
         query_util = new QueryUtils();
         migrate = new MigrationBuilder(table_name);
     }

@@ -27,9 +27,11 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ```java
 public static void main(String[] args) {
     try {
+        // clase que posee la conexión a la base de datos
+        DbConfig miConfig = new DbConfig("consulta", "localhost", "3306", "test_user", "5x5W12");
+
         // Clase DAO para la Query según el tipo de dato generico asignado
-        // ahora la clase DAO tambien se encarga de inicializar la conexión a la base de datos
-        QueryDAO<User> miUserDAO = new QueryDAO<User>("users", "consulta", "localhost", "3306", "test_user", "5x5W12");
+        QueryDAO<User> miUserDAO = new QueryDAO<User>("users", miConfig);
 
         // verificar si existen datos y seleccionar 1 para comprobar el nombre
         System.out.println(miUserDAO.ReadAll(builder).get(1).getNombre());
