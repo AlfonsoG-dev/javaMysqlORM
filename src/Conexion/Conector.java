@@ -20,17 +20,14 @@ public class Conector {
     private DbConfig miConfig;
 
     /**
-     * @param nDatabase: nombre de la base de datos
-     * @param nHostname: nombre de la dirección ip de la base de datos
-     * @param nPort: puerto en donde se ejecuta la base de datos
-     * @param nUserName: nombre del usuario de base de datos
-     * @param nPassword: contraseña del usuario de base de datos
+     * inicializa la conexión a la base de datos
+     * @param nConfig: configuración para la conexión a la base de datos
      */
     public Conector(DbConfig nConfig) {
         miConfig = nConfig;
     }
     /**
-     * crea la conexión a la base de datos
+     * crea la conexión a la base de datos en mysql
      * @return conexión de la base de datos
      */
     public Connection conectarMySQL() {
@@ -39,6 +36,20 @@ public class Conector {
             Class.forName(mysql_driver);
             conn = DriverManager.getConnection(this.miConfig.GetMysqlUrl(), this.miConfig.username(), this.miConfig.password());
         } catch (ClassNotFoundException | SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return conn;
+    }
+    /**
+     * crea la conexión a la base de datos en postgresql
+     * @return la conexión a la base de datos
+     */
+    public Connection conectarPostgreSQL() {
+        Connection conn = null;
+        try {
+            Class.forName(postgresql_driver);
+            conn = DriverManager.getConnection(this.miConfig.GetPostgresqlUrl(), this.miConfig.username(), this.miConfig.password());
+        } catch(ClassNotFoundException | SQLException e) {
             System.err.println(e.getMessage());
         }
         return conn;
