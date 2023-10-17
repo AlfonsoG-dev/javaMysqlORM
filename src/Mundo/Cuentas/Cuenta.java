@@ -175,7 +175,6 @@ public class Cuenta implements ModelMethods {
             "id_pk",
             "nombre",
             "email",
-            "user_id_fk",
             "create_at",
             "update_at"
         };
@@ -183,7 +182,6 @@ public class Cuenta implements ModelMethods {
             "int not null unique primary key auto_increment",
             "varchar(100) not null",
             "varchar(100) not null",
-            "int not null, constraint user_id_fk foreign key (user_id_fk) references users(id_pk)",
             "datetime not null",
             "datetime"
         };

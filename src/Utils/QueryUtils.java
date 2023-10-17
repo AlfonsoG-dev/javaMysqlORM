@@ -145,7 +145,6 @@ public record QueryUtils() {
         int res = 0;
         for(int i=0; i<model_columns.length; ++i) {
             if(model_columns[i].contains(column)) {
-                System.out.println(i);
                 res = i;
             }
         }
@@ -306,7 +305,7 @@ public record QueryUtils() {
         if(model_columns.size() == table_columns.size()) {
             String rename = "";
             for(int i=0; i<model_columns.size(); ++i) {
-                if(table_columns.get(i).contains(model_columns.get(i)) == false) {
+                if(table_columns.get(i).equals(model_columns.get(i)) == false) {
                     rename += model_columns.get(i) + ":" + table_columns.get(i) + ", ";
                 }
             }

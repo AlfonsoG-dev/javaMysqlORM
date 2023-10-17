@@ -116,8 +116,7 @@ public class QueryBuilder {
         String local_nombres = query_util.AsignTableNameToColumns("users", localModel.GetAllProperties());
         String pk_fk = query_util.InnerJoinConditional(localModel, RefModel, this.tb_name, ref_table);
         String sql = "select " + local_nombres + ", " + ref_nombres + " from " + this.tb_name + " inner join " + ref_table + " on " + pk_fk;
-        System.out.println(sql);
-        return "";
+        return sql;
     }
     /** 
      * crear la sentencia sql para modificar los datos

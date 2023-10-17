@@ -41,7 +41,7 @@ public class MigrationBuilder extends QueryBuilder {
      * @return la sentencia sql para crear la tabla de datos
      */
     public String CreateTableQuery(ModelMethods model) {
-        String[] columns = query_util.GetModelColumns(model.InitModel(), true).split(", ");
+        String[] columns = query_util.GetModelColumns(model.InitModel(), true).split(",");
         String[] types = query_util.GetModelType(model.InitModel(), true).split(",");
         String values = "(";
         for(int i = 0; i < columns.length; ++i) {
@@ -104,7 +104,7 @@ public class MigrationBuilder extends QueryBuilder {
             for(String co: keys) {
                 String[] values = co.split(":");
                 for(int i=1; i < values.length; ++i) {
-                    sql += "rename column " + values[0] + " to " + values[1] +  ", ";
+                    sql += "rename column " + values[1] + " to " + values[0] +  ", ";
                 }
             }
         }
@@ -134,6 +134,7 @@ public class MigrationBuilder extends QueryBuilder {
         }
         String clear_sql = "";
         String res = "";
+        System.out.println(sql);
         if(sql != "" && sql != null) {
             clear_sql = query_util.CleanValues(sql, 2);
             res = this.CreateAlterTableQuery(clear_sql);
@@ -153,10 +154,12 @@ public class MigrationBuilder extends QueryBuilder {
         if(delete_columns != "" && delete_columns != null) {
             String[] columns = delete_columns.split(", ");
             for(String k: columns) {
-                sql += "drop column "  + k + ", ";
+                String[] datos = k.split(":");
+                sql += "drop column "  + datos[0] + ", ";
             }
         }
         String clear_sql = "";
+        System.out.println(sql);
         String res = "";
         if(sql != "" && sql != null) {
             clear_sql = query_util.CleanValues(sql, 2);
