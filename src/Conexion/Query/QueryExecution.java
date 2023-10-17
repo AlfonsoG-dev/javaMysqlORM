@@ -1,4 +1,4 @@
-package Conexion;
+package Conexion.Query;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import Config.DbConfig;
+import Conexion.Conector;
 import Model.ModelMethods;
 import Utils.QueryBuilder;
 import Utils.QueryUtils;

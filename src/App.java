@@ -1,4 +1,4 @@
-import Conexion.QueryDAO;
+import Conexion.Query.*;
 import Config.DbConfig;
 import Mundo.Users.*;
 
