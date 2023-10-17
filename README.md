@@ -23,7 +23,7 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 
 >- The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
 
-## Uso
+## Use
 ```java
 public static void main(String[] args) {
     try {
@@ -52,6 +52,44 @@ public static void main(String[] args) {
 
         // método para eliminar los datos de una tabla
         miUserDAO.EliminarRegistro("nombre: juan", builder);
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+}
+```
+
+## Migration Use
+
+```java
+public static void main(String[] args) {
+    try {
+
+        //configuración de la conexión a la base de datos 
+        DbConfig miConfig = new DbConfig("consulta", "localhost", "3306", "test_user", "5x5W12");
+
+        //clase para realizar la migración con el tipo genérico dado
+        MigrationDAO<Cuenta> miCuentaDAO = new MigrationDAO<>("cuentas", miConfig);
+
+        //clase que representa el modelo con el que se realiza la migración
+        Cuenta mia = new Cuenta(0, null, null, 0, null, null);
+
+        // agrega columnas a la tabla
+        miCuentaDAO.AddColumn(mia);
+
+        //elimina columnas de la tabla
+        miCuentaDAO.DeleteColumn(mia);
+
+        //cambia el nombre de las columnas de la tabla
+        miCuentaDAO.RenameColumn(mia);
+
+        //cambia el tipo de dato de las columnas de la tabla
+        miCuentaDAO.ChangeType(mia);
+
+        //agrega constraint a las columnas de la tabla
+        miCuentaDAO.AddConstraint(mia);
+
+        //elimina el constraint de las columnas de la tabla
+        miCuentaDAO.DeleteConstraint(mia);
     } catch (Exception e) {
         System.out.println(e);
     }
