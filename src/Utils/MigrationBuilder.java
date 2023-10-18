@@ -198,6 +198,9 @@ public class MigrationBuilder extends QueryBuilder {
         if(add_columns != "" && add_columns != null) {
             String[] columns = add_columns.split(", ");
             for(int i=0; i<columns.length; ++i) {
+                if(columns[i].contains("pk") == true) {
+                    sql += "add constraint " + columns[i] + "primary key(" + columns[i] + "), ";
+                }
                 if(columns[i].contains("fk") == true) {
                     sql += "add constraint " + columns[i] + " foreign key(" + columns[i] +") references " + ref_table + "(" + ref_pk + ") on delete cascade on update cascade, ";
                 }
