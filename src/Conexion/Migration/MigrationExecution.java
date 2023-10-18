@@ -50,6 +50,19 @@ public class MigrationExecution {
         return stm;
     }
     /**
+     * seleccionar la base de datos
+     * @param DbName: nombre de la base de datos
+     * @param stm: ejecutor de la sentencia sql
+     * @throws SQLException: error al ejecutar la sentencia sql
+     * @return el ejecutor de la sentencia
+     */
+    public Statement ExecuteSelectDatabase(String DbName, Statement stm) throws SQLException {
+        String sql = migration_builder.CreateSelectDatabase(DbName);
+        stm = this.cursor.createStatement();
+        stm.executeUpdate(sql);
+        return stm;
+    }
+    /**
      * crea la tabla si esta no existe
      * @param model: modelo con los datos para crear la tabla
      * @param stm: ejecutor de la sentencia sql
@@ -83,11 +96,13 @@ public class MigrationExecution {
      * @throws SQLException error al ejecutar la sentencia sql
      * @return el ejecutor de la sentencia
      */
-    public Statement ExecuteAddColumn(ModelMethods model, Statement stm) throws SQLException {
+    public Statement ExecuteAddColumn(ModelMethods model, ModelMethods ref_model, String ref_table, Statement stm) throws SQLException {
         ResultSet rst = this.ExecuteShowTableData(stm);
-        String sql = migration_builder.CreateAddColumnQuery(model.InitModel(), rst);
-        stm = this.cursor.createStatement();
-        stm.executeUpdate(sql);
+        String sql = migration_builder.CreateAddColumnQuery(model.InitModel(), ref_model.InitModel(), ref_table, rst);
+        if(sql != "" || sql != null) {
+            stm = this.cursor.createStatement();
+            stm.executeUpdate(sql);
+        }
         return stm;
     }
     /**
@@ -100,8 +115,10 @@ public class MigrationExecution {
     public Statement ExceuteRenameColumn(ModelMethods model, Statement stm) throws SQLException {
         ResultSet rst = this.ExecuteShowTableData(stm);
         String sql = migration_builder.CreateRenameColumnQuery(model.InitModel(), rst);
-        stm = this.cursor.createStatement();
-        stm.executeUpdate(sql);
+        if(sql != "" || sql != null) {
+            stm = this.cursor.createStatement();
+            stm.executeUpdate(sql);
+        }
         return stm;
     }
     /**
@@ -114,8 +131,10 @@ public class MigrationExecution {
     public Statement ExecuteChangeColumnType(ModelMethods model, Statement stm) throws SQLException {
         ResultSet rst = this.ExecuteShowTableData(stm);
         String sql = migration_builder.CreateChangeTypeQuery(model.InitModel(), rst);
-        stm = this.cursor.createStatement();
-        stm.executeUpdate(sql);
+        if(sql != "" || sql != null) {
+            stm = this.cursor.createStatement();
+            stm.executeUpdate(sql);
+        }
         return stm;
     }
     /**
@@ -128,20 +147,10 @@ public class MigrationExecution {
     public Statement ExecuteDeleteColumn(ModelMethods model, Statement stm) throws SQLException {
         ResultSet rst = this.ExecuteShowTableData(stm);
         String sql = migration_builder.CreateDeleteColumnQuery(model.InitModel(), rst);
-        stm = this.cursor.createStatement();
-        stm.executeUpdate(sql);
-        return stm;
-    }
-    /**
-     */
-    public Statement ExecuteAddContraint(ModelMethods model, Statement stm) throws SQLException {
-        //TODO: implementar add constraint
-        return stm;
-    }
-    /**
-     */
-    public Statement ExecuteDeleteContraint(ModelMethods model, Statement stm) throws SQLException {
-        //TODO: implementar delete constraint
+        if(sql != "" || sql != null) {
+            stm = this.cursor.createStatement();
+            stm.executeUpdate(sql);
+        }
         return stm;
     }
 }

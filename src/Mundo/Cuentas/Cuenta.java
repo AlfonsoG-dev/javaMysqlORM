@@ -175,6 +175,7 @@ public class Cuenta implements ModelMethods {
             "id_pk",
             "nombre",
             "email",
+            "test_id_fk",
             "create_at",
             "update_at"
         };
@@ -182,6 +183,7 @@ public class Cuenta implements ModelMethods {
             "int not null unique primary key auto_increment",
             "varchar(100) not null",
             "varchar(100) not null",
+            "int not null",
             "datetime not null",
             "datetime"
         };

@@ -36,6 +36,15 @@ public class MigrationBuilder extends QueryBuilder {
         return sql;
     }
     /**
+     * seleccionar la base de datos a utilizar
+     * @param DbName: nombre de la base de datos a utilizar
+     * @return la sentencia sql para cambiar de base de datos
+     */
+    public String CreateSelectDatabase(String DbName) {
+        String sql = "use " + DbName;
+        return sql;
+    }
+    /**
      * crear la tabla de datos si no existe
      * @param model: modelo con los datos de las columnas y typo de dato para la tabla
      * @return la sentencia sql para crear la tabla de datos
@@ -67,26 +76,30 @@ public class MigrationBuilder extends QueryBuilder {
      * @throws SQLException: error de la sentencia sql
      * @return la sentencia sql para agregar una columna a la tabla
      */
-    public String CreateAddColumnQuery(String model_properties, ResultSet rst) throws SQLException {
+    public String CreateAddColumnQuery(String model_properties, String ref_model, String ref_table, ResultSet rst) throws SQLException {
         String sql = "";
         String add_columns = query_util.CompareColumnName(model_properties, rst).get("agregar");
         if(add_columns != "" && add_columns != null) {
             String columns = query_util.GetModelColumns(add_columns, true);
-            String[] clean_columns = query_util.CleanValues(columns, 2).split(",");
+            String[] clean_columns = query_util.CleanValues(columns, 1).split(",");
             String[] model_types = query_util.GetModelType(model_properties, true).split(",");
             String[] model_columns = query_util.GetModelColumns(model_properties, true).split(",");
             for(String k: clean_columns) {
                 int index_type = query_util.SearchColumnType(k, model_properties);
                 String clear_types = model_types[index_type].replace("'", "");
                 sql += "add column " + k + " " + clear_types + " after " + model_columns[index_type-1] + ", ";
+                if(k.contains("fk")) {
+                    sql += this.CreateAddConstraintQuery(model_properties, ref_model, rst, ref_table);
+                }
             }
         }
         String clear_sql = "";
         String res = "";
         if(sql != "" && sql != null) {
-            clear_sql = query_util.CleanValues(sql, 2);
+            clear_sql = query_util.CleanValues(sql, 0);
             res = this.CreateAlterTableQuery(clear_sql);
         }
+            System.out.println(res);
         return res;
     }
     /**
@@ -156,13 +169,15 @@ public class MigrationBuilder extends QueryBuilder {
             for(String k: columns) {
                 String[] datos = k.split(":");
                 sql += "drop column "  + datos[0] + ", ";
+                if(datos[0].contains("fk")) {
+                    sql += this.CreateDeleteConstraintQuery(model_properties, rst);
+                }
             }
         }
         String clear_sql = "";
-        System.out.println(sql);
         String res = "";
         if(sql != "" && sql != null) {
-            clear_sql = query_util.CleanValues(sql, 2);
+            clear_sql = query_util.CleanValues(sql, 0);
             res = this.CreateAlterTableQuery(clear_sql);
         }
         return res;
@@ -183,9 +198,6 @@ public class MigrationBuilder extends QueryBuilder {
         if(add_columns != "" && add_columns != null) {
             String[] columns = add_columns.split(", ");
             for(int i=0; i<columns.length; ++i) {
-                if(columns[i].contains("pk") == true) {
-                    sql += "add constraint " + columns[i] + " primary key(" + columns[i] +"), ";
-                }
                 if(columns[i].contains("fk") == true) {
                     sql += "add constraint " + columns[i] + " foreign key(" + columns[i] +") references " + ref_table + "(" + ref_pk + ") on delete cascade on update cascade, ";
                 }
@@ -195,7 +207,7 @@ public class MigrationBuilder extends QueryBuilder {
         String res = "";
         if(sql != "" && sql != null) {
             clear_sql = query_util.CleanValues(sql, 2);
-            res = this.CreateAlterTableQuery(clear_sql);
+            res = clear_sql;
         }
         return res;
     }
@@ -227,7 +239,7 @@ public class MigrationBuilder extends QueryBuilder {
         String res = "";
         if(sql != "" && sql != null) {
             clear_sql = query_util.CleanValues(sql, 2);
-            res = this.CreateAlterTableQuery(clear_sql);
+            res = clear_sql;
         }
         return res;
     }

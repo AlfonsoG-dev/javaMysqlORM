@@ -6,7 +6,7 @@ import java.sql.Statement;
 import Config.DbConfig;
 import Model.ModelMethods;
 
-public class MigrationDAO<T> {
+public class MigrationDAO {
 
     /**
      * ejecutor de la sentencia sql
@@ -28,9 +28,38 @@ public class MigrationDAO<T> {
         boolean resultado = false;
         try {
             stm = migration_execution.ExecuteCreateDatabase(DbName);
+            System.out.println(stm.getUpdateCount());
             if(stm.getUpdateCount() > 0) {
                 System.out.println("database created");
                 resultado = true;
+            }
+        } catch(Exception e) {
+            System.err.println(e);
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                }catch(Exception e) {
+                    System.err.println(e);
+                }
+                stm = null;
+            }
+        }
+        return resultado;
+    }
+    /**
+     * seleccionar una base de datos
+     * @param DbName: nombre de la base de datos
+     * @return true si se selecciona la base de datos, false de lo contrario
+     */
+    public boolean SelecDatabase(String DbName) {
+        Statement stm = null;
+        boolean resultado = false;
+        try {
+            stm = migration_execution.ExecuteSelectDatabase(DbName, stm);
+            if(stm.getUpdateCount() == 0) {
+                resultado = true;
+                System.out.println("se selecciona la base de datos");
             }
         } catch(Exception e) {
             System.err.println(e);
@@ -125,12 +154,11 @@ public class MigrationDAO<T> {
      * @param model: modelo con las columnas a agregar
      * @return true si se agrega de lo contrario false
      */
-    public boolean AddColumn(ModelMethods model) {
-        ResultSet rst = null;
+    public boolean AddColumn(ModelMethods model, ModelMethods ref_model, String ref_table) {
         Statement stm = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExecuteAddColumn(model, stm);
+            stm = migration_execution.ExecuteAddColumn(model, ref_model, ref_table, stm);
             if(stm.getUpdateCount() == 0) {
                 resultado = true;
                 System.out.println("se agregaron las columnas");
@@ -138,14 +166,6 @@ public class MigrationDAO<T> {
         } catch(Exception e) {
             System.err.println(e);
         } finally {
-            if(rst != null) {
-                try{
-                    rst.close();
-                } catch(Exception e) {
-                    System.err.println(e);
-                }
-                rst = null;
-            }
             if(stm != null) {
                 try {
                     stm.close();
@@ -164,7 +184,6 @@ public class MigrationDAO<T> {
      */
     public boolean RenameColumn(ModelMethods model) {
         Statement stm = null;
-        ResultSet rst = null;
         boolean resultado = false;
         try {
             stm = migration_execution.ExceuteRenameColumn(model, stm);
@@ -175,14 +194,6 @@ public class MigrationDAO<T> {
         } catch(Exception e) {
             System.err.println(e);
         } finally {
-            if(rst != null) {
-                try { 
-                    rst.close();
-                } catch(Exception e) {
-                    System.err.println(e);
-                }
-                rst = null;
-            }
             if(stm != null) { 
                 try {
                     stm.close();
@@ -201,7 +212,6 @@ public class MigrationDAO<T> {
      */
     public boolean ChangeType(ModelMethods model) {
         Statement stm = null;
-        ResultSet rst = null;
         boolean resultado = false;
         try {
             stm = migration_execution.ExecuteChangeColumnType(model, stm);
@@ -212,14 +222,6 @@ public class MigrationDAO<T> {
         } catch(Exception e) {
             System.err.println(e);
         } finally {
-            if(rst != null) {
-                try { 
-                    rst.close();
-                } catch(Exception e) {
-                    System.err.println(e);
-                }
-                rst = null;
-            }
             if(stm != null) {
                 try {
                     stm.close();
@@ -238,7 +240,6 @@ public class MigrationDAO<T> {
      */
     public boolean DeleteColumn(ModelMethods model) {
         Statement stm = null;
-        ResultSet rst = null;
         boolean resultado = false;
         try {
             stm = migration_execution.ExecuteDeleteColumn(model, stm);
@@ -249,89 +250,6 @@ public class MigrationDAO<T> {
         } catch(Exception e) {
             System.err.println(e);
         } finally {
-            if(rst != null) {
-                try { 
-                    rst.close();
-                } catch(Exception e) {
-                    System.err.println(e);
-                }
-                rst = null;
-            }
-            if(stm != null) {
-                try {
-                    stm.close();
-                } catch(Exception e) {
-                    System.err.println(e);
-                }
-                stm = null;
-            }
-        }
-        return resultado;
-    }
-
-    /**
-     * agregar constraint a la columna de la tabla
-     * @param model: modelo con el constraint
-     * @return true si agrega el constraint false de lo contrario
-     */
-    public boolean AddConstraint(ModelMethods model) {
-        Statement stm = null;
-        ResultSet rst = null;
-        boolean resultado = false;
-        try {
-            stm = migration_execution.ExecuteAddContraint(model, stm);
-            if(stm.getUpdateCount() == 0) {
-                resultado = true;
-                System.out.println("se agrego el constraint a la columna");
-            }
-        } catch(Exception e) {
-            System.err.println(e);
-        } finally {
-            if(rst != null) {
-                try { 
-                    rst.close();
-                } catch(Exception e) {
-                    System.err.println(e);
-                }
-                rst = null;
-            }
-            if(stm != null) {
-                try {
-                    stm.close();
-                } catch(Exception e) {
-                    System.err.println(e);
-                }
-                stm = null;
-            }
-        }
-        return resultado;
-    }
-    /**
-     * elimina el constraint de la columna
-     * @param model: modelo con el constraint eliminado
-     * @return true si elimino el constraint, false de lo contrario
-     */
-    public boolean DeleteConstraint(ModelMethods model) {
-        Statement stm = null;
-        ResultSet rst = null;
-        boolean resultado = false;
-        try {
-            stm = migration_execution.ExecuteDeleteContraint(model, stm);
-            if(stm.getUpdateCount() == 0) {
-                resultado = true;
-                System.out.println("se elimino el constraint de la columna");
-            }
-        } catch(Exception e) {
-            System.err.println(e);
-        } finally {
-            if(rst != null) {
-                try { 
-                    rst.close();
-                } catch(Exception e) {
-                    System.err.println(e);
-                }
-                rst = null;
-            }
             if(stm != null) {
                 try {
                     stm.close();
