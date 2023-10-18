@@ -6,6 +6,9 @@ import java.sql.Statement;
 import Config.DbConfig;
 import Model.ModelMethods;
 
+/**
+ * clase para la migración del modelo 
+ */
 public class MigrationDAO {
 
     /**

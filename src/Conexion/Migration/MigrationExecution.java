@@ -10,6 +10,9 @@ import Config.DbConfig;
 import Model.ModelMethods;
 import Utils.MigrationBuilder;
 
+/**
+ * clase para la ejecución de la migración del modelo
+ */
 public class MigrationExecution {
     /**
      * nombre de la tabla
