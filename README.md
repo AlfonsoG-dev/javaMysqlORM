@@ -73,6 +73,15 @@ public static void main(String[] args) {
         //clase que representa el modelo con el que se realiza la migración
         Cuenta mia = new Cuenta(0, null, null, 0, null, null);
 
+        //crear la base de datos
+        miCuentaDAO.CreateDataBase("prueba_db");
+
+        //selecciona la nueva base de datos
+        miCuentaDAO.SelecDatabase("prueba_db");
+
+        //crea la tabla según el modelo
+        miCuentaDAO.CreateTable(mia);
+
         // agrega columnas a la tabla
         miCuentaDAO.AddColumn(mia);
 
