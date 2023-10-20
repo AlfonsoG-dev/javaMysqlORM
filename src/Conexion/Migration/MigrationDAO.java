@@ -31,7 +31,6 @@ public class MigrationDAO {
         boolean resultado = false;
         try {
             stm = migration_execution.ExecuteCreateDatabase(DbName);
-            System.out.println(stm.getUpdateCount());
             if(stm.getUpdateCount() > 0) {
                 System.out.println("database created");
                 resultado = true;

@@ -99,7 +99,6 @@ public class MigrationBuilder extends QueryBuilder {
             clear_sql = query_util.CleanValues(sql, 0);
             res = this.CreateAlterTableQuery(clear_sql);
         }
-            System.out.println(res);
         return res;
     }
     /**
@@ -147,7 +146,6 @@ public class MigrationBuilder extends QueryBuilder {
         }
         String clear_sql = "";
         String res = "";
-        System.out.println(sql);
         if(sql != "" && sql != null) {
             clear_sql = query_util.CleanValues(sql, 2);
             res = this.CreateAlterTableQuery(clear_sql);
