@@ -81,7 +81,7 @@ public class QueryDAO<T> {
         ArrayList<T> resultados = new ArrayList<T>();
         try {
             rst = query_execution.ExecuteReadAll(pstm);
-            int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
+            int lenght = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 resultados.add(model_builder_methods.CreateFromRST(rst, lenght));
             }
@@ -120,7 +120,7 @@ public class QueryDAO<T> {
         PreparedStatement pstm = null;
         try {
             rst = query_execution.ExecuteFindOne(options, pstm);
-            int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
+            int lenght = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = model_builder_methods.CreateFromRST(rst, lenght);
             }
@@ -158,7 +158,7 @@ public class QueryDAO<T> {
         ResultSet rst = null;
         try {
             rst = query_execution.ExecuteFindByColumnName(options, stm);
-            int lenght = query_util.GetMetadataColumns(rst.getMetaData().toString());
+            int lenght = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = model_builder_methods.CreateFromRST(rst, lenght);
             }
@@ -198,7 +198,7 @@ public class QueryDAO<T> {
             rst = query_execution.ExecuteGetValueOfColumnName(options, column, stm);
             int len = 0;
             if(column == null || column.isEmpty() == true) {
-                len = query_util.GetMetadataColumns(rst.getMetaData().toString());
+                len = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
             }
             else if(column != null || column.isEmpty() == false) {
                 len = column.split(",").length;
