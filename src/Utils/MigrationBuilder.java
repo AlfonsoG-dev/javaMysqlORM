@@ -52,13 +52,23 @@ public class MigrationBuilder extends QueryBuilder {
     public String CreateTableQuery(ModelMethods model) {
         String[] columns = query_util.GetModelColumns(model.InitModel(), true).split(",");
         String[] types = query_util.GetModelType(model.InitModel(), true).split(",");
+        String t_c = "";
+        for(String t: types) {
+            if(t.contains(".")) {
+                t_c = t.replace(".", ",");
+            }
+        }
         String values = "(";
         for(int i = 0; i < columns.length; ++i) {
+            if(types[i].contains(".")) {
+                types[i] = t_c;
+            }
             String clear_types = types[i].replace("'", "");
             values += columns[i] + " " + clear_types +", ";
         }
         String clear_values = query_util.CleanValues(values, 2)+ ")";
         String sql = "create table if not exists " + this.tableName + clear_values;
+        System.out.println(sql);
         return sql;
     }
     /**

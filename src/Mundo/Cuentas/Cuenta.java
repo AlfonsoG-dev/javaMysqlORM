@@ -183,7 +183,7 @@ public class Cuenta implements ModelMethods {
             "int not null unique primary key auto_increment",
             "varchar(100) not null",
             "varchar(100) not null",
-            "int not null",
+            "int not null. foreign key(test_id_fk) references `test_user`(id_pk) on delete cascade on update cascade",
             "datetime not null",
             "datetime"
         };
