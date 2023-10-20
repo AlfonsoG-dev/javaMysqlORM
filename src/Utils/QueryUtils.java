@@ -97,7 +97,7 @@ public record QueryUtils() {
                         tipo += " unique primary key";
                     }
                     if(key_co[k].contains("MUL")) {
-                        tipo += " unique foreign key";
+                        tipo += " foreign key";
                     }
                     if(key_co[k].contains("UNI")) {
                         tipo += " unique";
