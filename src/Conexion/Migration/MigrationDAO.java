@@ -88,7 +88,7 @@ public class MigrationDAO {
         boolean resultado = false;
         try {
             rst = migration_execution.ExecuteCreateTable(model, stm);
-            if(this.ShowTableData(model) == true) {
+            if(this.ShowTableData() == true) {
                 System.out.println("tabla creada");
                 resultado = true;
             }
@@ -119,7 +119,7 @@ public class MigrationDAO {
      * @param model: modelo con los datos
      * @return resultado de la consulta
      */
-    public boolean ShowTableData(ModelMethods model) {
+    public boolean ShowTableData() {
         Statement stm = null;
         ResultSet rst = null;
         boolean comprobar = false;

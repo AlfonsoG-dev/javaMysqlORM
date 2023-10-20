@@ -26,7 +26,7 @@ public record QueryUtils() {
      * @param metadata: datos de la sentencia sql
      * @return cantidad de columnas en la sentencia sql
      */
-    public int GetMetadataColumns(String metadata) {
+    public int GetMetadataNumColumns(String metadata) {
         String values = metadata.split(":")[1];
         String[] columns = values.split("=");
         int cont = 0;
