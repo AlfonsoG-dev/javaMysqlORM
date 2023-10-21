@@ -192,7 +192,14 @@ public record QueryUtils() {
             val.split(":")[1].stripIndent()+
             "'" + " " + type;
         }
-        String clean_values = this.CleanValues(conditionalValue, 3);
+        String clean_values = "";
+        if(type.equals("and")) {
+            clean_values = this.CleanValues(conditionalValue, 4);
+        } else if(type.equals("not")) {
+            clean_values = this.CleanValues(conditionalValue, 4);
+        } else if(type.equals("or")) {
+            clean_values = this.CleanValues(conditionalValue, 3);
+        }
         return clean_values;
     }
     /**
@@ -238,9 +245,9 @@ public record QueryUtils() {
     public String GetPatternCondition(String pattern, String[] columns) {
         String res = "";
         for(String k: columns) {
-            res += k + " like " + pattern + ", ";
+            res += k + " like " + "'" + pattern + "'" + " and ";
         }
-        String clean_res = this.CleanValues(res, 2);
+        String clean_res = this.CleanValues(res, 5);
         return clean_res;
     }
     /**

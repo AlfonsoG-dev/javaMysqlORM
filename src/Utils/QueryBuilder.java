@@ -72,7 +72,7 @@ public class QueryBuilder {
             res += "'" + o + "'" + ", ";
         }
         String clean_res = query_util.CleanValues(res, 2);
-        String sql = "select * from " + this.tb_name + " where " + column + "(" + clean_res + ")";
+        String sql = "select * from " + this.tb_name + " where " + column + " in (" + clean_res + ")";
         return sql;
     }
     /**

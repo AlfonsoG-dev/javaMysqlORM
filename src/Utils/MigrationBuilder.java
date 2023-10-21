@@ -68,7 +68,6 @@ public class MigrationBuilder extends QueryBuilder {
         }
         String clear_values = query_util.CleanValues(values, 2)+ ")";
         String sql = "create table if not exists " + this.tableName + clear_values;
-        System.out.println(sql);
         return sql;
     }
     /**

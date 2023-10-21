@@ -109,7 +109,7 @@ public class Cuenta implements ModelMethods {
     /**
      * @param create_at the create_at to set
      */
-    public void setCreate_at(String create_at) {
+    public void setCreate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
         LocalDateTime miDate = LocalDateTime.now();  
         create_at = dtf.format(miDate).toString();
@@ -132,7 +132,7 @@ public class Cuenta implements ModelMethods {
     /**
      * @param update_at the update_at to set
      */
-    public void setUpdate_at(String update_at) {
+    public void setUpdate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
         LocalDateTime miDate = LocalDateTime.now();  
         create_at = dtf.format(miDate).toString();
