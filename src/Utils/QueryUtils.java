@@ -175,7 +175,14 @@ public record QueryUtils() {
         for(String val: div) {
             conditionalValue += val.split(":")[0] + "=" + "?" + " " + type;
         }
-        String clean_values = this.CleanValues(conditionalValue, 3);
+        String clean_values = "";
+        if(type.equals("and")) {
+            clean_values = this.CleanValues(conditionalValue, 4);
+        } else if(type.equals("not")) {
+            clean_values = this.CleanValues(conditionalValue, 4);
+        } else if(type.equals("or")) {
+            clean_values = this.CleanValues(conditionalValue, 3);
+        }
         return clean_values;
     }
     /**
@@ -240,15 +247,23 @@ public record QueryUtils() {
      * genera el condicional de la búsqueda por patrón
      * @param pattern: patrón a buscar
      * @param columns: columnas cuyo dato tiene el patrón
+     * @param type: tipo de condicional para la sentencia sql
      * @return la condición del patrón
      */
-    public String GetPatternCondition(String pattern, String[] columns) {
+    public String GetPatternCondition(String pattern, String[] columns, String type) {
         String res = "";
         for(String k: columns) {
-            res += k + " like " + "'" + pattern + "'" + " and ";
+            res += k + " like " + "'" + pattern + "'" + " " + type + " ";
         }
-        String clean_res = this.CleanValues(res, 5);
-        return clean_res;
+        String clean_values = "";
+        if(type.equals("and")) {
+            clean_values = this.CleanValues(res, 4);
+        } else if(type.equals("not")) {
+            clean_values = this.CleanValues(res, 4);
+        } else if(type.equals("or")) {
+            clean_values = this.CleanValues(res, 3);
+        }
+        return clean_values;
     }
     /**
      * genera el condicional para innerjoin utilizando la fk del modelo de referencia y la pk del modelo primario

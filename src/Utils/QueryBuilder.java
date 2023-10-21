@@ -25,21 +25,23 @@ public class QueryBuilder {
     }
     /**
      * crea la query para la sentencia de FindOne
-     * @param: options: las columnas a buscar por key, value
+     * @param options: options: las columnas a buscar por key, value
+     * @param type: tipo de condicion para la sentencia sql
      * @return: el usuario buscado
      */
-    public String CreateFindQuery(String options) {
-        String clean_values = query_util.GetPrepareConditional(options, "and");
+    public String CreateFindQuery(String options, String type) {
+        String clean_values = query_util.GetPrepareConditional(options, type);
         String sql = "select *" + " from "+ tb_name+ " where " + clean_values;
         return sql;
     }
     /**
      * crea la query para la sentencia FindByColumnName
      * @param options: las columnas a buscar por key, value
+     * @param type: tipo de condicion para la sentencia sql
      * @return: el usuario buscado
      */
-    public String CreateFindByColumnQuery(String options) {
-        String clean_values = query_util.GetNormalConditional(options, "and");
+    public String CreateFindByColumnQuery(String options, String type) {
+        String clean_values = query_util.GetNormalConditional(options, type);
         String sql = "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         return sql;
     }
@@ -47,11 +49,12 @@ public class QueryBuilder {
      * crea la query para la sentencia GetValueOfColumnName
      * @param options: los valores de condicion
      * @param column: los valores a retornar
+     * @param type: tipo de condicion para la sentencia sql
      * @return la sentencia sql con los valores a retornar y los valores de condicion
      */
-    public String CreateFindColumnValueQuery(String options, String column) {
+    public String CreateFindColumnValueQuery(String options, String column, String type) {
         String sql = "";
-        String clean_values = query_util.GetNormalConditional(options, "and");
+        String clean_values = query_util.GetNormalConditional(options, type);
         if( column == null || column.isEmpty() == true) {
             sql =  "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         }
@@ -79,10 +82,11 @@ public class QueryBuilder {
      * crea la query para buscar un registro usando un patron
      * @param pattern: patrón a buscar
      * @param columns: columnas con los datos
+     * @param type: tipo de condicion para la sentencia sql
      * @return la sentencia sql para buscar por patrón
      */
-    public String CreateFindPatternQuery(String pattern, String[] columns) {
-        String pattern_condition = query_util.GetPatternCondition(pattern, columns);
+    public String CreateFindPatternQuery(String pattern, String[] columns, String type) {
+        String pattern_condition = query_util.GetPatternCondition(pattern, columns, type);
         String sql = "select * from "  + this.tb_name + " where " + pattern_condition;
         return sql;
     }
@@ -122,10 +126,11 @@ public class QueryBuilder {
      * crear la sentencia sql para modificar los datos
      * @param nObject: objeto con los métodos para crear la sentencia sql
      * @param condicional: propiedades para la condición de la sentencia sql
+     * @param type: tipo de condicion para la sentencia sql
      * @return la sentencia sql para modificar
      */
-    public String CreateModifyRegisterQuery(ModelMethods nObject, String condicional) {
-        String condition = query_util.GetNormalConditional(condicional, "and");
+    public String CreateModifyRegisterQuery(ModelMethods nObject, String condicional, String type) {
+        String condition = query_util.GetNormalConditional(condicional, type);
         String clean_key_value = query_util.GetAsignModelValues(nObject.GetAllProperties());
         String sql = "update " + tb_name + " set " +  clean_key_value + " where " + condition;
         return sql;
@@ -133,10 +138,11 @@ public class QueryBuilder {
    /**
     * crear la sentencia sql para eliminar el registro
     * @param options: las columnas con los valores para el condicional
+    * @param type: tipo de condicion para la sentencia sql
     * @return la sentencia sql
     **/
-   public String CreateDeleteRegisterQuery(String options) {
-       String condicional = query_util.GetNormalConditional(options, "and");
+   public String CreateDeleteRegisterQuery(String options, String type) {
+       String condicional = query_util.GetNormalConditional(options, type);
        String sql = "delete from " + tb_name + " where " + condicional;
        return sql;
    }

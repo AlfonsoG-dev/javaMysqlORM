@@ -111,15 +111,16 @@ public class QueryDAO<T> {
     /**
      * busca el registro por primary key
      * @param options: las obciones de busqueda
+     * @param type: tipo de condición para la sentencia sql
      * @param model_builder_methods: opciones para utilizar los registros
      * @return el usuario buscado
      */
-    public T FindOne(String options, ModelBuilderMethods<T> model_builder_methods) {
+    public T FindOne(String options, String type, ModelBuilderMethods<T> model_builder_methods) {
         T buscado = null;
         ResultSet rst = null;
         PreparedStatement pstm = null;
         try {
-            rst = query_execution.ExecuteFindOne(options, pstm);
+            rst = query_execution.ExecuteFindOne(options, type, pstm);
             int lenght = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = model_builder_methods.CreateFromRST(rst, lenght);
@@ -149,15 +150,16 @@ public class QueryDAO<T> {
     /**
      * busca el registro por cualquier nombre de columna
      * @param options: las opciones de busqueda
+     * @param type: tipo de condicion para la setencia sql
      * @param model_builder_methods: opciones para utilizar los registros
      * @return el registro buscado
      */
-    public T FindByColumnName(String options, ModelBuilderMethods<T> model_builder_methods) {
+    public T FindByColumnName(String options, String type, ModelBuilderMethods<T> model_builder_methods) {
         T buscado = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = query_execution.ExecuteFindByColumnName(options, stm);
+            rst = query_execution.ExecuteFindByColumnName(options, type, stm);
             int lenght = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = model_builder_methods.CreateFromRST(rst, lenght);
@@ -188,14 +190,15 @@ public class QueryDAO<T> {
      * busca y retorna el valor de la columna o columnas
      * @param options: column name
      * @param column: las columnas a buscar el valor
+     * @param type: tipo de condicion para la setencia sql
      * @return value of column name
      */
-    public String GetValueOfColumnName(String options, String column) {
+    public String GetValueOfColumnName(String options, String column, String type) {
         String result ="";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = query_execution.ExecuteGetValueOfColumnName(options, column, stm);
+            rst = query_execution.ExecuteGetValueOfColumnName(options, column, type, stm);
             int len = 0;
             if(column == null || column.isEmpty() == true) {
                 len = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
@@ -237,10 +240,11 @@ public class QueryDAO<T> {
      * ingresar un registro de GenericObjects
      * @param nObject: el objeto a registrar
      * @param condition: condición para buscar el registro
+     * @param type: tipo de condicion para la setencia sql
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se registra de lo contrario false
      */
-    public boolean InsertNewRegister(ModelMethods nObject, String condition, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean InsertNewRegister(ModelMethods nObject, String condition, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         ResultSet rst = null;
@@ -248,7 +252,7 @@ public class QueryDAO<T> {
             if(nObject == null) {
                 throw new Exception("el objeto no deberia ser null");
             }
-            T buscado = this.FindByColumnName(condition, model_builder_methods);
+            T buscado = this.FindByColumnName(condition, type, model_builder_methods);
             if(buscado == null) {
                 rst = query_execution.ExecuteInsertNewRegister(stm, nObject);
                 while(rst.next()){
@@ -286,10 +290,12 @@ public class QueryDAO<T> {
     /**
      * modificar 1 registro de la base de datos
      * @param nObject: usuario con los datos a modificar
+     * @param conditions: columna con su valor para el condicional
+     * @param type: tipo de condicion para la setencia sql
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se modifican los datos de lo contrario false
      **/
-    public boolean UpdateRegister(ModelMethods nObject, String conditions, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean UpdateRegister(ModelMethods nObject, String conditions, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         ResultSet rst = null;
@@ -297,9 +303,9 @@ public class QueryDAO<T> {
             if(nObject == null) {
                 throw new Exception("nObject no deberia ser null");
             }
-            T buscado = this.FindByColumnName(conditions.split(",")[0], model_builder_methods);
+            T buscado = this.FindByColumnName(conditions.split(",")[0], type, model_builder_methods);
             if(buscado != null) {
-                rst = query_execution.ExecuteUpdateRegister(stm, nObject, conditions);
+                rst = query_execution.ExecuteUpdateRegister(stm, nObject, conditions, type);
                 while(rst.next()) {
                     System.out.println(nObject.GetAllProperties());
                     registrado = true;
@@ -337,10 +343,11 @@ public class QueryDAO<T> {
     /**
      * eliminar un registro por cualquier columna valida de la bd
      * @param options: columna con el valor para el condicional
+     * @param type: tipo de condicion para la setencia sql
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si elimina de lo contrario false
      * */
-    public boolean EliminarRegistro(String options, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean EliminarRegistro(String options, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
         boolean eliminar = false;
         Statement stm = null;
         ResultSet rst = null;
@@ -348,9 +355,9 @@ public class QueryDAO<T> {
             if(options.isEmpty() == true || options == null) {
                 throw new Exception("no deberia ser null ni vacio");
             }
-            T buscado = this.FindByColumnName(options.split(",")[0], model_builder_methods);
+            T buscado = this.FindByColumnName(options.split(",")[0], type, model_builder_methods);
             if(buscado != null) {
-                rst = query_execution.ExecuteEliminarRegistro(stm, options);
+                rst = query_execution.ExecuteEliminarRegistro(stm, options, type);
                 while(rst.next()) {
                     System.out.println(options);
                     eliminar = true;

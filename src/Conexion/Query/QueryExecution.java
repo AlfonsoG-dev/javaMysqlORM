@@ -98,12 +98,13 @@ public class QueryExecution {
     /**
      * ejecuta la busqueda de 1 resultado por id
      * @param options: id del registro buscado
+     * @param type: tipo de condicion para la setencia sql
      * @param pstm: ejecutor de sentencia sql
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteFindOne(String options, PreparedStatement pstm) throws SQLException {
-        String sql = this.query_builder.CreateFindQuery(options);
+    public ResultSet ExecuteFindOne(String options, String type, PreparedStatement pstm) throws SQLException {
+        String sql = this.query_builder.CreateFindQuery(options, type);
         String val = this.query_util.GetOptionValue(options);
         pstm = this.cursor.prepareStatement(sql);
         pstm.setString(1, val);
@@ -114,13 +115,14 @@ public class QueryExecution {
      * ejecuta la busqueda por nombre de columna
      * puede recibir 1 o varias columnas con el valor
      * @param options: nombre y valor de columna: "nombre: test, email: test@test"
+     * @param type: tipo de condicion para la setencia sql
      * @param stm: ejecutor de sentencia sql
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteFindByColumnName(String options, Statement stm) throws SQLException {
+    public ResultSet ExecuteFindByColumnName(String options, String type, Statement stm) throws SQLException {
         stm = this.cursor.createStatement();
-        String sql = this.query_builder.CreateFindByColumnQuery(options);
+        String sql = this.query_builder.CreateFindByColumnQuery(options, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -130,13 +132,14 @@ public class QueryExecution {
      * puede retornar 1 o varios valores de la columna seleccionada
      * @param options: nombre y valor de la columna: "nombre: test, email: test@test"
      * @param column: columna a conocer el valor: "id, rol"
+     * @param type: tipo de condicion para la setencia sql
      * @param stm: ejecutor de sentencia sql
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteGetValueOfColumnName (String options, String column, Statement stm) throws SQLException {
+    public ResultSet ExecuteGetValueOfColumnName (String options, String column, String type, Statement stm) throws SQLException {
         stm = this.cursor.createStatement();
-        String sql = this.query_builder.CreateFindColumnValueQuery(options, column);
+        String sql = this.query_builder.CreateFindColumnValueQuery(options, column, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -179,12 +182,13 @@ public class QueryExecution {
      * @param stm: ejecutor de la sentencia sql
      * @param nObject: elemento a modificar
      * @param conditions: condiciones de query; "nombre: test, email: test"
+     * @param type: tipo de condicion para la setencia sql
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteUpdateRegister(Statement stm, ModelMethods nObject, String conditions) throws SQLException {
+    public ResultSet ExecuteUpdateRegister(Statement stm, ModelMethods nObject, String conditions, String type) throws SQLException {
         stm = this.cursor.createStatement();
-        String sql = this.query_builder.CreateModifyRegisterQuery(nObject, conditions);
+        String sql = this.query_builder.CreateModifyRegisterQuery(nObject, conditions, type);
         String[] columns = {"id_pk"};
         stm.executeUpdate(sql, columns);
         ResultSet rst = stm.getGeneratedKeys();
@@ -195,12 +199,13 @@ public class QueryExecution {
      * puede eliminar varios registros según las options
      * @param stm: ejecutor de la sentencia sql
      * @param options: opciones de condición: "nombre: test, email: test@test"
+     * @param type: tipo de condicion para la setencia sql
      * @return resultado de la ejecución & !por el momento no funciona ya que la ejecución no retorna un resultado
      * @throws SQLException error al ejecutar
     */
-    public ResultSet ExecuteEliminarRegistro(Statement stm ,String options) throws SQLException {
+    public ResultSet ExecuteEliminarRegistro(Statement stm, String options, String type) throws SQLException {
         stm = this.cursor.createStatement();
-        String sql = this.query_builder.CreateDeleteRegisterQuery(options);
+        String sql = this.query_builder.CreateDeleteRegisterQuery(options, type);
         String[] columns = {"id_pk"};
         stm.executeUpdate(sql, columns);
         ResultSet rst = stm.getGeneratedKeys();
