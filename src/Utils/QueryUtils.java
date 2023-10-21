@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import Model.ModelMethods;
 
 
 /**
@@ -140,7 +139,7 @@ public record QueryUtils() {
      * @param model_properties: propiedades del modelo
      * @return el indice o index del typo de dato
      */
-    public int SearchColumnType(String column, String model_properties) {
+    public int SearchColumnType(String model_properties, String column) {
         String[] model_columns = this.GetModelColumns(model_properties, true).split(",");
         int res = 0;
         for(int i=0; i<model_columns.length; ++i) {
@@ -166,12 +165,12 @@ public record QueryUtils() {
     }
     /**
      * combina la llave con el valor para el condicional sql
-     * @param values:  las columnas a asignadas  el valor
+     * @param options:  las columnas a asignadas  el valor
      * @return las columnas asignadas el valor
      */
-    public String GetPrepareConditional(String values, String type) {
+    public String GetPrepareConditional(String options, String type) {
         String conditionalValue = "";
-        String[] div = values.split(",");
+        String[] div = options.split(",");
         for(String val: div) {
             conditionalValue += val.split(":")[0] + "=" + "?" + " " + type;
         }
@@ -187,12 +186,12 @@ public record QueryUtils() {
     }
     /**
      * combina la llave con el valor para el condicional sql
-     * @param values: las columnas para asignar el valor
+     * @param options: las columnas para asignar el valor
      * @return las columnas asignadas el valor
      */
-    public String GetNormalConditional(String values, String type) {
+    public String GetNormalConditional(String options, String type) {
         String conditionalValue = "";
-        String[] div = values.split(",");
+        String[] div = options.split(",");
         for(String val: div) {
             conditionalValue += val.split(":")[0] +
             "="+ "'"+
@@ -231,7 +230,7 @@ public record QueryUtils() {
      * @param model: modelo con las columnas
      * @return columnas asignadas el nombre de la tabla
      */
-    public String AsignTableNameToColumns(String tb_name, String ModelProperties) {
+    public String AsignTableNameToColumns(String ModelProperties, String tb_name) {
         String[] data = ModelProperties.split("\n");
         String build = "";
         for(String l: data) {
@@ -246,13 +245,13 @@ public record QueryUtils() {
     /**
      * genera el condicional de la búsqueda por patrón
      * @param pattern: patrón a buscar
-     * @param columns: columnas cuyo dato tiene el patrón
+     * @param options: columnas cuyo dato tiene el patrón
      * @param type: tipo de condicional para la sentencia sql
      * @return la condición del patrón
      */
-    public String GetPatternCondition(String pattern, String[] columns, String type) {
+    public String GetPatternCondition(String pattern, String[] options, String type) {
         String res = "";
-        for(String k: columns) {
+        for(String k: options) {
             res += k + " like " + "'" + pattern + "'" + " " + type + " ";
         }
         String clean_values = "";
@@ -274,10 +273,10 @@ public record QueryUtils() {
      * @param ref_tb: tabla de referencia
      * @return el condicional del inner join
      */
-    public String InnerJoinConditional(ModelMethods local, ModelMethods ref, String local_tb, String ref_tb) {
+    public String InnerJoinConditional(String local_properties, String ref_properties, String local_tb, String ref_tb) {
         String pk = "", fk = "", build = "";
-        pk = this.GetPkFk(local.GetAllProperties()).get("pk");
-        fk = this.GetPkFk(ref.GetAllProperties()).get("fk");
+        pk = this.GetPkFk(local_properties).get("pk");
+        fk = this.GetPkFk(ref_properties).get("fk");
         build += ref_tb + "." + fk +"="+ local_tb +"."+ pk;
         return build;
     }

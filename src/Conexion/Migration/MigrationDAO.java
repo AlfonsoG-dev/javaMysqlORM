@@ -156,11 +156,11 @@ public class MigrationDAO {
      * @param model: modelo con las columnas a agregar
      * @return true si se agrega de lo contrario false
      */
-    public boolean AddColumn(ModelMethods model, ModelMethods ref_model, String ref_table) {
+    public boolean AddColumn(ModelMethods local_model, ModelMethods ref_model, String ref_table) {
         Statement stm = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExecuteAddColumn(model, ref_model, ref_table, stm);
+            stm = migration_execution.ExecuteAddColumn(local_model, ref_model, ref_table, stm);
             if(stm.getUpdateCount() == 0) {
                 resultado = true;
                 System.out.println("se agregaron las columnas");

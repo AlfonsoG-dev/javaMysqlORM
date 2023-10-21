@@ -120,7 +120,7 @@ public class QueryDAO<T> {
         ResultSet rst = null;
         PreparedStatement pstm = null;
         try {
-            rst = query_execution.ExecuteFindOne(options, type, pstm);
+            rst = query_execution.ExecuteFindOne(pstm, options, type);
             int lenght = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = model_builder_methods.CreateFromRST(rst, lenght);
@@ -159,7 +159,7 @@ public class QueryDAO<T> {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = query_execution.ExecuteFindByColumnName(options, type, stm);
+            rst = query_execution.ExecuteFindByColumnName(stm, options, type);
             int lenght = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = model_builder_methods.CreateFromRST(rst, lenght);
@@ -193,18 +193,18 @@ public class QueryDAO<T> {
      * @param type: tipo de condicion para la setencia sql
      * @return value of column name
      */
-    public String GetValueOfColumnName(String options, String column, String type) {
+    public String GetValueOfColumnName(String options, String columns, String type) {
         String result ="";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = query_execution.ExecuteGetValueOfColumnName(options, column, type, stm);
+            rst = query_execution.ExecuteGetValueOfColumnName(stm, options, columns, type);
             int len = 0;
-            if(column == null || column.isEmpty() == true) {
+            if(columns == null || columns.isEmpty() == true) {
                 len = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
             }
-            else if(column != null || column.isEmpty() == false) {
-                len = column.split(",").length;
+            else if(columns != null || columns.isEmpty() == false) {
+                len = columns.split(",").length;
             }
             while(rst.next()) {
                 for(int i=1; i<= len; i++) {
@@ -244,19 +244,19 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se registra de lo contrario false
      */
-    public boolean InsertNewRegister(ModelMethods nObject, String condition, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean InsertNewRegister(ModelMethods model, String condition, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            if(nObject == null) {
+            if(model == null) {
                 throw new Exception("el objeto no deberia ser null");
             }
             T buscado = this.FindByColumnName(condition, type, model_builder_methods);
             if(buscado == null) {
-                rst = query_execution.ExecuteInsertNewRegister(stm, nObject);
+                rst = query_execution.ExecuteInsertNewRegister(stm, model);
                 while(rst.next()){
-                    System.out.println(nObject.GetAllProperties());
+                    System.out.println(model.GetAllProperties());
                     registrado = true;
                 }
             } else {
@@ -295,19 +295,19 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se modifican los datos de lo contrario false
      **/
-    public boolean UpdateRegister(ModelMethods nObject, String conditions, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean UpdateRegister(ModelMethods model, String conditions, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            if(nObject == null) {
-                throw new Exception("nObject no deberia ser null");
+            if(model == null) {
+                throw new Exception("model no deberia ser null");
             }
             T buscado = this.FindByColumnName(conditions.split(",")[0], type, model_builder_methods);
             if(buscado != null) {
-                rst = query_execution.ExecuteUpdateRegister(stm, nObject, conditions, type);
+                rst = query_execution.ExecuteUpdateRegister(stm, model, conditions, type);
                 while(rst.next()) {
-                    System.out.println(nObject.GetAllProperties());
+                    System.out.println(model.GetAllProperties());
                     registrado = true;
                 }
             } else {

@@ -52,14 +52,14 @@ public class QueryBuilder {
      * @param type: tipo de condicion para la sentencia sql
      * @return la sentencia sql con los valores a retornar y los valores de condicion
      */
-    public String CreateFindColumnValueQuery(String options, String column, String type) {
+    public String CreateFindColumnValueQuery(String options, String columns, String type) {
         String sql = "";
         String clean_values = query_util.GetNormalConditional(options, type);
-        if( column == null || column.isEmpty() == true) {
+        if( columns == null || columns.isEmpty() == true) {
             sql =  "select *" +" from " + tb_name + " where " + clean_values.stripIndent();
         }
-        else if(column != null || column.isEmpty() == false) {
-            sql =  "select "+ column +" from " + tb_name + " where " + clean_values.stripIndent();
+        else if(columns != null || columns.isEmpty() == false) {
+            sql =  "select "+ columns +" from " + tb_name + " where " + clean_values.stripIndent();
         }
         return sql;
     }
@@ -85,8 +85,8 @@ public class QueryBuilder {
      * @param type: tipo de condicion para la sentencia sql
      * @return la sentencia sql para buscar por patrón
      */
-    public String CreateFindPatternQuery(String pattern, String[] columns, String type) {
-        String pattern_condition = query_util.GetPatternCondition(pattern, columns, type);
+    public String CreateFindPatternQuery(String pattern, String[] options, String type) {
+        String pattern_condition = query_util.GetPatternCondition(pattern, options, type);
         String sql = "select * from "  + this.tb_name + " where " + pattern_condition;
         return sql;
     }
@@ -103,9 +103,9 @@ public class QueryBuilder {
      * @param nObject: objeto con el método para crear la sentencia sql
      * @return la sentencia sql para registrar
      */
-    public String CreateInsertRegisterQuery(ModelMethods nObject) {
-        String clean_data = query_util.GetModelType(nObject.GetAllProperties(), false);
-        String column = query_util.GetModelColumns(nObject.GetAllProperties(), false);
+    public String CreateInsertRegisterQuery(ModelMethods model) {
+        String clean_data = query_util.GetModelType(model.GetAllProperties(), false);
+        String column = query_util.GetModelColumns(model.GetAllProperties(), false);
         String sql = "insert into " + tb_name + " (" + column +") values (" + clean_data + ")";
         return sql;
     }
@@ -115,10 +115,10 @@ public class QueryBuilder {
      * @param RefModel: modelo que posee los datos de referencia
      * @return la sentencia sql para inner join
      */
-    public String CreateInnerJoinQuery(String ref_table, ModelMethods RefModel, ModelMethods localModel) {
-        String ref_nombres = query_util.AsignTableNameToColumns("cuentas", RefModel.GetAllProperties());
-        String local_nombres = query_util.AsignTableNameToColumns("users", localModel.GetAllProperties());
-        String pk_fk = query_util.InnerJoinConditional(localModel, RefModel, this.tb_name, ref_table);
+    public String CreateInnerJoinQuery(ModelMethods localModel, ModelMethods RefModel, String ref_table) {
+        String ref_nombres = query_util.AsignTableNameToColumns(RefModel.GetAllProperties(), "cuentas");
+        String local_nombres = query_util.AsignTableNameToColumns(localModel.GetAllProperties(), "users");
+        String pk_fk = query_util.InnerJoinConditional(localModel.GetAllProperties(), RefModel.GetAllProperties(), this.tb_name, ref_table);
         String sql = "select " + local_nombres + ", " + ref_nombres + " from " + this.tb_name + " inner join " + ref_table + " on " + pk_fk;
         return sql;
     }
@@ -129,9 +129,9 @@ public class QueryBuilder {
      * @param type: tipo de condicion para la sentencia sql
      * @return la sentencia sql para modificar
      */
-    public String CreateModifyRegisterQuery(ModelMethods nObject, String condicional, String type) {
+    public String CreateModifyRegisterQuery(ModelMethods model, String condicional, String type) {
         String condition = query_util.GetNormalConditional(condicional, type);
-        String clean_key_value = query_util.GetAsignModelValues(nObject.GetAllProperties());
+        String clean_key_value = query_util.GetAsignModelValues(model.GetAllProperties());
         String sql = "update " + tb_name + " set " +  clean_key_value + " where " + condition;
         return sql;
    }

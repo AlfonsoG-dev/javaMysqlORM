@@ -75,8 +75,8 @@ public class MigrationBuilder extends QueryBuilder {
      * @param AlterOperation: tipo de operacíon a realizar
      * @return sentencia para alterar la tabla
      */
-    private final String CreateAlterTableQuery(String AlterOperation) {
-        return "alter table " + this.tableName + " " + AlterOperation;
+    private final String CreateAlterTableQuery(String AlterOperations) {
+        return "alter table " + this.tableName + " " + AlterOperations;
     }
     /**
      * crea la sentencia sql para agregar una columna a la tabla
@@ -85,7 +85,7 @@ public class MigrationBuilder extends QueryBuilder {
      * @throws SQLException: error de la sentencia sql
      * @return la sentencia sql para agregar una columna a la tabla
      */
-    public String CreateAddColumnQuery(String model_properties, String ref_model, String ref_table, ResultSet rst) throws SQLException {
+    public String CreateAddColumnQuery(String model_properties, String ref_model_properties, String ref_table, ResultSet rst) throws SQLException {
         String sql = "";
         String add_columns = query_util.CompareColumnName(model_properties, rst).get("agregar");
         if(add_columns != "" && add_columns != null) {
@@ -94,11 +94,11 @@ public class MigrationBuilder extends QueryBuilder {
             String[] model_types = query_util.GetModelType(model_properties, true).split(",");
             String[] model_columns = query_util.GetModelColumns(model_properties, true).split(",");
             for(String k: clean_columns) {
-                int index_type = query_util.SearchColumnType(k, model_properties);
+                int index_type = query_util.SearchColumnType(model_properties, k);
                 String clear_types = model_types[index_type].replace("'", "");
                 sql += "add column " + k + " " + clear_types + " after " + model_columns[index_type-1] + ", ";
                 if(k.contains("fk")) {
-                    sql += this.CreateAddConstraintQuery(model_properties, ref_model, rst, ref_table);
+                    sql += this.CreateAddConstraintQuery(model_properties, ref_model_properties, ref_table, rst);
                 }
             }
         }
@@ -198,10 +198,10 @@ public class MigrationBuilder extends QueryBuilder {
      * @throws SQLException error de la consulta sql
      * @return la sentencia sql para agregar constraint de la pk o fk
      */
-    public String CreateAddConstraintQuery(String model_properties, String ref_model, ResultSet rst, String ref_table) throws SQLException {
+    public String CreateAddConstraintQuery(String model_properties, String ref_model_properties, String ref_table, ResultSet rst) throws SQLException {
         String sql = "";
         String add_columns = query_util.CompareColumnName(model_properties, rst).get("agregar");
-        String ref_pk = query_util.GetPkFk(ref_model).get("pk");
+        String ref_pk = query_util.GetPkFk(ref_model_properties).get("pk");
         if(add_columns != "" && add_columns != null) {
             String[] columns = add_columns.split(", ");
             for(int i=0; i<columns.length; ++i) {

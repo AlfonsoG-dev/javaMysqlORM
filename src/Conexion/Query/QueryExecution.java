@@ -103,7 +103,7 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteFindOne(String options, String type, PreparedStatement pstm) throws SQLException {
+    public ResultSet ExecuteFindOne(PreparedStatement pstm, String options, String type) throws SQLException {
         String sql = this.query_builder.CreateFindQuery(options, type);
         String val = this.query_util.GetOptionValue(options);
         pstm = this.cursor.prepareStatement(sql);
@@ -120,7 +120,7 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteFindByColumnName(String options, String type, Statement stm) throws SQLException {
+    public ResultSet ExecuteFindByColumnName(Statement stm, String options, String type) throws SQLException {
         stm = this.cursor.createStatement();
         String sql = this.query_builder.CreateFindByColumnQuery(options, type);
         ResultSet rst = stm.executeQuery(sql);
@@ -137,9 +137,9 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteGetValueOfColumnName (String options, String column, String type, Statement stm) throws SQLException {
+    public ResultSet ExecuteGetValueOfColumnName (Statement stm, String options, String columns, String type) throws SQLException {
         stm = this.cursor.createStatement();
-        String sql = this.query_builder.CreateFindColumnValueQuery(options, column, type);
+        String sql = this.query_builder.CreateFindColumnValueQuery(options, columns, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -151,8 +151,8 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteInsertNewRegister(Statement stm, ModelMethods nObject) throws SQLException {
-        String sql = this.query_builder.CreateInsertRegisterQuery(nObject);
+    public ResultSet ExecuteInsertNewRegister(Statement stm, ModelMethods model) throws SQLException {
+        String sql = this.query_builder.CreateInsertRegisterQuery(model);
         String[] columns = {"id_pk"};
         stm = this.cursor.createStatement();
         stm.executeUpdate(sql, columns);
@@ -168,8 +168,8 @@ public class QueryExecution {
      * @throws SQLException error al ejecutar la sentencia sql
      * @return el resultado de la ejecución
      */
-    public ResultSet ExecuteInnerJoin(String tb_name, Statement stm, ModelMethods refObject, ModelMethods localObject) throws SQLException {
-        String sql = this.query_builder.CreateInnerJoinQuery(tb_name, refObject, localObject);
+    public ResultSet ExecuteInnerJoin(Statement stm, ModelMethods local_model, ModelMethods ref_model, String tb_name) throws SQLException {
+        String sql = this.query_builder.CreateInnerJoinQuery(local_model, ref_model, tb_name);
         String[] columns = {"id_pk"};
         stm = this.cursor.createStatement();
         stm.executeUpdate(sql, columns);
@@ -186,9 +186,9 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteUpdateRegister(Statement stm, ModelMethods nObject, String conditions, String type) throws SQLException {
+    public ResultSet ExecuteUpdateRegister(Statement stm, ModelMethods model, String conditions, String type) throws SQLException {
         stm = this.cursor.createStatement();
-        String sql = this.query_builder.CreateModifyRegisterQuery(nObject, conditions, type);
+        String sql = this.query_builder.CreateModifyRegisterQuery(model, conditions, type);
         String[] columns = {"id_pk"};
         stm.executeUpdate(sql, columns);
         ResultSet rst = stm.getGeneratedKeys();
