@@ -1,9 +1,9 @@
-# Proyecto en Java con mysql
+# Proyect in java with mysql;
 
 >- proyect created using nvim and vscode.
 >- this proyect is intended to create sql sentences for mysql database.
 
-## Dependencias
+## Dependencies
 
 >- [Java JDK 17.0.8](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 >- [mysql connector 8.1.0](https://dev.mysql.com/downloads/connector/j/)
@@ -23,7 +23,7 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 
 >- The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
 
-## Use
+## Normal Use
 ```java
 public static void main(String[] args) {
     try {
