@@ -2,6 +2,7 @@
 
 >- proyect created using nvim and vscode.
 >- this proyect is intended to create sql sentences for mysql database.
+>>- And replicate an ORM functionality in java for mysql.
 
 ## Dependencies
 
@@ -191,4 +192,4 @@ $Compilation = "javac -d ./bin/ -cp " + '" path to `custom jar file`"' + "$Clase
 # Disclaimer
 >>- this proyecto is just for educational purposes.
 >>- security issues are not taken into account.
->>- 
+>>- is not intended to make a full ORM program.
