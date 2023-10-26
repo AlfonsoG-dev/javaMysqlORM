@@ -1,7 +1,7 @@
 # Proyecto en Java con mysql
 
->- proyecto creado en vscode.
->- proyecto desarrollado en java para realizar consultas a una base de datos en mysql.
+>- proyect created using nvim and vscode.
+>- this proyect is intended to create sql sentences for mysql database.
 
 ## Dependencias
 
@@ -104,3 +104,26 @@ public static void main(String[] args) {
     }
 }
 ```
+## Compile And Execute
+>>- if you are not using vscode and need to compile the proyect with the `javac` cli tool.
+>>- I include a `java-exe.ps1` shell script for powersehll.
+
+### PowerShell script for compile and execute.
+
+```shell
+$Clases = "all the clases in the program"
+$Compilation = "javac -d ./bin/" + "$Clases";
+$javaCommand = "java -cp " + '"./bin;`path to the .jar file`" .\src\App.java';
+$runCommand = "$Compilation" + " & " + "$javaCommand"
+Invoke-Expression $runCommand
+```
+
+>>- if you pretend to add a custom jar file from another proyect
+```shell
+$Compilation = "javac -d ./bin/ -cp " + '" path to `custom jar file`"' + "$Clases";
+```
+
+# Disclaimer
+>>- this proyecto is just for educational purposes.
+>>- security issues are not taken into account.
+>>- 
