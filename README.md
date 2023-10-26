@@ -104,6 +104,71 @@ public static void main(String[] args) {
     }
 }
 ```
+### Model Creation
+>>- A Class can be a model if implements `ModelMethods` interface
+>>- ModelMethods have 2 methods and each one have their own purpose
+```java
+/**
+* this method is to obtain the value of the model
+*/
+@Override
+public String GetAllProperties() {
+    String all = "id_pk: " + this.getId_pk() + "\n";
+    if(this.getNombre() != null && this.getNombre() != "" ) {
+        all +="nombre: " + this.getNombre() + "\n";
+    }
+    if(this.getEmail() != null && this.getEmail().isEmpty() == false){
+        all +="email: " + this.getEmail() + "\n";
+    }
+    if(this.getPassword() != null && this.getPassword().isEmpty() == false){
+        all +="password: " + this.getPassword() + "\n";
+    }
+    if(this.getRol() != null && this.getRol().isEmpty() == false){
+        all += "Rol: " + this.getRol() + "\n";
+    }
+    if(this.getCreate_at() != null) {
+        all += "create_at: " + this.getCreate_at() + "\n";
+    }
+    if(this.getUpdate_at() != null) {
+        all += "update_at: " + this.getUpdate_at();
+    }
+    return all;
+}
+/**
+* this method is to obtain the value of the model properties
+*/
+@Override
+public String InitModel() {
+    ModelMetadata metadata = new ModelMetadata("Mundo.Users.User");
+    return metadata.GetModelProperties();
+}
+```
+>>- in each one of the members of that model is neccessary to declare an Annotation
+>>- the Annotation is to declara a constraint and type for the table column in the database
+```java
+/**
+ * id del usuario
+ * solo posee método get
+* */
+@TableProperties(miConstraint = "not null primary key auto_increment", miType = "int")
+private int id_pk;   
+/**
+ * nombre del usuario
+ * */
+@TableProperties(miConstraint = "not null unique", miType = "varchar(100)")
+private String nombre;
+```
+>>- if the model contains an fk column you must declare the reference inside de Annotation
+>>- because of the nature of the migration operation
+```java
+/**
+* foreign key de la cuenta al usuario
+*/
+@TableProperties(miConstraint = "not null. foreign key('name of the fk') references `name of the table`(name of the pk) on delete cascade on update cascade", miType = "int")
+
+```
+---------
+
 ## Compile And Execute
 >>- if you are not using vscode and need to compile the proyect with the `javac` cli tool.
 >>- I include a `java-exe.ps1` shell script for powersehll.

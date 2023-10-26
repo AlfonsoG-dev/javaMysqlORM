@@ -190,7 +190,7 @@ public class User implements ModelMethods {
     }
     /**
      * método que inicializa las propiedades del modelo de base de datos
-     * @return HashMap con las propiedades del modelo de base de datos
+     * @return string con las propiedades del modelo de base de datos
      */
     @Override
     public String InitModel() {
