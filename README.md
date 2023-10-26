@@ -179,17 +179,17 @@ private String nombre;
 ```shell
 $Clases = "all the clases in the program"
 $Compilation = "javac -d ./bin/" + "$Clases";
-$javaCommand = "java -cp " + '"./bin;`path to the .jar file`" .\src\App.java';
+$javaCommand = "java -cp " + '"./bin;path to a custom jar file" .\src\App.java';
 $runCommand = "$Compilation" + " & " + "$javaCommand"
 Invoke-Expression $runCommand
 ```
 
->- if you pretend to add a custom jar file from another proyect
+>- if you need to add a custom jar file from another proyect
 ```shell
-$Compilation = "javac -d ./bin/ -cp " + '" path to `custom jar file`"' + "$Clases";
+$Compilation = "javac -d ./bin/ -cp " + '" path to a custom jar file"' + "$Clases";
 ```
 
 # Disclaimer
->- this proyecto is just for educational purposes.
+>- this proyect is just for educational purposes.
 >- security issues are not taken into account.
 >- is not intended to make a full ORM program.
