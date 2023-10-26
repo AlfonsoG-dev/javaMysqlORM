@@ -38,7 +38,7 @@ public static void main(String[] args) {
         System.out.println(miUserDAO.ReadAll(builder).get(1).getNombre());
 
         // Clase que representa el tipo de dato para la clase DAO
-        User nuevo = new User("juan", "jl@gmail", "123", "user", null, null);
+        User nuevo = new User("juan", "jl@gmail", "123", "user");
 
         //clase Builder del Usuario 
         UserBuilder builder = new UserBuilder();
@@ -90,7 +90,7 @@ public static void main(String[] args) {
         miCuentaDAO.DeleteColumn(mia);
 
         //cambia el nombre de las columnas de la tabla
-        miCuentaDAO.RenameColumn(mia);
+        miCuentaDAO.RenameColumn(mia)e
 
         //cambia el tipo de dato de las columnas de la tabla
         miCuentaDAO.ChangeType(mia);

@@ -65,15 +65,11 @@ public class Cuenta implements ModelMethods {
      * @param nNombre
      * @param nEmail
      * @param nFk
-     * @param nCreate_at
-     * @param nUpdate_at
      */
-    public Cuenta(String nNombre, String nEmail, int nFk, String nCreate_at, String nUpdate_at) {
+    public Cuenta(String nNombre, String nEmail, int nFk) {
         nombre = nNombre;
         email = nEmail;
         user_id_fk = nFk;
-        create_at = nCreate_at;
-        update_at = nUpdate_at;
     }
     
     /**

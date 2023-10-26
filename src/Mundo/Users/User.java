@@ -82,16 +82,12 @@ public class User implements ModelMethods {
      * @param nEmail
      * @param nPassword
      * @param nRol
-     * @param nCreate_at
-     * @param nUpdate_at
      */
-    public User(String nNombre, String nEmail, String nPassword, String nRol, String nCreate_at, String nUpdate_at) {
+    public User(String nNombre, String nEmail, String nPassword, String nRol) {
         nombre = nNombre;
         email = nEmail;
         password = nPassword;
         rol = nRol;
-        create_at = nCreate_at;
-        update_at = nUpdate_at;
     }
     
     /**
