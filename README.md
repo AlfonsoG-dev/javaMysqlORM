@@ -45,14 +45,14 @@ public static void main(String[] args) {
 
         //método para registrar datos de la tabla
         nuevo.setCreate_at(); // asigna la fecha actual
-        miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), builder);
+        miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), "and", builder);
 
         // método para actualizar datos de la tabla
         nuevo.setUpdate_at(); // asigna la fecha actual
-        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", builder);
+        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", "or", builder);
 
         // método para eliminar los datos de una tabla
-        miUserDAO.EliminarRegistro("nombre: juan", builder);
+        miUserDAO.EliminarRegistro("nombre: juan", "and", builder);
     } catch (Exception e) {
         System.out.println(e);
     }
@@ -84,7 +84,7 @@ public static void main(String[] args) {
         miCuentaDAO.CreateTable(mia);
 
         // agrega columnas a la tabla
-        miCuentaDAO.AddColumn(mia);
+        miCuentaDAO.AddColumn(mia, ref_model, "ref_table");
 
         //elimina columnas de la tabla
         miCuentaDAO.DeleteColumn(mia);
