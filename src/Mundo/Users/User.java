@@ -58,7 +58,7 @@ public class User implements ModelMethods {
     //constructor
 
     /**
-     * constructor del usuario
+     * constructor para crear el usuario desde una consulta
      * @param nId_pk
      * @param nNombre
      * @param nEmail
@@ -76,7 +76,28 @@ public class User implements ModelMethods {
         create_at = nCreate_at;
         update_at = nUpdate_at;
     }
-
+    /**
+     * constructor crear el usuario para una consulta
+     * @param nNombre
+     * @param nEmail
+     * @param nPassword
+     * @param nRol
+     * @param nCreate_at
+     * @param nUpdate_at
+     */
+    public User(String nNombre, String nEmail, String nPassword, String nRol, String nCreate_at, String nUpdate_at) {
+        nombre = nNombre;
+        email = nEmail;
+        password = nPassword;
+        rol = nRol;
+        create_at = nCreate_at;
+        update_at = nUpdate_at;
+    }
+    
+    /**
+     * constructor solo para utilizar la clase como modelo
+     */
+    public User() { }
     //métodos
 
     public int getId_pk() {

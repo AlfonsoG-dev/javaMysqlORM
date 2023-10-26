@@ -43,6 +43,7 @@ public class Cuenta implements ModelMethods {
     private String update_at;
     
     /**
+     * constructor para crear la cuenta desde una consulta
      * @param nId
      * @param nNombre
      * @param nEmail
@@ -58,6 +59,28 @@ public class Cuenta implements ModelMethods {
         create_at = nCreate_at;
         update_at = nUpdate_at;
     }
+    
+    /**
+     * constructor para crear la cuenta para una consulta
+     * @param nNombre
+     * @param nEmail
+     * @param nFk
+     * @param nCreate_at
+     * @param nUpdate_at
+     */
+    public Cuenta(String nNombre, String nEmail, int nFk, String nCreate_at, String nUpdate_at) {
+        nombre = nNombre;
+        email = nEmail;
+        user_id_fk = nFk;
+        create_at = nCreate_at;
+        update_at = nUpdate_at;
+    }
+    
+    /**
+     * constructor para utilizar la clase como modelo
+     */
+    public Cuenta(){};
+
     /**
      * @return the id_pk
      */
