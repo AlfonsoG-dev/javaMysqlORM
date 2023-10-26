@@ -159,7 +159,7 @@ private int id_pk;
 @TableProperties(miConstraint = "not null unique", miType = "varchar(100)")
 private String nombre;
 ```
->>- if the model contains an fk column you must declare the reference inside de Annotation
+>>- if the model contains an fk column you must declare the reference inside de Annotation and separate the constraint with `.` before the fk reference
 >>- because of the nature of the migration operation
 ```java
 /**
