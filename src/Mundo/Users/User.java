@@ -3,6 +3,9 @@ package Mundo.Users;
 import java.time.format.DateTimeFormatter;
 
 import Model.ModelMethods;
+import Mundo.TableProperties;
+import Utils.ModelMetadata;
+
 import java.time.LocalDateTime;
 
 /**
@@ -17,32 +20,39 @@ public class User implements ModelMethods {
      * id del usuario
      * solo posee método get
     * */
+    @TableProperties(miConstraint = "not null primary key auto_increment", miType = "int")
     private int id_pk;   
     /**
      * nombre del usuario
      * */
+    @TableProperties(miConstraint = "not null unique", miType = "varchar(100)")
     private String nombre;
     /**
      * email del usuario
      * */
+    @TableProperties(miConstraint = "not null unique", miType = "varchar(100)")
     private String email;
     /**
      * password del usuario
      * */
+    @TableProperties(miConstraint = "not null", miType = "varchar(100)")
     private String password;
     /**
      * rol del usuario
      * puede ser null
      * */
+    @TableProperties(miConstraint = "", miType = "varchar(50)")
     private String rol;
     /**
      * fecha de creación del usuario
      * */
+    @TableProperties(miConstraint = "not null", miType = "datetime")
     private String create_at;
     /**
      * fecha de modificación del usuario
      * pude ser null
      * */
+    @TableProperties(miConstraint = "", miType = "datetime")
     private String update_at;
 
     //constructor
@@ -184,28 +194,7 @@ public class User implements ModelMethods {
      */
     @Override
     public String InitModel() {
-        String build = "";
-        String[] columns = {
-            "id_pk",
-            "nombre",
-            "email",
-            "password",
-            "rol",
-            "create_at",
-            "update_at"
-        };
-        String[] values = {
-            "int not null unique primary key auto_increment",
-            "varchar(100) not null unique",
-            "varchar(100) not null unique",
-            "varchar(100) not null",
-            "varchar(50)",
-            "datetime not null",
-            "datetime"
-        };
-        for(int i = 0; i < columns.length; i++) {
-            build += columns[i] + ": " + values[i] + "\n";
-        }
-        return build;
+        ModelMetadata metadata = new ModelMetadata("Mundo.Users.User");
+        return metadata.GetModelProperties();
     }
 }

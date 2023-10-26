@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import Model.ModelMethods;
+import Mundo.TableProperties;
+import Utils.ModelMetadata;
 
 /**
  * clase que representa el modelo de cuentas
@@ -12,26 +14,32 @@ public class Cuenta implements ModelMethods {
     /**
      * id de la cuenta
      */
+    @TableProperties(miConstraint = "not null unique primary key auto_increment", miType = "int")
     private int id_pk;
     /**
      * nombre de la cuenta
      */
+    @TableProperties(miConstraint = "not null", miType = "varchar(100)")
     private String nombre;
     /**
      * email de la cuenta
      */
+    @TableProperties(miConstraint = "not null", miType = "varchar(100)")
     private String email;
     /**
      * foreign key de la cuenta al usuario
      */
+    @TableProperties(miConstraint = "not null. foreign key(test_id_fk) references `test_user`(id_pk) on delete cascade on update cascade", miType = "int")
     private int user_id_fk;
     /**
      * fecha de creación de la cuenta
      */
+    @TableProperties(miConstraint = "not null", miType = "datetime")
     private String create_at;
     /**
      * fecha de modificación de la cuenta
      */
+    @TableProperties(miConstraint = "", miType = "datetime")
     private String update_at;
     
     /**
@@ -170,27 +178,8 @@ public class Cuenta implements ModelMethods {
      */
     @Override
     public String InitModel() {
-        String build = "";
-        String[] columns = {
-            "id_pk",
-            "nombre",
-            "email",
-            "test_id_fk",
-            "create_at",
-            "update_at"
-        };
-        String[] values = {
-            "int not null unique primary key auto_increment",
-            "varchar(100) not null",
-            "varchar(100) not null",
-            "int not null. foreign key(test_id_fk) references `test_user`(id_pk) on delete cascade on update cascade",
-            "datetime not null",
-            "datetime"
-        };
-        for(int i = 0; i < columns.length; i++) {
-            build += columns[i] + ": " + values[i] + "\n";
-        }
-        return build;
+        ModelMetadata metadata = new ModelMetadata("Mundo.Cuentas.Cuenta");
+        return metadata.GetModelProperties();
     }
 
 }
