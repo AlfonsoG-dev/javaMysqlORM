@@ -13,12 +13,12 @@
 
 The workspace contains two folders by default, where:
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+>- `src`: the folder to maintain sources
+>- `lib`: the folder to maintain dependencies
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+>- Meanwhile, the compiled output files will be generated in the `bin` folder by default.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+>- If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
 
 ## Dependency Management
 
@@ -106,8 +106,8 @@ public static void main(String[] args) {
 }
 ```
 ### Model Creation
->>- A Class can be a model if implements `ModelMethods` interface
->>- ModelMethods have 2 methods and each one have their own purpose
+>- A Class can be a model if implements `ModelMethods` interface
+>>- ModelMethods have 2 methods and each one have their own purpose.
 ```java
 /**
 * this method is to obtain the value of the model
@@ -144,8 +144,8 @@ public String InitModel() {
     return metadata.GetModelProperties();
 }
 ```
->>- in each one of the members of that model is neccessary to declare an Annotation
->>- the Annotation is to declara a constraint and type for the table column in the database
+>- in each one of the members of that model is neccessary to declare an Annotation
+>>- the Annotation is to declara a constraint and type for the table column in the database.
 ```java
 /**
  * id del usuario
@@ -159,8 +159,8 @@ private int id_pk;
 @TableProperties(miConstraint = "not null unique", miType = "varchar(100)")
 private String nombre;
 ```
->>- if the model contains an fk column you must declare the reference inside de Annotation and separate the constraint with `.` before the fk reference
->>- because of the nature of the migration operation
+>- if the model contains an fk column you must declare the reference inside de Annotation and separate the constraint with `.` before the fk reference
+>>- because of the nature of the migration operation.
 ```java
 /**
 * foreign key de la cuenta al usuario
@@ -171,8 +171,8 @@ private String nombre;
 ---------
 
 ## Compile And Execute
->>- if you are not using vscode and need to compile the proyect with the `javac` cli tool.
->>- I include a `java-exe.ps1` shell script for powersehll.
+>- if you are not using vscode and need to compile the proyect with the `javac` cli tool.
+>- I include a `java-exe.ps1` shell script for powersehll.
 
 ### PowerShell script for compile and execute.
 
@@ -184,12 +184,12 @@ $runCommand = "$Compilation" + " & " + "$javaCommand"
 Invoke-Expression $runCommand
 ```
 
->>- if you pretend to add a custom jar file from another proyect
+>- if you pretend to add a custom jar file from another proyect
 ```shell
 $Compilation = "javac -d ./bin/ -cp " + '" path to `custom jar file`"' + "$Clases";
 ```
 
 # Disclaimer
->>- this proyecto is just for educational purposes.
->>- security issues are not taken into account.
->>- is not intended to make a full ORM program.
+>- this proyecto is just for educational purposes.
+>- security issues are not taken into account.
+>- is not intended to make a full ORM program.
