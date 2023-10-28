@@ -6,7 +6,7 @@ $Compilation = "javac -d ./bin/" + "$Clases";
 #run the program 
 $javaCommand = "java -cp " + '"./bin;./lib/mysql-connector-j-8.1.0/mysql-connector-j-8.1.0.jar" .\src\App.java';
 #create jar file from bin and lib if lib have dependencies
-$CreateJarFile = " md test-jar_extraction && Copy-Item -Path .\lib\mysql-connector-j-8.1.0\mysql-connector-j-8.1.0.jar -Destination .\test-jar_extraction\ && cd .\test-jar_extraction\ && jar -xf .\mysql-connector-j-8.1.0.jar && rm -r .\mysql-connector-j-8.1.0.jar && cd .. && jar -cfm test.jar Manifesto.txt -C bin . -C test-jar_extraction . && rm -r ./test-jar_extraction/"
+$CreateJarFile = "md test-jar_extraction && Copy-Item -Path .\lib\mysql-connector-j-8.1.0\mysql-connector-j-8.1.0.jar -Destination .\test-jar_extraction\ && cd .\test-jar_extraction\ && jar -xf .\mysql-connector-j-8.1.0.jar && rm -r .\mysql-connector-j-8.1.0.jar && cd .. && jar -cfm test.jar Manifesto.txt -C bin . -C test-jar_extraction . && rm -r ./test-jar_extraction/"
 
 $runCommand = "$Compilation" + " & " + "$javaCommand"
 

@@ -181,9 +181,9 @@ $Clases = "all the clases in the program"
 $Compilation = "javac -d ./bin/" + "$Clases";
 $javaCommand = "java -cp " + '"./bin;path to a custom jar file" .\src\App.java';
 $runCommand = "$Compilation" + " & " + "$javaCommand"
+$CreateJarFile = "md test-jar_extraction && Copy-Item -Path .\lib\mysql-connector-j-8.1.0\mysql-connector-j-8.1.0.jar -Destination .\test-jar_extraction\ && cd .\test-jar_extraction\ && jar -xf .\mysql-connector-j-8.1.0.jar && rm -r .\mysql-connector-j-8.1.0.jar && cd .. && jar -cfm test.jar Manifesto.txt -C bin . -C test-jar_extraction . && rm -r ./test-jar_extraction/"
 Invoke-Expression $runCommand
 ```
-
 >- if you need to add a custom jar file from another proyect
 ```shell
 $Compilation = "javac -d ./bin/ -cp " + '" path to a custom jar file"' + "$Clases";
@@ -197,6 +197,8 @@ Main-Class: MyMainClassName
 ```
 >- in the powershell script you need to change the `Invoke-Expression $runCommand` to `Invoke-Expression $CreateJarFile`
 >>- the name of the created jer file if: `test.jar`
+>>- CreateJarFile have a bunch of commands to create the jar and add the content of the mysql connector 
+>>- i cannot do the jar file creation in other way.
 
 --------
 
