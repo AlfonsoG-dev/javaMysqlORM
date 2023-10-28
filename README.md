@@ -188,6 +188,17 @@ Invoke-Expression $runCommand
 ```shell
 $Compilation = "javac -d ./bin/ -cp " + '" path to a custom jar file"' + "$Clases";
 ```
+>- if your need to create a jar file
+>>- add in the root of the proyect: `Manifesto.txt`
+```txt
+Manifest-Version: 1.0
+Created-By: 1.7.0_06 (Oracle Corporation)
+Main-Class: MyMainClassName
+```
+>- in the powershell script you need to change the `Invoke-Expression $runCommand` to `Invoke-Expression $CreateJarFile`
+>>- the name of the created jer file if: `test.jar`
+
+--------
 
 # Disclaimer
 >- this proyect is just for educational purposes.
