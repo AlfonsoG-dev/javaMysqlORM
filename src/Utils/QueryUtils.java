@@ -118,7 +118,7 @@ public record QueryUtils() {
      * @param nObject: objeto con los datos del modelo
      * @return los tipos de dato por columna
      */
-    public String GetModelType(String ModelProperties, boolean includePKFK){
+    public String GetModelType(String ModelProperties, boolean includePKFK) {
         String[] data = ModelProperties.split("\n");
         String user_data = "";
         if(includePKFK == false) {
