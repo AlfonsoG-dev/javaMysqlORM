@@ -75,7 +75,9 @@ public class Cuenta implements ModelMethods {
     /**
      * constructor para utilizar la clase como modelo
      */
-    public Cuenta(){}
+    public Cuenta() {
+
+    }
 
     /**
      * @return the id_pk

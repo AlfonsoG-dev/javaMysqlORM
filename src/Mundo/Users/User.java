@@ -93,7 +93,8 @@ public class User implements ModelMethods {
     /**
      * constructor solo para utilizar la clase como modelo
      */
-    public User() { }
+    public User() { 
+    }
     //métodos
 
     public int getId_pk() {
