@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
  * <br> pre: </br> el constraint se aplica al modelo, se debe crear una interface `Constraint` por modelo
  */
 public @interface TableProperties {
-    String miConstraint();   
-    String miType();
+    public String miConstraint();   
+    public String miType();
 }
