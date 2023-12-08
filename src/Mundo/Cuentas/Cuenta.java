@@ -29,7 +29,7 @@ public class Cuenta implements ModelMethods {
     /**
      * foreign key de la cuenta al usuario
      */
-    @TableProperties(miConstraint = "not null. foreign key(test_id_fk) references `test_user`(id_pk) on delete cascade on update cascade", miType = "int")
+    @TableProperties(miConstraint = "not null. foreign key(user_id_fk) references `user`(id_pk) on delete cascade on update cascade", miType = "int")
     private int user_id_fk;
     /**
      * fecha de creación de la cuenta
