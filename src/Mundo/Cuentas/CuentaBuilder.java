@@ -33,7 +33,7 @@ public class CuentaBuilder implements ModelBuilderMethods<Cuenta>{
     @Override
     public Cuenta CreateFromRST(ResultSet rst, int capacity) throws SQLException {
         String[] data = this.ResultDataValidator(rst, capacity);
-        Cuenta nCuenta = new Cuenta(Integer.parseInt(data[1]), data[2], data[3], Integer.parseInt(data[4]), data[5], data[6]);
+        Cuenta nCuenta = new Cuenta(Integer.parseInt(data[1]), data[2], data[3], Integer.parseInt(data[4]), data[5], data[6], data[7]);
         return nCuenta;
     }
     /**
@@ -44,7 +44,7 @@ public class CuentaBuilder implements ModelBuilderMethods<Cuenta>{
     @Override
     public Cuenta CreateFromSTR(String datos) {
         String[] validate = datos.split(",");
-        Cuenta nCuenta = new Cuenta(Integer.parseInt(validate[0]), validate[1], validate[2], Integer.parseInt(validate[3]), validate[4], validate[5]);
+        Cuenta nCuenta = new Cuenta(Integer.parseInt(validate[0]), validate[1], validate[2], Integer.parseInt(validate[3]), validate[4], validate[5], validate[6]);
         return nCuenta;
     }
 }

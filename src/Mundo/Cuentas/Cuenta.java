@@ -32,6 +32,11 @@ public class Cuenta implements ModelMethods {
     @TableProperties(miConstraint = "not null. foreign key(user_id_fk) references `user`(id_pk) on delete cascade on update cascade", miType = "int")
     private int user_id_fk;
     /**
+     * password of the account
+     */
+    @TableProperties(miConstraint = "not null", miType = "varchar(100)")
+    private String password;
+    /**
      * fecha de creación de la cuenta
      */
     @TableProperties(miConstraint = "not null", miType = "datetime")
@@ -51,11 +56,12 @@ public class Cuenta implements ModelMethods {
      * @param nCreate_at
      * @param nUpdate_at
      */
-    public Cuenta(int nId, String nNombre, String nEmail, int nFk, String nCreate_at, String nUpdate_at) {
+    public Cuenta(int nId, String nNombre, String nEmail, int nFk, String nPassword, String nCreate_at, String nUpdate_at) {
         id_pk = nId;
         nombre = nNombre;
         email = nEmail;
         user_id_fk = nFk;
+        password = nPassword;
         create_at = nCreate_at;
         update_at = nUpdate_at;
     }
@@ -66,10 +72,11 @@ public class Cuenta implements ModelMethods {
      * @param nEmail
      * @param nFk
      */
-    public Cuenta(String nNombre, String nEmail, int nFk) {
+    public Cuenta(String nNombre, String nEmail, int nFk, String nPassword) {
         nombre = nNombre;
         email = nEmail;
         user_id_fk = nFk;
+        password = nPassword;
     }
     
     /**
@@ -121,7 +128,19 @@ public class Cuenta implements ModelMethods {
         return user_id_fk;
     }
 
+    /**
+     * @return the password of the account
+     */
+    public String getPassword() {
+        return password;
+    }
 
+    /**
+     * @param nPassword: new password
+     */
+    public void setPassword(String nPassword) {
+        password = nPassword;
+    }
     /**
      * @return the create_at
      */
@@ -183,6 +202,9 @@ public class Cuenta implements ModelMethods {
         }
         if(this.getUser_id_fk() != 0){
             all +="user_id_fk: " + this.getUser_id_fk() + "\n";
+        }
+        if(this.getPassword() != null && this.getPassword().isEmpty() == false){
+            all +="password: " + this.getPassword() + "\n";
         }
         if(this.getCreate_at() != null) {
             all += "create_at: " + this.getCreate_at() + "\n";
