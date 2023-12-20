@@ -183,7 +183,7 @@ public class Cuenta implements ModelMethods {
     public void setUpdate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
         LocalDateTime miDate = LocalDateTime.now();  
-        create_at = dtf.format(miDate).toString();
+        update_at = dtf.format(miDate).toString();
     }
 
 
