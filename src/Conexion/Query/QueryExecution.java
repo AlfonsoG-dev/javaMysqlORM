@@ -154,6 +154,9 @@ public class QueryExecution {
     public ResultSet ExecuteInsertNewRegister(Statement stm, ModelMethods model, Connection miCursor) throws SQLException {
         String sql = this.query_builder.CreateInsertRegisterQuery(model);
         String[] columns = {"id_pk"};
+        if(miCursor == null) {
+            miCursor = this.cursor;
+        }
         stm = miCursor.createStatement();
         stm.executeUpdate(sql, columns);
         ResultSet rst = stm.getGeneratedKeys();
@@ -187,6 +190,9 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
     */
     public ResultSet ExecuteUpdateRegister(Statement stm, ModelMethods model, String conditions, String type, Connection miCursor) throws SQLException {
+        if(miCursor == null) {
+            miCursor = this.cursor;
+        }
         stm = miCursor.createStatement();
         String sql = this.query_builder.CreateModifyRegisterQuery(model, conditions, type);
         String[] columns = {"id_pk"};
@@ -204,6 +210,9 @@ public class QueryExecution {
      * @throws SQLException error al ejecutar
     */
     public ResultSet ExecuteEliminarRegistro(Statement stm, String options, String type, Connection miCursor) throws SQLException {
+        if(miCursor == null) {
+            miCursor = this.cursor;
+        }
         stm = miCursor.createStatement();
         String sql = this.query_builder.CreateDeleteRegisterQuery(options, type);
         String[] columns = {"id_pk"};
