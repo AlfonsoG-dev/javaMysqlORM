@@ -31,6 +31,13 @@ public static void main(String[] args) {
         // clase que posee la conexión a la base de datos
         DbConfig miConfig = new DbConfig("consulta", "localhost", "3306", "test_user", "5x5W12");
 
+        // set the save point of the transaction
+        // the SavePoint only works for the created *transactionCursor*
+        Connection transactionCursor = new Conector(miConfig).conectarMySQL();
+        transactionCursor.setAutoCommit(false);
+        // create the SavePoint to rollback if wanted
+        SavePoint miSave = transactionCursor.setSavePoint();
+
         // Clase DAO para la Query según el tipo de dato generico asignado
         QueryDAO<User> miUserDAO = new QueryDAO<User>("users", miConfig);
 
@@ -45,14 +52,27 @@ public static void main(String[] args) {
 
         //método para registrar datos de la tabla
         nuevo.setCreate_at(); // asigna la fecha actual
-        miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), "and", builder);
+        miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), "and", builder, transactionCursor);
+        // if transactionCursor is null the program sets a default Connection
+        miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), "and", builder, null);
 
         // método para actualizar datos de la tabla
         nuevo.setUpdate_at(); // asigna la fecha actual
-        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", "or", builder);
+        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", "or", builder, transactionCursor);
+        // if transactionCursor is null the program sets a default Connection
+        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", "or", builder, null);
 
         // método para eliminar los datos de una tabla
-        miUserDAO.EliminarRegistro("nombre: juan", "and", builder);
+        miUserDAO.EliminarRegistro("nombre: juan", "and", builder, transactionCursor);
+        // if transactionCursor is null the program sets a default Connection
+        miUserDAO.EliminarRegistro("nombre: juan", "and", builder, null);
+
+        // if want to cancel the database in this SavePoint
+        transactionCursor.rollback()
+        transactionCursor.releaseSavepoint(miSave);
+        // else if whant to commit the changes
+        transactionCursor.commit();
+        transactionCursor.releaseSavepoint(miSave);
     } catch (Exception e) {
         System.out.println(e);
     }
