@@ -1,5 +1,6 @@
 package Conexion.Query;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -244,7 +245,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se registra de lo contrario false
      */
-    public boolean InsertNewRegister(ModelMethods model, String condition, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean InsertNewRegister(ModelMethods model, String condition, String type, ModelBuilderMethods<T> model_builder_methods, Connection miCursor) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         ResultSet rst = null;
@@ -254,7 +255,7 @@ public class QueryDAO<T> {
             }
             T buscado = this.FindByColumnName(condition, type, model_builder_methods);
             if(buscado == null) {
-                rst = query_execution.ExecuteInsertNewRegister(stm, model);
+                rst = query_execution.ExecuteInsertNewRegister(stm, model, miCursor);
                 while(rst.next()){
                     System.out.println(model.GetAllProperties());
                     registrado = true;
@@ -295,7 +296,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se modifican los datos de lo contrario false
      **/
-    public boolean UpdateRegister(ModelMethods model, String conditions, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean UpdateRegister(ModelMethods model, String conditions, String type, ModelBuilderMethods<T> model_builder_methods, Connection miCursor) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         ResultSet rst = null;
@@ -305,7 +306,7 @@ public class QueryDAO<T> {
             }
             T buscado = this.FindByColumnName(conditions.split(",")[0], type, model_builder_methods);
             if(buscado != null) {
-                rst = query_execution.ExecuteUpdateRegister(stm, model, conditions, type);
+                rst = query_execution.ExecuteUpdateRegister(stm, model, conditions, type, miCursor);
                 while(rst.next()) {
                     System.out.println(model.GetAllProperties());
                     registrado = true;
@@ -347,7 +348,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si elimina de lo contrario false
      * */
-    public boolean EliminarRegistro(String options, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean EliminarRegistro(String options, String type, ModelBuilderMethods<T> model_builder_methods, Connection miCursor) throws SQLException {
         boolean eliminar = false;
         Statement stm = null;
         ResultSet rst = null;
@@ -357,7 +358,7 @@ public class QueryDAO<T> {
             }
             T buscado = this.FindByColumnName(options.split(",")[0], type, model_builder_methods);
             if(buscado != null) {
-                rst = query_execution.ExecuteEliminarRegistro(stm, options, type);
+                rst = query_execution.ExecuteEliminarRegistro(stm, options, type, miCursor);
                 System.out.println(options);
                 eliminar = true;
             } else {
