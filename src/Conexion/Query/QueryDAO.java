@@ -358,10 +358,8 @@ public class QueryDAO<T> {
             T buscado = this.FindByColumnName(options.split(",")[0], type, model_builder_methods);
             if(buscado != null) {
                 rst = query_execution.ExecuteEliminarRegistro(stm, options, type);
-                while(rst.next()) {
-                    System.out.println(options);
-                    eliminar = true;
-                }
+                System.out.println(options);
+                eliminar = true;
             } else {
                 eliminar = false;
                 throw new Exception("no deberia ser null");
