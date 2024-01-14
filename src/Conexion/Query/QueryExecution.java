@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import Config.DbConfig;
-import Conexion.Conector;
 import Model.ModelMethods;
 import Utils.QueryBuilder;
 import Utils.QueryUtils;
@@ -16,14 +15,6 @@ import Utils.QueryUtils;
  * clase para crear la ejecución de las sentencias sql
  * */
 public class QueryExecution {
-
-    //atributos
-
-    /**
-     * conector de mysql
-     * es único constante e inmutable
-     * */
-    private Conector miConector;
     /**
      * instancia del this.cursor de mysql
      * es único, constante e inmutable
@@ -49,12 +40,11 @@ public class QueryExecution {
      * constructor de la clase
      * @param tb_name: nombre de la tabla; tb_name != null && tb_name != ""
      */
-    public QueryExecution(String tb_name, DbConfig miConfig) {
+    public QueryExecution(String tb_name, DbConfig miConfig, Connection miConector) {
         table = tb_name;
         query_builder = new QueryBuilder(tb_name);
         query_util = new QueryUtils();
-        miConector = new Conector(miConfig);
-        cursor = miConector.conectarMySQL();
+        cursor = miConector;
     }
 
     //métodos

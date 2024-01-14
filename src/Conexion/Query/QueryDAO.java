@@ -28,8 +28,8 @@ public class QueryDAO<T> {
      * Data Acces Object of GenericObject
      * inicializa el conector de mysql
      */
-    public QueryDAO(String table_name, DbConfig miConfig) {
-        query_execution = new QueryExecution(table_name, miConfig);
+    public QueryDAO(String table_name, DbConfig miConfig, Connection miConector) {
+        query_execution = new QueryExecution(table_name, miConfig, miConector);
         query_util = new QueryUtils();
     }
 
