@@ -141,10 +141,10 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteInsertNewRegister(Statement stm, ModelMethods model, Connection miCursor) throws SQLException {
+    public ResultSet ExecuteInsertNewRegister(Statement stm, ModelMethods model) throws SQLException {
         String sql = this.query_builder.CreateInsertRegisterQuery(model);
         String[] columns = {"id_pk"};
-        stm = miCursor.createStatement();
+        stm = this.cursor.createStatement();
         stm.executeUpdate(sql, columns);
         ResultSet rst = stm.getGeneratedKeys();
         return rst;
@@ -176,8 +176,8 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteUpdateRegister(Statement stm, ModelMethods model, String conditions, String type, Connection miCursor) throws SQLException {
-        stm = miCursor.createStatement();
+    public ResultSet ExecuteUpdateRegister(Statement stm, ModelMethods model, String conditions, String type) throws SQLException {
+        stm = this.cursor.createStatement();
         String sql = this.query_builder.CreateModifyRegisterQuery(model, conditions, type);
         String[] columns = {"id_pk"};
         stm.executeUpdate(sql, columns);
@@ -193,8 +193,8 @@ public class QueryExecution {
      * @return resultado de la ejecución & !por el momento no funciona ya que la ejecución no retorna un resultado
      * @throws SQLException error al ejecutar
     */
-    public ResultSet ExecuteEliminarRegistro(Statement stm, String options, String type, Connection miCursor) throws SQLException {
-        stm = miCursor.createStatement();
+    public ResultSet ExecuteEliminarRegistro(Statement stm, String options, String type) throws SQLException {
+        stm = this.cursor.createStatement();
         String sql = this.query_builder.CreateDeleteRegisterQuery(options, type);
         String[] columns = {"id_pk"};
         stm.executeUpdate(sql, columns);
