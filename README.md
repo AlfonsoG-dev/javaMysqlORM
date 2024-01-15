@@ -39,10 +39,21 @@ public static void main(String[] args) {
         SavePoint miSave = transactionCursor.setSavePoint();
 
         // Clase DAO para la Query según el tipo de dato generico asignado
-        QueryDAO<User> miUserDAO = new QueryDAO<User>("users", miConfig, transactionCursor);
+        QueryDAO<User> miUserDAO = new QueryDAO<User>("user", miConfig, transactionCursor);
 
         // verificar si existen datos y seleccionar 1 para comprobar el nombre
         System.out.println(miUserDAO.ReadAll(builder).get(1).getNombre());
+
+        // inner join of 2 tables
+        User referenceModel = new User("test", "test@gmail", "123", "test");
+        Cuenta localModel = new Cuenta("test", "test@test", loggedUser, "123");
+        String refModelTable = "user";
+
+        // QueryDAO for localModel table
+        QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", miConfig, transactionCursor);
+        String rest = cuentaDAO.InnerJoin(localModel, referenceModel, refModelTable);
+        System.out.println(rest);
+
 
         // Clase que representa el tipo de dato para la clase DAO
         User nuevo = new User("juan", "jl@gmail", "123", "user");
