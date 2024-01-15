@@ -25,6 +25,10 @@ public class QueryDAO<T> {
      */
     private QueryUtils query_util;
     /**
+     * local Connection cursor
+     */
+    private Connection cursor;
+    /**
      * local table name
      */
     private String tb_name;
@@ -34,6 +38,7 @@ public class QueryDAO<T> {
      */
     public QueryDAO(String table_name, DbConfig miConfig, Connection miConector) {
         tb_name = table_name;
+        cursor = miConector;
         query_execution = new QueryExecution(table_name, miConfig, miConector);
         query_util = new QueryUtils();
     }
@@ -284,8 +289,10 @@ public class QueryDAO<T> {
             if(model == null) {
                 throw new Exception("el objeto no deberia ser null");
             }
+            cursor.beginRequest();
             T buscado = this.FindByColumnName(condition, type, model_builder_methods);
             if(buscado == null) {
+                cursor.endRequest();
                 rst = query_execution.ExecuteInsertNewRegister(stm, model);
                 while(rst.next()){
                     System.out.println(model.GetAllProperties());
@@ -335,8 +342,10 @@ public class QueryDAO<T> {
             if(model == null) {
                 throw new Exception("model no deberia ser null");
             }
+            cursor.beginRequest();
             T buscado = this.FindByColumnName(conditions.split(",")[0], type, model_builder_methods);
             if(buscado != null) {
+                cursor.endRequest();
                 rst = query_execution.ExecuteUpdateRegister(stm, model, conditions, type);
                 while(rst.next()) {
                     System.out.println(model.GetAllProperties());
@@ -387,8 +396,10 @@ public class QueryDAO<T> {
             if(options.isEmpty() == true || options == null) {
                 throw new Exception("no deberia ser null ni vacio");
             }
+            cursor.beginRequest();
             T buscado = this.FindByColumnName(options.split(",")[0], type, model_builder_methods);
             if(buscado != null) {
+                cursor.endRequest();
                 rst = query_execution.ExecuteEliminarRegistro(stm, options, type);
                 System.out.println(options);
                 eliminar = true;
