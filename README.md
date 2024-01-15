@@ -39,7 +39,7 @@ public static void main(String[] args) {
         SavePoint miSave = transactionCursor.setSavePoint();
 
         // Clase DAO para la Query según el tipo de dato generico asignado
-        QueryDAO<User> miUserDAO = new QueryDAO<User>("users", miConfig);
+        QueryDAO<User> miUserDAO = new QueryDAO<User>("users", miConfig, transactionCursor);
 
         // verificar si existen datos y seleccionar 1 para comprobar el nombre
         System.out.println(miUserDAO.ReadAll(builder).get(1).getNombre());
@@ -52,20 +52,14 @@ public static void main(String[] args) {
 
         //método para registrar datos de la tabla
         nuevo.setCreate_at(); // asigna la fecha actual
-        miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), "and", builder, transactionCursor);
-        // if transactionCursor is null the program sets a default Connection
-        miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), "and", builder, null);
+        miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), "and", builder);
 
         // método para actualizar datos de la tabla
         nuevo.setUpdate_at(); // asigna la fecha actual
-        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", "or", builder, transactionCursor);
-        // if transactionCursor is null the program sets a default Connection
-        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", "or", builder, null);
+        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", "or", builder);
 
         // método para eliminar los datos de una tabla
-        miUserDAO.EliminarRegistro("nombre: juan", "and", builder, transactionCursor);
-        // if transactionCursor is null the program sets a default Connection
-        miUserDAO.EliminarRegistro("nombre: juan", "and", builder, null);
+        miUserDAO.EliminarRegistro("nombre: juan", "and", builder);
 
         // if want to cancel the database in this SavePoint
         transactionCursor.rollback()
