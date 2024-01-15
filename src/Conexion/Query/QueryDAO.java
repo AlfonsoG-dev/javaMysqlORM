@@ -256,9 +256,9 @@ public class QueryDAO<T> {
         try {
             rst = query_execution.ExecuteInnerJoin(stm, source, reference, ref_table);
             while(rst.next()) {
-                result += rst.getString(tb_name + "_nombre") + ": " +
+                result += tb_name + "->" + rst.getString(tb_name + "_nombre") + ": " +
                     rst.getString(tb_name + "_password") + ", " +
-                    rst.getString(ref_table + "_nombre") + ": " + 
+                    ref_table + "->" + rst.getString(ref_table + "_nombre") + ": " + 
                     rst.getString(ref_table + "_password") + ", ";
             }
 
