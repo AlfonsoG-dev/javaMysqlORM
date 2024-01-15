@@ -155,15 +155,15 @@ public class QueryExecution {
      * @param stm: ejecutor de sentencias sql
      * @param refObject: modelo de referencia
      * @param localObject: modelo local
+     * @param ref_table: table name of the ref_model
      * @throws SQLException error al ejecutar la sentencia sql
      * @return el resultado de la ejecución
      */
-    public ResultSet ExecuteInnerJoin(Statement stm, ModelMethods local_model, ModelMethods ref_model, String tb_name) throws SQLException {
-        String sql = this.query_builder.CreateInnerJoinQuery(local_model, ref_model, tb_name);
-        String[] columns = {"id_pk"};
+    public ResultSet ExecuteInnerJoin(Statement stm, ModelMethods local_model, ModelMethods ref_model, String ref_table) throws SQLException {
+        String sql = this.query_builder.CreateInnerJoinQuery(local_model, ref_model, ref_table);
+        System.out.println(sql +"==");
         stm = this.cursor.createStatement();
-        stm.executeUpdate(sql, columns);
-        ResultSet rst = stm.getGeneratedKeys();
+        ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
     /**

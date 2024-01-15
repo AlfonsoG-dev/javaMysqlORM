@@ -116,8 +116,8 @@ public class QueryBuilder {
      * @return la sentencia sql para inner join
      */
     public String CreateInnerJoinQuery(ModelMethods localModel, ModelMethods RefModel, String ref_table) {
-        String ref_nombres = query_util.AsignTableNameToColumns(RefModel.GetAllProperties(), "cuentas");
-        String local_nombres = query_util.AsignTableNameToColumns(localModel.GetAllProperties(), "users");
+        String ref_nombres = query_util.AsignTableNameToColumns(RefModel.GetAllProperties(), ref_table);
+        String local_nombres = query_util.AsignTableNameToColumns(localModel.GetAllProperties(), this.tb_name);
         String pk_fk = query_util.InnerJoinConditional(localModel.GetAllProperties(), RefModel.GetAllProperties(), this.tb_name, ref_table);
         String sql = "select " + local_nombres + ", " + ref_nombres + " from " + this.tb_name + " inner join " + ref_table + " on " + pk_fk;
         return sql;

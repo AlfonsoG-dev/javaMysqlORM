@@ -275,9 +275,9 @@ public record QueryUtils() {
      */
     public String InnerJoinConditional(String local_properties, String ref_properties, String local_tb, String ref_tb) {
         String pk = "", fk = "", build = "";
-        pk = this.GetPkFk(local_properties).get("pk");
-        fk = this.GetPkFk(ref_properties).get("fk");
-        build += ref_tb + "." + fk +"="+ local_tb +"."+ pk;
+        pk = this.GetPkFk(ref_properties).get("pk");
+        fk = this.GetPkFk(local_properties).get("fk");
+        build += local_tb + "." + fk +"="+ ref_tb +"."+ pk;
         return build;
     }
     /**
@@ -290,10 +290,10 @@ public record QueryUtils() {
         String[] data = ModelProperties.split("\n");
         for(int i=0; i<data.length; ++i) {
             String key = data[i].split(":")[0];
-            if(key.contains("pk")) {
+            if(key.contains("id_pk")) {
                 pkfk.put("pk", key);
             }
-            if(key.contains("fk")) {
+            if(key.contains("id_fk")) {
                 pkfk.put("fk", key);
             }
         }

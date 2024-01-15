@@ -25,10 +25,15 @@ public class QueryDAO<T> {
      */
     private QueryUtils query_util;
     /**
+     * local table name
+     */
+    private String tb_name;
+    /**
      * Data Acces Object of GenericObject
      * inicializa el conector de mysql
      */
     public QueryDAO(String table_name, DbConfig miConfig, Connection miConector) {
+        tb_name = table_name;
         query_execution = new QueryExecution(table_name, miConfig, miConector);
         query_util = new QueryUtils();
     }
@@ -236,6 +241,30 @@ public class QueryDAO<T> {
             result = null;
         }
         return result.substring(0, result.length()-2);
+    }
+    /**
+     * inner join of 2 tables
+     * @param source: table with the fk 
+     * @param reference: table with the pk == fk
+     * @param ref_table: table name of the reference model 
+     * @return a string with the format -> source_name, reference_name, source_password, reference_password
+     */
+    public String InnerJoin(ModelMethods source, ModelMethods reference, String ref_table) {
+        String result = "";
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = query_execution.ExecuteInnerJoin(stm, source, reference, ref_table);
+            while(rst.next()) {
+                result += rst.getString(tb_name + "_nombre") + ", " + rst.getString(ref_table + "_nombre") + ", " + 
+                    rst.getString(tb_name + "_password") + ", " + rst.getString(ref_table + "_password") + ", ";
+            }
+
+        } catch(Exception e) {
+            System.err.println(e);
+        }
+        String c_result = result.substring(0, result.length()-2);
+        return c_result;
     }
     /**
      * ingresar un registro de GenericObjects
