@@ -161,7 +161,6 @@ public class QueryExecution {
      */
     public ResultSet ExecuteInnerJoin(Statement stm, ModelMethods local_model, ModelMethods ref_model, String ref_table) throws SQLException {
         String sql = this.query_builder.CreateInnerJoinQuery(local_model, ref_model, ref_table);
-        System.out.println(sql +"==");
         stm = this.cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
         return rst;
