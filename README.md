@@ -1,8 +1,8 @@
-# Proyect in java with mysql;
+# Project in java with MYSQL;
 
->- proyect created using nvim and vscode.
->- this proyect is intended to create sql sentences for mysql database.
->>- And replicate an ORM functionality in java for mysql.
+>- project created using nvim and vscode.
+>- this project is intended to create SQL sentences for MYSQL database.
+>>- And replicate an ORM functionality in java for MYSQL.
 
 ## Dependencies
 
@@ -11,7 +11,7 @@
 
 ## Folder Structure
 
-The workspace contains two folders by default, where:
+The work space contains two folders by default, where:
 
 >- `src`: the folder to maintain sources
 >- `lib`: the folder to maintain dependencies
@@ -132,7 +132,7 @@ public static void main(String[] args) {
 ```
 ### Model Creation
 >- A Class can be a model if implements `ModelMethods` interface
->>- ModelMethods have 2 methods and each one have their own purpose.
+>>- Model Methods have 2 methods and each one have their own purpose.
 ```java
 /**
 * this method is to obtain the value of the model
@@ -169,7 +169,7 @@ public String InitModel() {
     return metadata.GetModelProperties();
 }
 ```
->- in each one of the members of that model is neccessary to declare an Annotation
+>- in each one of the members of that model is necessary to declare an Annotation
 >>- the Annotation is to declara a constraint and type for the table column in the database.
 ```java
 /**
@@ -184,7 +184,7 @@ private int id_pk;
 @TableProperties(miConstraint = "not null unique", miType = "varchar(100)")
 private String nombre;
 ```
->- if the model contains an fk column you must declare the reference inside de Annotation and separate the constraint with `.` before the fk reference
+>- if the model contains an FK column you must declare the reference inside de Annotation and separate the constraint with `.` before the FK reference
 >>- because of the nature of the migration operation.
 ```java
 /**
@@ -196,7 +196,7 @@ private String nombre;
 ---------
 
 ## Compile And Execute
->- if you are not using vscode and need to compile the proyect with the `javac` cli tool.
+>- if you are not using vscode and need to compile the project with the `javac` cli tool.
 >- I include a `java-exe.ps1` shell script for powersehll.
 
 ### PowerShell script for compile and execute.
@@ -209,12 +209,12 @@ $runCommand = "$Compilation" + " & " + "$javaCommand"
 $CreateJarFile = "md test-jar_extraction && Copy-Item -Path .\lib\mysql-connector-j-8.1.0\mysql-connector-j-8.1.0.jar -Destination .\test-jar_extraction\ && cd .\test-jar_extraction\ && jar -xf .\mysql-connector-j-8.1.0.jar && rm -r .\mysql-connector-j-8.1.0.jar && cd .. && jar -cfm test.jar Manifesto.txt -C bin . -C test-jar_extraction . && rm -r ./test-jar_extraction/"
 Invoke-Expression $runCommand
 ```
->- if you need to add a custom jar file from another proyect
+>- if you need to add a custom jar file from another project
 ```shell
 $Compilation = "javac -d ./bin/ -cp " + '" path to a custom jar file"' + "$Clases";
 ```
 >- if your need to create a jar file
->>- add in the root of the proyect: `Manifesto.txt`
+>>- add in the root of the project: `Manifesto.txt`
 ```txt
 Manifest-Version: 1.0
 Created-By: 1.7.0_06 (Oracle Corporation)
@@ -222,12 +222,12 @@ Main-Class: MyMainClassName
 ```
 >- in the powershell script you need to change the `Invoke-Expression $runCommand` to `Invoke-Expression $CreateJarFile`
 >>- the name of the created jer file if: `test.jar`
->>- CreateJarFile have a bunch of commands to create the jar and add the content of the mysql connector 
+>>- Create Jar File have a bunch of commands to create the jar and add the content of the MYSQL connector 
 >>- i cannot do the jar file creation in other way.
 
 --------
 
 # Disclaimer
->- this proyect is just for educational purposes.
+>- this project is just for educational purposes.
 >- security issues are not taken into account.
 >- is not intended to make a full ORM program.
