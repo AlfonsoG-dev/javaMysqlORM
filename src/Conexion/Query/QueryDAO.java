@@ -247,7 +247,7 @@ public class QueryDAO<T> {
      * @param source: table with the fk 
      * @param reference: table with the pk == fk
      * @param ref_table: table name of the reference model 
-     * @return a string with the format -> source_name, reference_name, source_password, reference_password
+     * @return a string with the format -> source_name: source_password, reference_name: reference_password
      */
     public String InnerJoin(ModelMethods source, ModelMethods reference, String ref_table) {
         String result = "";
@@ -256,8 +256,10 @@ public class QueryDAO<T> {
         try {
             rst = query_execution.ExecuteInnerJoin(stm, source, reference, ref_table);
             while(rst.next()) {
-                result += rst.getString(tb_name + "_nombre") + ", " + rst.getString(ref_table + "_nombre") + ", " + 
-                    rst.getString(tb_name + "_password") + ", " + rst.getString(ref_table + "_password") + ", ";
+                result += rst.getString(tb_name + "_nombre") + ": " +
+                    rst.getString(tb_name + "_password") + ", " +
+                    rst.getString(ref_table + "_nombre") + ": " + 
+                    rst.getString(ref_table + "_password") + ", ";
             }
 
         } catch(Exception e) {
