@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import Config.DbConfig;
 import Model.ModelMethods;
 
 /**
@@ -23,9 +22,9 @@ public class MigrationDAO {
     /**
      * constructor
      */
-    public MigrationDAO(String nTableName, DbConfig miConfig, Connection miCursor) {
+    public MigrationDAO(String nTableName, Connection miCursor) {
         cursor = miCursor;
-        migration_execution = new MigrationExecution(nTableName, miConfig, cursor);
+        migration_execution = new MigrationExecution(nTableName, cursor);
     }
     /**
      * crea la base de datos

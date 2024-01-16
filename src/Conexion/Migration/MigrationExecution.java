@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import Config.DbConfig;
 import Model.ModelMethods;
 import Utils.MigrationBuilder;
 
@@ -28,7 +27,7 @@ public class MigrationExecution {
     /**
      * constructo
      */
-    public MigrationExecution(String nTableName, DbConfig miConfig, Connection miCursor) {
+    public MigrationExecution(String nTableName, Connection miCursor) {
         tableName = nTableName;
         migration_builder = new MigrationBuilder(nTableName);
         cursor = miCursor;
