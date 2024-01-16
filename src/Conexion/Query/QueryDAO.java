@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import Config.DbConfig;
 import Model.ModelBuilderMethods;
 import Model.ModelMethods;
 import Utils.QueryUtils;
@@ -36,10 +35,10 @@ public class QueryDAO<T> {
      * Data Acces Object of GenericObject
      * inicializa el conector de mysql
      */
-    public QueryDAO(String table_name, DbConfig miConfig, Connection miConector) {
+    public QueryDAO(String table_name, Connection miConector) {
         tb_name = table_name;
         cursor = miConector;
-        query_execution = new QueryExecution(table_name, miConfig, miConector);
+        query_execution = new QueryExecution(table_name, miConector);
         query_util = new QueryUtils();
     }
 

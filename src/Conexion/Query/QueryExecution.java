@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import Config.DbConfig;
 import Model.ModelMethods;
 import Utils.QueryBuilder;
 import Utils.QueryUtils;
@@ -40,7 +39,7 @@ public class QueryExecution {
      * constructor de la clase
      * @param tb_name: nombre de la tabla; tb_name != null && tb_name != ""
      */
-    public QueryExecution(String tb_name, DbConfig miConfig, Connection miConector) {
+    public QueryExecution(String tb_name, Connection miConector) {
         table = tb_name;
         query_builder = new QueryBuilder(tb_name);
         query_util = new QueryUtils();
