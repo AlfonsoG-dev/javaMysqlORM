@@ -1,5 +1,6 @@
 package Conexion.Migration;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -16,10 +17,15 @@ public class MigrationDAO {
      */
     private MigrationExecution migration_execution;
     /**
+     * database Connection cursor
+     */
+    private Connection cursor;
+    /**
      * constructor
      */
-    public MigrationDAO(String nTableName, DbConfig miConfig) {
-        migration_execution = new MigrationExecution(nTableName, miConfig);
+    public MigrationDAO(String nTableName, DbConfig miConfig, Connection miCursor) {
+        cursor = miCursor;
+        migration_execution = new MigrationExecution(nTableName, miConfig, cursor);
     }
     /**
      * crea la base de datos

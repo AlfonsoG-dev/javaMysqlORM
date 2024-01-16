@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import Conexion.Conector;
 import Config.DbConfig;
 import Model.ModelMethods;
 import Utils.MigrationBuilder;
@@ -19,10 +18,6 @@ public class MigrationExecution {
      */
     private String tableName;
     /**
-     * conexión a la base de datos
-     */
-    private Conector miConector;
-    /**
      * operador de la base de datos
      */
     private Connection cursor;
@@ -33,11 +28,10 @@ public class MigrationExecution {
     /**
      * constructo
      */
-    public MigrationExecution(String nTableName, DbConfig miConfig) {
+    public MigrationExecution(String nTableName, DbConfig miConfig, Connection miCursor) {
         tableName = nTableName;
         migration_builder = new MigrationBuilder(nTableName);
-        miConector = new Conector(miConfig);
-        cursor = miConector.conectarMySQL();
+        cursor = miCursor;
     }
     /**
      * crea la base de datos si esta no existe
