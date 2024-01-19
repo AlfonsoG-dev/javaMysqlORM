@@ -20,6 +20,10 @@ public class QueryDAO<T> {
      */
     private QueryExecution query_execution;
     /**
+     * builder interface to build the objects
+     */
+    private ModelBuilderMethods<T> model_builder_methods;
+    /**
      * herramientas para la creacion de las querys
      */
     private QueryUtils query_util;
@@ -35,11 +39,12 @@ public class QueryDAO<T> {
      * Data Acces Object of GenericObject
      * inicializa el conector de mysql
      */
-    public QueryDAO(String table_name, Connection miConector) {
+    public QueryDAO(String table_name, Connection miConector, ModelBuilderMethods<T> builder) {
         tb_name = table_name;
         cursor = miConector;
         query_execution = new QueryExecution(table_name, miConector);
         query_util = new QueryUtils();
+        model_builder_methods = builder;
     }
 
     //métodos
@@ -86,7 +91,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return lista de registros
      */
-    public ArrayList<T> ReadAll(ModelBuilderMethods<T> model_builder_methods) {
+    public ArrayList<T> ReadAll() {
         PreparedStatement pstm = null;
         ResultSet rst = null;
         ArrayList<T> resultados = new ArrayList<T>();
@@ -126,7 +131,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return el usuario buscado
      */
-    public T FindOne(String options, String type, ModelBuilderMethods<T> model_builder_methods) {
+    public T FindOne(String options, String type) {
         T buscado = null;
         ResultSet rst = null;
         PreparedStatement pstm = null;
@@ -165,7 +170,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return el registro buscado
      */
-    public T FindByColumnName(String options, String type, ModelBuilderMethods<T> model_builder_methods) {
+    public T FindByColumnName(String options, String type) {
         T buscado = null;
         Statement stm = null;
         ResultSet rst = null;
@@ -281,7 +286,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se registra de lo contrario false
      */
-    public boolean InsertNewRegister(ModelMethods model, String condition, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean InsertNewRegister(ModelMethods model, String condition, String type) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         ResultSet rst = null;
@@ -290,7 +295,7 @@ public class QueryDAO<T> {
                 throw new Exception("el objeto no deberia ser null");
             }
             cursor.beginRequest();
-            T buscado = this.FindByColumnName(condition, type, model_builder_methods);
+            T buscado = this.FindByColumnName(condition, type);
             if(buscado == null) {
                 cursor.endRequest();
                 rst = query_execution.ExecuteInsertNewRegister(stm, model);
@@ -334,7 +339,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se modifican los datos de lo contrario false
      **/
-    public boolean UpdateRegister(ModelMethods model, String conditions, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean UpdateRegister(ModelMethods model, String conditions, String type) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         ResultSet rst = null;
@@ -343,7 +348,7 @@ public class QueryDAO<T> {
                 throw new Exception("model no deberia ser null");
             }
             cursor.beginRequest();
-            T buscado = this.FindByColumnName(conditions.split(",")[0], type, model_builder_methods);
+            T buscado = this.FindByColumnName(conditions.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
                 rst = query_execution.ExecuteUpdateRegister(stm, model, conditions, type);
@@ -397,7 +402,7 @@ public class QueryDAO<T> {
                 throw new Exception("no deberia ser null ni vacio");
             }
             cursor.beginRequest();
-            T buscado = this.FindByColumnName(options.split(",")[0], type, model_builder_methods);
+            T buscado = this.FindByColumnName(options.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
                 rst = query_execution.ExecuteEliminarRegistro(stm, options, type);
