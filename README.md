@@ -1,30 +1,29 @@
 # Project in java with MYSQL;
 
->- project created using nvim and vscode.
->- this project is intended to create SQL sentences for MYSQL database.
->>- And replicate an ORM functionality in java for MYSQL.
+>- An ORM like app in java.
+>- creates SQL sentences for MYSQL database using class object as models.
+>>- i try to replicate an ORM functionality in java for MYSQL databases.
 
-## Dependencies
+# Dependencies
 
 >- [Java JDK 17.0.8](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 >- [mysql connector 8.1.0](https://dev.mysql.com/downloads/connector/j/)
 
-## Folder Structure
+# Features
+- [x] dinamic query creation base on class object as models.
+- [x] normal CRUD operations and InnerJoin as well.
+- [x] dinamic Migration base on Annotations fields declared inside the model.
+- [x] accepts table relationships using the class Model Annotations.
 
-The work space contains two folders by default, where:
+## TODO's
+- [ ] view statements.
+- [ ] use min and max in statements.
+- [ ] creation of tablespace.
+- [ ] add method to execute the given sql query.
 
->- `src`: the folder to maintain sources
->- `lib`: the folder to maintain dependencies
+-----
 
->- Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
->- If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
->- The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
-
-## Normal Use
+# Normal Use
 ```java
 public static void main(String[] args) {
     try {
@@ -84,7 +83,7 @@ public static void main(String[] args) {
 }
 ```
 
-## Migration Use
+# Migration Use
 
 ```java
 public static void main(String[] args) {
@@ -130,7 +129,7 @@ public static void main(String[] args) {
     }
 }
 ```
-### Model Creation
+## Model Creation
 >- A Class can be a model if implements `ModelMethods` interface
 >>- Model Methods have 2 methods and each one have their own purpose.
 ```java
@@ -195,11 +194,11 @@ private String nombre;
 ```
 ---------
 
-## Compile And Execute
+# Compile And Execute
 >- if you are not using vscode and need to compile the project with the `javac` cli tool.
 >- I include a `java-exe.ps1` shell script for powersehll.
 
-### PowerShell script for compile and execute.
+## PowerShell script for compile and execute.
 
 ```shell
 $Clases = "all the clases in the program"

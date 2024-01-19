@@ -43,6 +43,7 @@ public class QueryDAO<T> {
     }
 
     //métodos
+    // TODO: add create view to the operations
 
     /**
      * se utiliza para dar la cantidad de datos en la tabla
