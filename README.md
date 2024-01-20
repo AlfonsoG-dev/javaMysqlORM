@@ -20,6 +20,7 @@
 - [ ] use min and max in statements.
 - [ ] creation of tablespace.
 - [ ] add method to execute the given sql query.
+- [ ] add select into query
 
 -----
 
