@@ -8,6 +8,7 @@
 
 >- [Java JDK 17.0.8](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 >- [mysql connector 8.1.0](https://dev.mysql.com/downloads/connector/j/)
+>- [mysql_query_examples](https://www.w3schools.com/mysql/)
 
 # Features
 - [x] dinamic query creation base on class object as models.
