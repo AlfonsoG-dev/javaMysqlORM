@@ -33,16 +33,26 @@ public class MigrationDAO {
      */
     public boolean CreateDataBase(String DbName) {
         Statement stm = null;
+        ResultSet rst = null;
         boolean resultado = false;
         try {
             stm = migration_execution.ExecuteCreateDatabase(DbName);
-            if(stm.getUpdateCount() > 0) {
+            rst = stm.getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
                 System.out.println("database created");
                 resultado = true;
             }
         } catch(Exception e) {
             System.err.println(e);
         } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                }catch(Exception e) {
+                    System.err.println(e);
+                }
+                rst = null;
+            }
             if(stm != null) {
                 try {
                     stm.close();
@@ -61,16 +71,26 @@ public class MigrationDAO {
      */
     public boolean SelecDatabase(String DbName) {
         Statement stm = null;
+        ResultSet rst = null;
         boolean resultado = false;
         try {
             stm = migration_execution.ExecuteSelectDatabase(DbName, stm);
-            if(stm.getUpdateCount() == 0) {
+            rst = stm.getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
                 System.out.println("se selecciona la base de datos");
             }
         } catch(Exception e) {
             System.err.println(e);
         } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                }catch(Exception e) {
+                    System.err.println(e);
+                }
+                rst = null;
+            }
             if(stm != null) {
                 try {
                     stm.close();
@@ -92,8 +112,8 @@ public class MigrationDAO {
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            rst = migration_execution.ExecuteCreateTable(model, stm);
-            if(this.ShowTableData() == true) {
+            rst = migration_execution.ExecuteCreateTable(model, stm).getGeneratedKeys();
+            if(this.ShowTableData() == true && rst.getMetaData().getColumnCount() > 0) {
                 System.out.println("tabla creada");
                 resultado = true;
             }
@@ -163,16 +183,26 @@ public class MigrationDAO {
      */
     public boolean AddColumn(ModelMethods local_model, ModelMethods ref_model, String ref_table) {
         Statement stm = null;
+        ResultSet rst = null;
         boolean resultado = false;
         try {
             stm = migration_execution.ExecuteAddColumn(local_model, ref_model, ref_table, stm);
-            if(stm.getUpdateCount() == 0) {
+            rst = stm.getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
                 System.out.println("se agregaron las columnas");
             }
         } catch(Exception e) {
             System.err.println(e);
         } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    System.err.println(e);
+                }
+                rst = null;
+            }
             if(stm != null) {
                 try {
                     stm.close();
@@ -191,16 +221,26 @@ public class MigrationDAO {
      */
     public boolean RenameColumn(ModelMethods model) {
         Statement stm = null;
+        ResultSet rst = null;
         boolean resultado = false;
         try {
             stm = migration_execution.ExceuteRenameColumn(model, stm);
-            if(stm.getUpdateCount() == 0) {
+            rst = stm.getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
                 System.out.println("se modifico el nombre de la columna");
             }
         } catch(Exception e) {
             System.err.println(e);
         } finally {
+            if(rst != null) { 
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    System.err.println(e);
+                }
+                rst = null;
+            }
             if(stm != null) { 
                 try {
                     stm.close();
@@ -219,16 +259,26 @@ public class MigrationDAO {
      */
     public boolean ChangeType(ModelMethods model) {
         Statement stm = null;
+        ResultSet rst = null;
         boolean resultado = false;
         try {
             stm = migration_execution.ExecuteChangeColumnType(model, stm);
-            if(stm.getUpdateCount() == 0) {
+            rst = stm.getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
                 System.out.println("se modifico el tipo de dato");
             }
         } catch(Exception e) {
             System.err.println(e);
         } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    System.err.println(e);
+                }
+                rst = null;
+            }
             if(stm != null) {
                 try {
                     stm.close();
@@ -247,16 +297,26 @@ public class MigrationDAO {
      */
     public boolean DeleteColumn(ModelMethods model) {
         Statement stm = null;
+        ResultSet rst = null;
         boolean resultado = false;
         try {
             stm = migration_execution.ExecuteDeleteColumn(model, stm);
-            if(stm.getUpdateCount() == 0) {
+            rst = stm.getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
                 System.out.println("se elimino la columna");
             }
         } catch(Exception e) {
             System.err.println(e);
         } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    System.err.println(e);
+                }
+                rst = null;
+            }
             if(stm != null) {
                 try {
                     stm.close();

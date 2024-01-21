@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
-
 /**
  * record con las herramientas para crear las sentencias sql según los datos del modelo y tabla
  */
@@ -172,6 +170,7 @@ public record QueryUtils() {
         String conditionalValue = "";
         String[] div = options.split(",");
         for(String val: div) {
+            // TODO: add not assignment for conditional value
             conditionalValue += val.split(":")[0] + "=" + "?" + " " + type;
         }
         String clean_values = "";
@@ -193,6 +192,7 @@ public record QueryUtils() {
         String conditionalValue = "";
         String[] div = options.split(",");
         for(String val: div) {
+            // TODO: add not assignment for conditional value
             conditionalValue += val.split(":")[0] +
             "="+ "'"+
             val.split(":")[1].stripIndent()+

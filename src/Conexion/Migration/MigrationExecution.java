@@ -36,13 +36,13 @@ public class MigrationExecution {
      * crea la base de datos si esta no existe
      * @param DbName: nombre de la base de datos a crear
      * @param stm: ejecutor de la sentencia sql
-     * @return resultado de la ejecución de la sentencia sql
      * @throws SQLException error al ejecutar la sentencia sql
+     * @return ejecutor de la sentencia
      */
     public Statement ExecuteCreateDatabase(String DbName) throws SQLException {
         String sql = migration_builder.CreateDataBaseQuery(DbName);
         Statement stm = this.cursor.createStatement();
-        stm.executeUpdate(sql);
+        stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         return stm;
     }
     /**
@@ -55,23 +55,21 @@ public class MigrationExecution {
     public Statement ExecuteSelectDatabase(String DbName, Statement stm) throws SQLException {
         String sql = migration_builder.CreateSelectDatabase(DbName);
         stm = this.cursor.createStatement();
-        stm.executeUpdate(sql);
+        stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         return stm;
     }
     /**
      * crea la tabla si esta no existe
      * @param model: modelo con los datos para crear la tabla
      * @param stm: ejecutor de la sentencia sql
-     * @return resultado de la ejecución de la sentencia sql
      * @throws SQLException error al ejecutar la sentencia sql
+     * @return resultado de la ejecución de la sentencia sql
      */
-    public ResultSet ExecuteCreateTable(ModelMethods model, Statement stm) throws SQLException {
+    public Statement ExecuteCreateTable(ModelMethods model, Statement stm) throws SQLException {
         String sql = migration_builder.CreateTableQuery(model);
         stm = this.cursor.createStatement();
-        String[] columns = {"id_pk"};
-        stm.executeUpdate(sql, columns);
-        ResultSet rst = stm.getGeneratedKeys();
-        return rst;
+        stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+        return stm;
     }
     /**
      * ejecuta la sentencia para mostrar los datos de la tabla
@@ -97,7 +95,7 @@ public class MigrationExecution {
         String sql = migration_builder.CreateAddColumnQuery(model.InitModel(), ref_model.InitModel(), ref_table, rst);
         if(sql != "" || sql != null) {
             stm = this.cursor.createStatement();
-            stm.executeUpdate(sql);
+            stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         }
         return stm;
     }
@@ -113,7 +111,7 @@ public class MigrationExecution {
         String sql = migration_builder.CreateRenameColumnQuery(model.InitModel(), rst);
         if(sql != "" || sql != null) {
             stm = this.cursor.createStatement();
-            stm.executeUpdate(sql);
+            stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         }
         return stm;
     }
@@ -129,7 +127,7 @@ public class MigrationExecution {
         String sql = migration_builder.CreateChangeTypeQuery(model.InitModel(), rst);
         if(sql != "" || sql != null) {
             stm = this.cursor.createStatement();
-            stm.executeUpdate(sql);
+            stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         }
         return stm;
     }
@@ -145,7 +143,7 @@ public class MigrationExecution {
         String sql = migration_builder.CreateDeleteColumnQuery(model.InitModel(), rst);
         if(sql != "" || sql != null) {
             stm = this.cursor.createStatement();
-            stm.executeUpdate(sql);
+            stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         }
         return stm;
     }
