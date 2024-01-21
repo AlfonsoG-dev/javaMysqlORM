@@ -26,6 +26,10 @@
 - [ ] add rename constraint to alter table operation.
 - [ ] to add a constraint that is not fk o pk use `change column 'column_name' 'column_name'type NOT NULL UNIQUE`
 
+## Errors
+- [ ] error when trying to add a new column
+- [ ] error when trying to delete a column
+
 -----
 
 # Normal Use
