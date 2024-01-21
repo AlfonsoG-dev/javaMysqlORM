@@ -125,9 +125,7 @@ public class MigrationBuilder extends QueryBuilder {
             String[] keys = rename_columns.split(", ");
             for(String co: keys) {
                 String[] values = co.split(":");
-                for(int i=1; i < values.length; ++i) {
-                    sql += "rename column " + values[1] + " to " + values[0] +  ", ";
-                }
+                sql += "rename column " + values[1] + " to " + values[0] +  ", ";
             }
         }
         String clear_sql = "";
@@ -151,7 +149,7 @@ public class MigrationBuilder extends QueryBuilder {
             for(String t: types) {
                 String type = t.split(":")[0];
                 int index = Integer.parseInt(t.split(":")[1]);
-                sql += "modify column " + model_columns[index] + " " + type + ", ";
+                sql += "modify column " + model_columns[index-1] + " " + type + ", ";
             }
         }
         String clear_sql = "";

@@ -8,6 +8,7 @@
 
 >- [Java JDK 17.0.8](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 >- [mysql connector 8.1.0](https://dev.mysql.com/downloads/connector/j/)
+>- [mysql_query_examples](https://www.w3schools.com/mysql/)
 
 # Features
 - [x] dynamic query creation base on class object as models.
@@ -105,24 +106,19 @@ public static void main(String[] args) {
         miCuentaDAO.CreateTable(mia);
 
         // agrega columnas a la tabla
-        miCuentaDAO.AddColumn(mia, ref_model, "ref_table");
+        boolean includeFKPK = false | true;
+        miCuentaDAO.AddColumn(mia, ref_model, "ref_table", includeFKPK);
 
         //elimina columnas de la tabla
-        miCuentaDAO.DeleteColumn(mia);
+        miCuentaDAO.DeleteColumn(mia, includeFKPK);
 
         //cambia el nombre de las columnas de la tabla
-        miCuentaDAO.RenameColumn(mia)e
+        miCuentaDAO.RenameColumn(mia);
 
         //cambia el tipo de dato de las columnas de la tabla
-        miCuentaDAO.ChangeType(mia);
-
-        //agrega constraint a las columnas de la tabla
-        miCuentaDAO.AddConstraint(mia);
-
-        //elimina el constraint de las columnas de la tabla
-        miCuentaDAO.DeleteConstraint(mia);
+        miCuentaDAO.ChangeType(mia, includeFKPK);
     } catch (Exception e) {
-        System.out.println(e);
+        e.prinStackTrace();
     }
 }
 ```

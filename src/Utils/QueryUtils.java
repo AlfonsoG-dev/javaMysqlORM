@@ -65,7 +65,13 @@ public record QueryUtils() {
                 clean_colunm_name += columns[i].stripIndent() + ",";
             }
         }
-        return this.CleanValues(clean_colunm_name, 2);
+        String c_values = "";
+        if(includePKFK == true) {
+            c_values = this.CleanValues(clean_colunm_name, 2);
+        } else {
+            c_values = clean_colunm_name;
+        }
+        return c_values;
     }
     /**
      * obtener las columnas de la tabla
