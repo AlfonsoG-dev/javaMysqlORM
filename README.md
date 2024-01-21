@@ -10,18 +10,18 @@
 >- [mysql connector 8.1.0](https://dev.mysql.com/downloads/connector/j/)
 
 # Features
-- [x] dinamic query creation base on class object as models.
+- [x] dynamic query creation base on class object as models.
 - [x] normal CRUD operations and InnerJoin as well.
-- [x] dinamic Migration base on Annotations fields declared inside the model.
+- [x] dynamic Migration base on Annotations fields declared inside the model.
 - [x] accepts table relationships using the class Model Annotations.
 
 ## TODO's
 - [ ] view statements.
 - [ ] use min and max in statements.
-- [ ] creation of tablespace.
-- [ ] add method to execute the given sql query.
+- [ ] creation of table space.
+- [ ] add method to execute the given SQL query.
 - [ ] add select into DAO operation.
-- [ ] logit operator 'not' is not implemented correctly.
+- [ ] logic operator 'not' is not implemented correctly.
 
 -----
 
@@ -32,12 +32,9 @@ public static void main(String[] args) {
         // clase que posee la conexión a la base de datos
         DbConfig miConfig = new DbConfig("consulta", "localhost", "3306", "test_user", "5x5W12");
 
-        // set the save point of the transaction
-        // the SavePoint only works for the created *transactionCursor*
+        // enable transaction usage when auto commit is false
         Connection transactionCursor = new Conector(miConfig).conectarMySQL();
         transactionCursor.setAutoCommit(false);
-        // create the SavePoint to rollback if wanted
-        SavePoint miSave = transactionCursor.setSavePoint();
 
         // Clase DAO para la Query según el tipo de dato generico asignado
         QueryDAO<User> miUserDAO = new QueryDAO<User>("user", miConfig, transactionCursor);
@@ -75,10 +72,8 @@ public static void main(String[] args) {
 
         // if want to cancel the database in this SavePoint
         transactionCursor.rollback()
-        transactionCursor.releaseSavepoint(miSave);
         // else if whant to commit the changes
         transactionCursor.commit();
-        transactionCursor.releaseSavepoint(miSave);
     } catch (Exception e) {
         System.out.println(e);
     }
@@ -197,7 +192,7 @@ private String nombre;
 ---------
 
 # Compile And Execute
->- if you are not using vscode and need to compile the project with the `javac` cli tool.
+>- if you are not using vscode and need to compile the project with the `javac` CLI tool.
 >- I include a `java-exe.ps1` shell script for powersehll.
 
 ## PowerShell script for compile and execute.
@@ -218,11 +213,10 @@ $Compilation = "javac -d ./bin/ -cp " + '" path to a custom jar file"' + "$Clase
 >>- add in the root of the project: `Manifesto.txt`
 ```txt
 Manifest-Version: 1.0
-Created-By: 1.7.0_06 (Oracle Corporation)
 Main-Class: MyMainClassName
 ```
 >- in the powershell script you need to change the `Invoke-Expression $runCommand` to `Invoke-Expression $CreateJarFile`
->>- the name of the created jer file if: `test.jar`
+>>- the name of the created jar file if: `test.jar`
 >>- Create Jar File have a bunch of commands to create the jar and add the content of the MYSQL connector 
 >>- i cannot do the jar file creation in other way.
 
