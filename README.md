@@ -111,24 +111,19 @@ public static void main(String[] args) {
         miCuentaDAO.CreateTable(mia);
 
         // agrega columnas a la tabla
-        miCuentaDAO.AddColumn(mia, ref_model, "ref_table");
+        boolean includeFKPK = false | true;
+        miCuentaDAO.AddColumn(mia, ref_model, "ref_table", includeFKPK);
 
         //elimina columnas de la tabla
-        miCuentaDAO.DeleteColumn(mia);
+        miCuentaDAO.DeleteColumn(mia, includeFKPK);
 
         //cambia el nombre de las columnas de la tabla
-        miCuentaDAO.RenameColumn(mia)e
+        miCuentaDAO.RenameColumn(mia);
 
         //cambia el tipo de dato de las columnas de la tabla
-        miCuentaDAO.ChangeType(mia);
-
-        //agrega constraint a las columnas de la tabla
-        miCuentaDAO.AddConstraint(mia);
-
-        //elimina el constraint de las columnas de la tabla
-        miCuentaDAO.DeleteConstraint(mia);
+        miCuentaDAO.ChangeType(mia, includeFKPK);
     } catch (Exception e) {
-        System.out.println(e);
+        e.prinStackTrace();
     }
 }
 ```
