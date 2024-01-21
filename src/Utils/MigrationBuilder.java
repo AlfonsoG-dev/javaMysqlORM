@@ -172,23 +172,20 @@ public class MigrationBuilder extends QueryBuilder {
     public String CreateDeleteColumnQuery(String model_properties, boolean includePKFK, ResultSet rst) throws SQLException {
         String sql = "";
         String delete_columns = query_util.CompareColumnName(model_properties, rst).get("eliminar");
-        if(includePKFK == true) {
-            System.out.println("you better use CreateDeleteConstraintQuery to delete pk or fk columns");
-        }
         if(delete_columns != "" && delete_columns != null) {
             String[] columns = delete_columns.split(", ");
             for(String k: columns) {
                 String[] datos = k.split(":");
                 sql += "drop column "  + datos[0] + ", ";
-                if(datos[0].contains("fk")) {
-                    sql += this.CreateDeleteConstraintQuery(model_properties, includePKFK, rst);
+                if(datos[0].contains("_fk")) {
+                    sql += this.CreateDeleteConstraintQuery(delete_columns, model_properties, includePKFK);
                 }
             }
         }
         String clear_sql = "";
         String res = "";
         if(sql != "" && sql != null) {
-            clear_sql = query_util.CleanValues(sql, 0);
+            clear_sql = query_util.CleanValues(sql, 2);
             res = this.CreateAlterTableQuery(clear_sql);
         }
         return res;
@@ -229,26 +226,23 @@ public class MigrationBuilder extends QueryBuilder {
      * @throws SQLException: error de la consulta sql
      * @return la sentencia sql para eliminar el constraint de la pk o fk
      */
-    public String CreateDeleteConstraintQuery(String model_properties, boolean includePKFK, ResultSet rst) throws SQLException {
+    public String CreateDeleteConstraintQuery(String delete_columns, String model_properties, boolean includePKFK) throws SQLException {
         String sql = "";
-        String delete_columns = query_util.CompareColumnName(model_properties, rst).get("eliminar");
-        if(delete_columns != "" && delete_columns != null) {
-            String k1 = delete_columns.split(", ")[0];
-            String[] k2 = k1.split(":");
-            String[] model_types = query_util.GetModelType(model_properties, includePKFK).split(",");
-            String[] model_columns = query_util.GetModelColumns(model_properties, includePKFK).split(",");
-            int index = Integer.parseInt(k2[1]);
-            if(model_types[index].contains("primary key")) {
-                sql += "drop primary key , ";
-            }
-            if(model_types[index].contains("foreign key")) {
-                sql += "drop foreign key " + model_columns[index] + ", ";
-            }
-        }
+         if(delete_columns != "" && delete_columns != null) {
+             String k1 = delete_columns.split(", ")[0];
+             String[] k2 = k1.split(":");
+             if(k2[0].contains("pk")) {
+                 sql += "drop primary key , ";
+             }
+             if(k2[0].contains("fk")) {
+                 sql += "drop foreign key " + k2[0] + ", ";
+
+             }
+         }
         String clear_sql = "";
         String res = "";
         if(sql != "" && sql != null) {
-            clear_sql = query_util.CleanValues(sql, 2);
+            clear_sql = query_util.CleanValues(sql, 0);
             res = clear_sql;
         }
         return res;

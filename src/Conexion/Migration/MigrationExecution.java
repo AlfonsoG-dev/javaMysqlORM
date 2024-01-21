@@ -142,6 +142,7 @@ public class MigrationExecution {
     public Statement ExecuteDeleteColumn(ModelMethods model, boolean includePKFK, Statement stm) throws SQLException {
         ResultSet rst = this.ExecuteShowTableData(stm);
         String sql = migration_builder.CreateDeleteColumnQuery(model.InitModel(), includePKFK, rst);
+        System.out.println(sql);
         if(sql != "" || sql != null) {
             stm = this.cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);

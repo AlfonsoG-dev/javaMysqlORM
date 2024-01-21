@@ -307,7 +307,7 @@ public class MigrationDAO {
                 System.out.println("se elimino la columna");
             }
         } catch(Exception e) {
-            System.err.println(e);
+            e.printStackTrace();
         } finally {
             if(rst != null) {
                 try {
