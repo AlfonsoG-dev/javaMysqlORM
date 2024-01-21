@@ -124,13 +124,20 @@ public record QueryUtils() {
         String[] data = ModelProperties.split("\n");
         String user_data = "";
         if(includePKFK == false) {
-            for(int i = 1; i < data.length; i++) {
-                user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
+            for(int i = 0; i < data.length; i++) {
+                String columnType = data[i].split(":")[1].stripIndent();
+                String point_strip = "";
+                if(columnType.contains(".")) {
+                    point_strip = columnType.split("\\.")[0].stripIndent();
+                } else {
+                    point_strip = columnType;
+                }
+                user_data += "'" + point_strip + "'" + ",";
             }
         }
         else {
             for(int i = 0; i < data.length; i++) {
-                user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
+                user_data += "'"+ data[i].split(":")[1].stripIndent() + "'" + ",";
             }
         }
         return this.CleanValues(user_data, 1);
