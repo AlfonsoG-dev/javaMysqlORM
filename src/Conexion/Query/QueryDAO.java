@@ -373,7 +373,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si elimina de lo contrario false
      * */
-    public boolean EliminarRegistro(String options, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
+    public boolean EliminarRegistro(String options, String type) throws SQLException {
         boolean eliminar = false;
         Statement stm = null;
         try {
