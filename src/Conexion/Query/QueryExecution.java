@@ -137,15 +137,13 @@ public class QueryExecution {
      * solo puede registrar 1 elemento a la vez
      * @param stm: ejecutor de sentencia sql
      * @param nObject: elemento a registrar
-     * @return resultado de la ejecución
+     * @return row count or '0' when nothing is returned
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteInsertNewRegister(Statement stm, ModelMethods model) throws SQLException {
+    public int ExecuteInsertNewRegister(Statement stm, ModelMethods model) throws SQLException {
         String sql = this.query_builder.CreateInsertRegisterQuery(model);
-        String[] columns = {"id_pk"};
         stm = this.cursor.createStatement();
-        stm.executeUpdate(sql, columns);
-        ResultSet rst = stm.getGeneratedKeys();
+        int rst = stm.executeUpdate(sql);
         return rst;
     }
     /**
@@ -171,16 +169,14 @@ public class QueryExecution {
      * @param nObject: elemento a modificar
      * @param conditions: condiciones de query; "nombre: test, email: test"
      * @param type: tipo de condicion para la setencia sql
-     * @return resultado de la ejecución
+     * @return the row count of the statement or '0' when return nothing 
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteUpdateRegister(Statement stm, ModelMethods model, String conditions, String type) throws SQLException {
+    public int ExecuteUpdateRegister(Statement stm, ModelMethods model, String conditions, String type) throws SQLException {
         stm = this.cursor.createStatement();
         String sql = this.query_builder.CreateModifyRegisterQuery(model, conditions, type);
-        String[] columns = {"id_pk"};
-        stm.executeUpdate(sql, columns);
-        ResultSet rst = stm.getGeneratedKeys();
-        return rst;
+        int retorno = stm.executeUpdate(sql);
+        return retorno;
     }
     /**
      * ejecuta la eliminación de un registro
@@ -188,15 +184,13 @@ public class QueryExecution {
      * @param stm: ejecutor de la sentencia sql
      * @param options: opciones de condición: "nombre: test, email: test@test"
      * @param type: tipo de condicion para la setencia sql
-     * @return resultado de la ejecución & !por el momento no funciona ya que la ejecución no retorna un resultado
+     * @return the row count or '0' when nothing is returned
      * @throws SQLException error al ejecutar
     */
-    public ResultSet ExecuteEliminarRegistro(Statement stm, String options, String type) throws SQLException {
+    public int ExecuteEliminarRegistro(Statement stm, String options, String type) throws SQLException {
         stm = this.cursor.createStatement();
         String sql = this.query_builder.CreateDeleteRegisterQuery(options, type);
-        String[] columns = {"id_pk"};
-        stm.executeUpdate(sql, columns);
-        ResultSet rst = stm.getGeneratedKeys();
-        return rst;
+        int result = stm.executeUpdate(sql);
+        return result;
     }
 }

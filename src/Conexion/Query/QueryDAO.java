@@ -289,7 +289,6 @@ public class QueryDAO<T> {
     public boolean InsertNewRegister(ModelMethods model, String condition, String type) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
-        ResultSet rst = null;
         try {
             if(model == null) {
                 throw new Exception("el objeto no deberia ser null");
@@ -298,8 +297,8 @@ public class QueryDAO<T> {
             T buscado = this.FindByColumnName(condition, type);
             if(buscado == null) {
                 cursor.endRequest();
-                rst = query_execution.ExecuteInsertNewRegister(stm, model);
-                while(rst.next()){
+                int rst = query_execution.ExecuteInsertNewRegister(stm, model);
+                if(rst > 0){
                     System.out.println(model.GetAllProperties());
                     registrado = true;
                 }
@@ -311,14 +310,6 @@ public class QueryDAO<T> {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         } finally{
-            if(rst != null) {
-                try {
-                    rst.close();
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
-                rst = null;
-            }
             if(stm != null) {
                 try {
                     stm.close();
@@ -342,7 +333,6 @@ public class QueryDAO<T> {
     public boolean UpdateRegister(ModelMethods model, String conditions, String type) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
-        ResultSet rst = null;
         try {
             if(model == null) {
                 throw new Exception("model no deberia ser null");
@@ -351,8 +341,8 @@ public class QueryDAO<T> {
             T buscado = this.FindByColumnName(conditions.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
-                rst = query_execution.ExecuteUpdateRegister(stm, model, conditions, type);
-                while(rst.next()) {
+                int result = query_execution.ExecuteUpdateRegister(stm, model, conditions, type);
+                if(result > 0) {
                     System.out.println(model.GetAllProperties());
                     registrado = true;
                 }
@@ -364,16 +354,6 @@ public class QueryDAO<T> {
         } catch( Exception e) {
             System.err.println(e.getMessage());
         } finally {
-            if(rst != null){
-                try {
-                    rst.close();
-
-                } catch( Exception e2) {
-                    System.err.println(e2.getMessage());
-                }
-                rst = null;
-            }
-
             if(stm != null) {
                 try {
                     stm.close();
@@ -396,7 +376,6 @@ public class QueryDAO<T> {
     public boolean EliminarRegistro(String options, String type, ModelBuilderMethods<T> model_builder_methods) throws SQLException {
         boolean eliminar = false;
         Statement stm = null;
-        ResultSet rst = null;
         try {
             if(options.isEmpty() == true || options == null) {
                 throw new Exception("no deberia ser null ni vacio");
@@ -405,9 +384,11 @@ public class QueryDAO<T> {
             T buscado = this.FindByColumnName(options.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
-                rst = query_execution.ExecuteEliminarRegistro(stm, options, type);
-                System.out.println(options);
-                eliminar = true;
+                int rst = query_execution.ExecuteEliminarRegistro(stm, options, type);
+                if(rst > 0) {
+                    System.out.println(options);
+                    eliminar = true;
+                }
             } else {
                 eliminar = false;
                 throw new Exception("no deberia ser null");
@@ -416,14 +397,6 @@ public class QueryDAO<T> {
 
             System.err.println(e);
         } finally {
-            if(rst != null){
-                try{
-                    rst.close();
-                } catch ( Exception e) {
-                    System.err.println(e);
-                }
-                rst = null;
-            }
             if(stm != null) {
                 try {
                     stm.close();
