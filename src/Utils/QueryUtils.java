@@ -34,7 +34,6 @@ public record QueryUtils() {
         for(int i = 0; i < columns.length; i++) {
             String[] name = columns[i].split(",");
             for(int j = 0; j < name.length; j++) {
-                //System.out.println(name[j]);
                 if(name[j].equalsIgnoreCase("columnName") == true) {
                     cont++;
                 }
@@ -47,31 +46,31 @@ public record QueryUtils() {
      * @param nObject: objeto con los datos del modelo
      * @return las columnas del modelo
      */
-    public String GetModelColumns(String ModelProperties, boolean includePKFK) {
-        String[] data = ModelProperties.split("\n");
-        String column_name = "";
+    public String GetModelColumns(String modelProperties, boolean includePKFK) {
+        String[] data = modelProperties.split("\n");
+        String columName = "";
         for(int i = 0; i < data.length; i++) {
-            column_name += data[i].split(":")[0].stripIndent() + ", ";
+            columName += data[i].split(":")[0].stripIndent() + ", ";
         }
-        String[] columns = column_name.split(",");
-        String clean_colunm_name = "";
+        String[] columns = columName.split(",");
+        String cleanColumName = "";
         if(includePKFK == false) {
             for(int i = 1; i < columns.length; i++) {
-                clean_colunm_name += columns[i].stripIndent() + ",";
+                cleanColumName += columns[i].stripIndent() + ",";
             }
         }
         else {
             for(int i = 0; i < columns.length; i++) {
-                clean_colunm_name += columns[i].stripIndent() + ",";
+                cleanColumName += columns[i].stripIndent() + ",";
             }
         }
-        String c_values = "";
+        String cleanvalues = "";
         if(includePKFK == true) {
-            c_values = this.CleanValues(clean_colunm_name, 2);
+            cleanvalues = this.CleanValues(cleanColumName, 2);
         } else {
-            c_values = clean_colunm_name;
+            cleanvalues = cleanColumName;
         }
-        return c_values;
+        return cleanvalues;
     }
     /**
      * obtener las columnas de la tabla
@@ -79,7 +78,7 @@ public record QueryUtils() {
      * @return la lista de columnas de la tabla
      */
     public HashMap<String, ArrayList<String>> GetTableData(ResultSet rst) throws SQLException {
-        HashMap<String, ArrayList<String>> DatosTable = new HashMap<>();
+        HashMap<String, ArrayList<String>> datosTable = new HashMap<>();
         ArrayList<String> columns = new ArrayList<>();
         ArrayList<String> types = new ArrayList<>();
         while(rst.next()) {
@@ -87,66 +86,66 @@ public record QueryUtils() {
             for(String k: data) {
                 columns.add(k);
             }
-            String[] tipos = rst.getString(2).split("\n");
-            String[] null_co = rst.getString(3).split("\n");
-            String[] key_co = rst.getString(4).split("\n");
-            String[] extra = rst.getString(6).split("\n");
-            for(int k = 0; k < tipos.length; ++k) {
-                String tipo = "";
-                if(tipos[k] != null) {
-                    tipo += tipos[k];
+            String[] mTypes = rst.getString(2).split("\n");
+            String[] nullColumn = rst.getString(3).split("\n");
+            String[] keyColumn = rst.getString(4).split("\n");
+            String[] extraValue = rst.getString(6).split("\n");
+            for(int k = 0; k < mTypes.length; ++k) {
+                String type = "";
+                if(mTypes[k] != null) {
+                    type += mTypes[k];
                 }
-                if(null_co[k] != null && null_co[k].contains("NO")) {
-                    tipo += " not null";
+                if(nullColumn[k] != null && nullColumn[k].contains("NO")) {
+                    type += " not null";
                 }
-                if(key_co[k] != null) {
-                    if(key_co[k].contains("PRI")) {
-                        tipo += " unique primary key";
+                if(keyColumn[k] != null) {
+                    if(keyColumn[k].contains("PRI")) {
+                        type += " unique primary key";
                     }
-                    if(key_co[k].contains("MUL")) {
-                        tipo += " foreign key";
+                    if(keyColumn[k].contains("MUL")) {
+                        type += " foreign key";
                     }
-                    if(key_co[k].contains("UNI")) {
-                        tipo += " unique";
+                    if(keyColumn[k].contains("UNI")) {
+                        type += " unique";
                     }
                 }
-                if(extra[k] != null) {
-                    tipo += " " + extra[k];
+                if(extraValue[k] != null) {
+                    type += " " + extraValue[k];
                 }
-                types.add(tipo.trim());
+                types.add(type.trim());
             }
 
         }
-        DatosTable.put("columns", columns);
-        DatosTable.put("tipos", types);
-        return DatosTable;
+        datosTable.put("columns", columns);
+        datosTable.put("tipos", types);
+        return datosTable;
     }
     /**
      * obtener el tipo por cada columna del modelo
      * @param nObject: objeto con los datos del modelo
      * @return los tipos de dato por columna
      */
-    public String GetModelType(String ModelProperties, boolean includePKFK) {
-        String[] data = ModelProperties.split("\n");
-        String user_data = "";
+    public String GetModelType(String modelProperties, boolean includePKFK) {
+        String[] data = modelProperties.split("\n");
+        String userData = "";
         if(includePKFK == false) {
             for(int i = 0; i < data.length; i++) {
                 String columnType = data[i].split(":")[1].stripIndent();
-                String point_strip = "";
+                String pointStrip = "";
                 if(columnType.contains(".")) {
-                    point_strip = columnType.split("\\.")[0].stripIndent();
+                    pointStrip = columnType.split("\\.")[0].stripIndent();
                 } else {
-                    point_strip = columnType;
+                    pointStrip = columnType;
                 }
-                user_data += "'" + point_strip + "'" + ",";
+                userData += "'" + pointStrip + "'" + ",";
             }
         }
         else {
             for(int i = 0; i < data.length; i++) {
-                user_data += "'"+ data[i].split(":")[1].stripIndent() + "'" + ",";
+                userData += "'"+ data[i].split(":")[1].stripIndent() + "'" + ",";
             }
         }
-        return this.CleanValues(user_data, 1);
+        return this.CleanValues(userData, 1);
     }
     /**
      * buscar el typo de dato de una columna
@@ -154,11 +153,11 @@ public record QueryUtils() {
      * @param model_properties: propiedades del modelo
      * @return el indice o index del typo de dato
      */
-    public int SearchColumnType(String model_properties, String column) {
-        String[] model_columns = this.GetModelColumns(model_properties, true).split(",");
+    public int SearchColumnType(String modelProperties, String column) {
+        String[] modelColumns = this.GetModelColumns(modelProperties, true).split(",");
         int res = 0;
-        for(int i=0; i<model_columns.length; ++i) {
-            if(model_columns[i].contains(column)) {
+        for(int i=0; i<modelColumns.length; ++i) {
+            if(modelColumns[i].contains(column)) {
                 res = i;
             }
         }
@@ -175,8 +174,8 @@ public record QueryUtils() {
         for(String val: div) {
             values += val.split(":")[1] +",";
         }
-        String clean_values = this.CleanValues(values, 1);
-        return clean_values;
+        String cleanValues = this.CleanValues(values, 1);
+        return cleanValues;
     }
     /**
      * combina la llave con el valor para el condicional sql
@@ -190,15 +189,15 @@ public record QueryUtils() {
             // TODO: add not assignment for conditional value
             conditionalValue += val.split(":")[0] + "=" + "?" + " " + type;
         }
-        String clean_values = "";
+        String cleanValues = "";
         if(type.equals("and")) {
-            clean_values = this.CleanValues(conditionalValue, 4);
+            cleanValues = this.CleanValues(conditionalValue, 4);
         } else if(type.equals("not")) {
-            clean_values = this.CleanValues(conditionalValue, 4);
+            cleanValues = this.CleanValues(conditionalValue, 4);
         } else if(type.equals("or")) {
-            clean_values = this.CleanValues(conditionalValue, 3);
+            cleanValues = this.CleanValues(conditionalValue, 3);
         }
-        return clean_values;
+        return cleanValues;
     }
     /**
      * combina la llave con el valor para el condicional sql
@@ -215,31 +214,31 @@ public record QueryUtils() {
             val.split(":")[1].stripIndent()+
             "'" + " " + type;
         }
-        String clean_values = "";
+        String cleanValues = "";
         if(type.equals("and")) {
-            clean_values = this.CleanValues(conditionalValue, 4);
+            cleanValues = this.CleanValues(conditionalValue, 4);
         } else if(type.equals("not")) {
-            clean_values = this.CleanValues(conditionalValue, 4);
+            cleanValues = this.CleanValues(conditionalValue, 4);
         } else if(type.equals("or")) {
-            clean_values = this.CleanValues(conditionalValue, 3);
+            cleanValues = this.CleanValues(conditionalValue, 3);
         }
-        return clean_values;
+        return cleanValues;
     }
     /**
      * asigna los valores a las columnas del modelo separados por ","
      * @param nObject: objeto que contiene la información del modelo
      * @return los valores asignados a la columna
      */
-    public String GetAsignModelValues(String ModelProperties) {
-        String[] data = ModelProperties.split("\n");
-        String key_value = "";
+    public String GetAsignModelValues(String modelProperties) {
+        String[] data = modelProperties.split("\n");
+        String keyValue = "";
         for(int i = 1; i < data.length; i++) {
             String key = data[i].split(":")[0];
             String value = data[i].split(":")[1];
-            key_value += key.stripIndent() +"="+ "'"+value.stripIndent()+"'"+ ", ";
+            keyValue += key.stripIndent() +"="+ "'"+value.stripIndent()+"'"+ ", ";
         }
-        String clean_values = this.CleanValues(key_value, 2);
-        return clean_values;
+        String cleanValues = this.CleanValues(keyValue, 2);
+        return cleanValues;
     }
     /**
      * asignar el nombre de la tabla a las columnas del modelo
@@ -247,17 +246,17 @@ public record QueryUtils() {
      * @param model: modelo con las columnas
      * @return columnas asignadas el nombre de la tabla
      */
-    public String AsignTableNameToColumns(String ModelProperties, String tb_name) {
-        String[] data = ModelProperties.split("\n");
+    public String AsignTableNameToColumns(String modelProperties, String tbName) {
+        String[] data = modelProperties.split("\n");
         String build = "";
         for(String l: data) {
             String key = l.split(":")[0];
             if(key.contains("pk") == false && key.contains("fk") == false) {
-                build += tb_name + "." + key + " as " + tb_name +"_"+ key +", ";
+                build += tbName + "." + key + " as " + tbName +"_"+ key +", ";
             }
         }
-        String clean_values = this.CleanValues(build, 2);
-        return clean_values;
+        String cleanValues = this.CleanValues(build, 2);
+        return cleanValues;
     }
     /**
      * genera el condicional de la búsqueda por patrón
@@ -271,15 +270,15 @@ public record QueryUtils() {
         for(String k: options) {
             res += k + " like " + "'" + pattern + "'" + " " + type + " ";
         }
-        String clean_values = "";
+        String cleanValues = "";
         if(type.equals("and")) {
-            clean_values = this.CleanValues(res, 4);
+            cleanValues = this.CleanValues(res, 4);
         } else if(type.equals("not")) {
-            clean_values = this.CleanValues(res, 4);
+            cleanValues = this.CleanValues(res, 4);
         } else if(type.equals("or")) {
-            clean_values = this.CleanValues(res, 3);
+            cleanValues = this.CleanValues(res, 3);
         }
-        return clean_values;
+        return cleanValues;
     }
     /**
      * genera el condicional para innerjoin utilizando la fk del modelo de referencia y la pk del modelo primario
@@ -290,11 +289,11 @@ public record QueryUtils() {
      * @param ref_tb: tabla de referencia
      * @return el condicional del inner join
      */
-    public String InnerJoinConditional(String local_properties, String ref_properties, String local_tb, String ref_tb) {
+    public String InnerJoinConditional(String localProperties, String refProperties, String localTable, String refTable) {
         String pk = "", fk = "", build = "";
-        pk = this.GetPkFk(ref_properties).get("pk");
-        fk = this.GetPkFk(local_properties).get("fk");
-        build += local_tb + "." + fk +"="+ ref_tb +"."+ pk;
+        pk = this.GetPkFk(refProperties).get("pk");
+        fk = this.GetPkFk(localProperties).get("fk");
+        build += localTable + "." + fk +"="+ refTable +"."+ pk;
         return build;
     }
     /**
@@ -302,9 +301,9 @@ public record QueryUtils() {
      * @param model: el modelo con la lista de columnas
      * @return pk o fk
      */
-    public HashMap<String, String> GetPkFk(String ModelProperties) {
+    public HashMap<String, String> GetPkFk(String modelProperties) {
         HashMap<String, String> pkfk = new HashMap<String, String>();
-        String[] data = ModelProperties.split("\n");
+        String[] data = modelProperties.split("\n");
         for(int i=0; i<data.length; ++i) {
             String key = data[i].split(":")[0];
             if(key.contains("id_pk")) {
@@ -321,10 +320,10 @@ public record QueryUtils() {
      * @param model_properties: propiedades del modelo
      * @return la lista de las columnas del modelo
      */
-    public ArrayList<String> AuxiliarModelProperties(String model_properties) {
+    public ArrayList<String> AuxiliarmodelProperties(String modelProperties) {
         ArrayList<String> columns =  new ArrayList<>();
-        String[] model_columns = model_properties.split(",");
-        for(String k: model_columns) {
+        String[] modelColumns = modelProperties.split(",");
+        for(String k: modelColumns) {
             columns.add(k);
         }
         return columns;
@@ -335,34 +334,34 @@ public record QueryUtils() {
      * @param rst: resultado de la ejecución de la sentencia sql
      * @return retorna las columnas a eliminar, agregar o renombrar
      */
-    public HashMap<String, String> CompareColumnName(String model_properties, ResultSet rst) throws SQLException {
-        String local_p = this.GetModelColumns(model_properties, true);
-        ArrayList<String> model_columns = this.AuxiliarModelProperties(local_p);
-        ArrayList<String> table_columns = this.GetTableData(rst).get("columns");
+    public HashMap<String, String> CompareColumnName(String modelProperties, ResultSet rst) throws SQLException {
+        String local_p = this.GetModelColumns(modelProperties, true);
+        ArrayList<String> modelColumns = this.AuxiliarmodelProperties(local_p);
+        ArrayList<String> tableColumns = this.GetTableData(rst).get("columns");
         HashMap<String, String> resultado = new HashMap<>();
-        if(model_columns.size() == table_columns.size()) {
+        if(modelColumns.size() == tableColumns.size()) {
             String rename = "";
-            for(int i=0; i<model_columns.size(); ++i) {
-                if(table_columns.get(i).equals(model_columns.get(i)) == false) {
-                    rename += model_columns.get(i) + ":" + table_columns.get(i) + ", ";
+            for(int i=0; i<modelColumns.size(); ++i) {
+                if(tableColumns.get(i).equals(modelColumns.get(i)) == false) {
+                    rename += modelColumns.get(i) + ":" + tableColumns.get(i) + ", ";
                 }
             }
             resultado.put("rename", rename);
         }
-        else if(model_columns.size() > table_columns.size()) {
+        else if(modelColumns.size() > tableColumns.size()) {
             String agregar = "";
-            for(int i=0; i<model_columns.size(); i++) {
-                if(!table_columns.contains(model_columns.get(i))) {
-                    agregar += model_columns.get(i) + ", ";
+            for(int i=0; i<modelColumns.size(); i++) {
+                if(!tableColumns.contains(modelColumns.get(i))) {
+                    agregar += modelColumns.get(i) + ", ";
                 }
             }
             resultado.put("agregar", agregar);
         }
-        else if(table_columns.size() > model_columns.size()) {
+        else if(tableColumns.size() > modelColumns.size()) {
             String eliminar = "";
-            for(int i=0; i<table_columns.size(); i++) {
-                if(model_columns.contains(table_columns.get(i)) == false) {
-                    eliminar += table_columns.get(i) + ":" + i + ", ";
+            for(int i=0; i<tableColumns.size(); i++) {
+                if(modelColumns.contains(tableColumns.get(i)) == false) {
+                    eliminar += tableColumns.get(i) + ":" + i + ", ";
                 }
             }
             resultado.put("eliminar", eliminar);
@@ -376,16 +375,16 @@ public record QueryUtils() {
      * @throws SQLException: error de la consulta sql
      * @return las columnas con el tipo de dato a cambiar
      */
-    public HashMap<String, String> CompareColumnType(String model_properties, ResultSet rst) throws SQLException {
-        String local_t = this.GetModelType(model_properties, true);
-        ArrayList<String> table_types = this.GetTableData(rst).get("tipos");
-        ArrayList<String> model_types = this.AuxiliarModelProperties(local_t);
+    public HashMap<String, String> CompareColumnType(String modelProperties, ResultSet rst) throws SQLException {
+        String localTypes = this.GetModelType(modelProperties, true);
+        ArrayList<String> tableTypes = this.GetTableData(rst).get("tipos");
+        ArrayList<String> modelTypes = this.AuxiliarmodelProperties(localTypes);
         HashMap<String, String> resultado = new HashMap<>();
-        if(model_types.size() == table_types.size()) {
+        if(modelTypes.size() == tableTypes.size()) {
             String rename = "";
-            for(int i=0; i<model_types.size(); ++i) {
-                String clean_types = model_types.get(i).replace("'", "");
-                if(table_types.contains(clean_types) == false) {
+            for(int i=0; i<modelTypes.size(); ++i) {
+                String clean_types = modelTypes.get(i).replace("'", "");
+                if(tableTypes.contains(clean_types) == false) {
                     rename += clean_types + ":" + i + ", ";
                 }
             }
