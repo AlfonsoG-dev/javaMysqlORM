@@ -49,6 +49,13 @@ public class QueryDAO<T> {
 
     //métodos
     // TODO: add create view to the operations
+    /**
+     * {@link Connection} cursor
+     * @return {@link Connection}
+     */
+    public Connection GetConnection() {
+        return cursor;
+    }
 
     /**
      * se utiliza para dar la cantidad de datos en la tabla
