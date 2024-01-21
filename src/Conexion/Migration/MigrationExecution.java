@@ -23,13 +23,13 @@ public class MigrationExecution {
     /**
      * clase que crea las sentencias sql para la migración
      */
-    private MigrationBuilder migration_builder;
+    private MigrationBuilder migrationBuilder;
     /**
      * constructo
      */
     public MigrationExecution(String nTableName, Connection miCursor) {
         tableName = nTableName;
-        migration_builder = new MigrationBuilder(nTableName);
+        migrationBuilder = new MigrationBuilder(nTableName);
         cursor = miCursor;
     }
     /**
@@ -40,7 +40,7 @@ public class MigrationExecution {
      * @return ejecutor de la sentencia
      */
     public Statement ExecuteCreateDatabase(String DbName) throws SQLException {
-        String sql = migration_builder.CreateDataBaseQuery(DbName);
+        String sql = migrationBuilder.CreateDataBaseQuery(DbName);
         Statement stm = this.cursor.createStatement();
         stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         return stm;
@@ -53,7 +53,7 @@ public class MigrationExecution {
      * @return el ejecutor de la sentencia
      */
     public Statement ExecuteSelectDatabase(String DbName, Statement stm) throws SQLException {
-        String sql = migration_builder.CreateSelectDatabase(DbName);
+        String sql = migrationBuilder.CreateSelectDatabase(DbName);
         stm = this.cursor.createStatement();
         stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         return stm;
@@ -66,7 +66,7 @@ public class MigrationExecution {
      * @return resultado de la ejecución de la sentencia sql
      */
     public Statement ExecuteCreateTable(ModelMethods model, Statement stm) throws SQLException {
-        String sql = migration_builder.CreateTableQuery(model);
+        String sql = migrationBuilder.CreateTableQuery(model);
         stm = this.cursor.createStatement();
         stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         return stm;
@@ -90,10 +90,10 @@ public class MigrationExecution {
      * @throws SQLException error al ejecutar la sentencia sql
      * @return el ejecutor de la sentencia
      */
-    public Statement ExecuteAddColumn(ModelMethods model, ModelMethods ref_model, String ref_table, boolean includePKFK, Statement stm) throws SQLException {
+    public Statement ExecuteAddColumn(ModelMethods model, ModelMethods refModel, String refTable, boolean includePKFK, Statement stm) throws SQLException {
         ResultSet rst = this.ExecuteShowTableData(stm);
         String sql =  "";              
-        sql = migration_builder.CreateAddColumnQuery(model.InitModel(), ref_model.InitModel(), ref_table, includePKFK, rst);
+        sql = migrationBuilder.CreateAddColumnQuery(model.InitModel(), refModel.InitModel(), refTable, includePKFK, rst);
         if(sql != "" || sql != null) {
             stm = this.cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
@@ -109,7 +109,7 @@ public class MigrationExecution {
      */
     public Statement ExceuteRenameColumn(ModelMethods model, Statement stm) throws SQLException {
         ResultSet rst = this.ExecuteShowTableData(stm);
-        String sql = migration_builder.CreateRenameColumnQuery(model.InitModel(), rst);
+        String sql = migrationBuilder.CreateRenameColumnQuery(model.InitModel(), rst);
         if(sql != "" || sql != null) {
             stm = this.cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
@@ -125,7 +125,7 @@ public class MigrationExecution {
      */
     public Statement ExecuteChangeColumnType(ModelMethods model, boolean includePKFK, Statement stm) throws SQLException {
         ResultSet rst = this.ExecuteShowTableData(stm);
-        String sql = migration_builder.CreateChangeTypeQuery(model.InitModel(), includePKFK, rst);
+        String sql = migrationBuilder.CreateChangeTypeQuery(model.InitModel(), includePKFK, rst);
         if(sql != "" || sql != null) {
             stm = this.cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
@@ -141,7 +141,7 @@ public class MigrationExecution {
      */
     public Statement ExecuteDeleteColumn(ModelMethods model, boolean includePKFK, Statement stm) throws SQLException {
         ResultSet rst = this.ExecuteShowTableData(stm);
-        String sql = migration_builder.CreateDeleteColumnQuery(model.InitModel(), includePKFK, rst);
+        String sql = migrationBuilder.CreateDeleteColumnQuery(model.InitModel(), includePKFK, rst);
         System.out.println(sql);
         if(sql != "" || sql != null) {
             stm = this.cursor.createStatement();

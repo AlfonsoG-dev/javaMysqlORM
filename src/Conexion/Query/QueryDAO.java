@@ -18,15 +18,15 @@ public class QueryDAO<T> {
     /**
      * auxiliar para la ejecución de las querys
      */
-    private QueryExecution query_execution;
+    private QueryExecution queryExecution;
     /**
      * builder interface to build the objects
      */
-    private ModelBuilderMethods<T> model_builder_methods;
+    private ModelBuilderMethods<T> modelBuilderMethods;
     /**
      * herramientas para la creacion de las querys
      */
-    private QueryUtils query_util;
+    private QueryUtils queryUtil;
     /**
      * local Connection cursor
      */
@@ -34,17 +34,17 @@ public class QueryDAO<T> {
     /**
      * local table name
      */
-    private String tb_name;
+    private String tbName;
     /**
      * Data Acces Object of GenericObject
      * inicializa el conector de mysql
      */
-    public QueryDAO(String table_name, Connection miConector, ModelBuilderMethods<T> builder) {
-        tb_name = table_name;
+    public QueryDAO(String tableName, Connection miConector, ModelBuilderMethods<T> builder) {
+        tbName = tableName;
         cursor = miConector;
-        query_execution = new QueryExecution(table_name, miConector);
-        query_util = new QueryUtils();
-        model_builder_methods = builder;
+        queryExecution = new QueryExecution(tableName, miConector);
+        queryUtil = new QueryUtils();
+        modelBuilderMethods = builder;
     }
 
     //métodos
@@ -66,7 +66,7 @@ public class QueryDAO<T> {
         PreparedStatement pstm = null;
         ResultSet rst = null;
         try{
-            rst = query_execution.ExecuteCountData(pstm);
+            rst = queryExecution.ExecuteCountData(pstm);
             while(rst.next()) {
                 count++;
             }
@@ -103,10 +103,10 @@ public class QueryDAO<T> {
         ResultSet rst = null;
         ArrayList<T> resultados = new ArrayList<T>();
         try {
-            rst = query_execution.ExecuteReadAll(pstm);
-            int lenght = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
+            rst = queryExecution.ExecuteReadAll(pstm);
+            int lenght = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                resultados.add(model_builder_methods.CreateFromRST(rst, lenght));
+                resultados.add(modelBuilderMethods.CreateFromRST(rst, lenght));
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -143,10 +143,10 @@ public class QueryDAO<T> {
         ResultSet rst = null;
         PreparedStatement pstm = null;
         try {
-            rst = query_execution.ExecuteFindOne(pstm, options, type);
-            int lenght = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
+            rst = queryExecution.ExecuteFindOne(pstm, options, type);
+            int lenght = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                buscado = model_builder_methods.CreateFromRST(rst, lenght);
+                buscado = modelBuilderMethods.CreateFromRST(rst, lenght);
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -182,10 +182,10 @@ public class QueryDAO<T> {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = query_execution.ExecuteFindByColumnName(stm, options, type);
-            int lenght = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
+            rst = queryExecution.ExecuteFindByColumnName(stm, options, type);
+            int lenght = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                buscado = model_builder_methods.CreateFromRST(rst, lenght);
+                buscado = modelBuilderMethods.CreateFromRST(rst, lenght);
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -221,10 +221,10 @@ public class QueryDAO<T> {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = query_execution.ExecuteGetValueOfColumnName(stm, options, columns, type);
+            rst = queryExecution.ExecuteGetValueOfColumnName(stm, options, columns, type);
             int len = 0;
             if(columns == null || columns.isEmpty() == true) {
-                len = query_util.GetMetadataNumColumns(rst.getMetaData().toString());
+                len = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
             }
             else if(columns != null || columns.isEmpty() == false) {
                 len = columns.split(",").length;
@@ -266,24 +266,24 @@ public class QueryDAO<T> {
      * @param ref_table: table name of the reference model 
      * @return a string with the format -> source_name: source_password, reference_name: reference_password
      */
-    public String InnerJoin(ModelMethods source, ModelMethods reference, String ref_table) {
+    public String InnerJoin(ModelMethods source, ModelMethods reference, String refTable) {
         String result = "";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = query_execution.ExecuteInnerJoin(stm, source, reference, ref_table);
+            rst = queryExecution.ExecuteInnerJoin(stm, source, reference, refTable);
             while(rst.next()) {
-                result += tb_name + "->" + rst.getString(tb_name + "_nombre") + ": " +
-                    rst.getString(tb_name + "_password") + ", " +
-                    ref_table + "->" + rst.getString(ref_table + "_nombre") + ": " + 
-                    rst.getString(ref_table + "_password") + ", ";
+                result += tbName + "->" + rst.getString(tbName + "_nombre") + ": " +
+                    rst.getString(tbName + "_password") + ", " +
+                    refTable + "->" + rst.getString(refTable + "_nombre") + ": " + 
+                    rst.getString(refTable + "_password") + ", ";
             }
 
         } catch(Exception e) {
             System.err.println(e);
         }
-        String c_result = result.substring(0, result.length()-2);
-        return c_result;
+        String cleanResult = result.substring(0, result.length()-2);
+        return cleanResult;
     }
     /**
      * ingresar un registro de GenericObjects
@@ -304,7 +304,7 @@ public class QueryDAO<T> {
             T buscado = this.FindByColumnName(condition, type);
             if(buscado == null) {
                 cursor.endRequest();
-                int rst = query_execution.ExecuteInsertNewRegister(stm, model);
+                int rst = queryExecution.ExecuteInsertNewRegister(stm, model);
                 if(rst > 0){
                     System.out.println(model.GetAllProperties());
                     registrado = true;
@@ -348,7 +348,7 @@ public class QueryDAO<T> {
             T buscado = this.FindByColumnName(conditions.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
-                int result = query_execution.ExecuteUpdateRegister(stm, model, conditions, type);
+                int result = queryExecution.ExecuteUpdateRegister(stm, model, conditions, type);
                 if(result > 0) {
                     System.out.println(model.GetAllProperties());
                     registrado = true;
@@ -391,7 +391,7 @@ public class QueryDAO<T> {
             T buscado = this.FindByColumnName(options.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
-                int rst = query_execution.ExecuteEliminarRegistro(stm, options, type);
+                int rst = queryExecution.ExecuteEliminarRegistro(stm, options, type);
                 if(rst > 0) {
                     System.out.println(options);
                     eliminar = true;

@@ -335,8 +335,8 @@ public record QueryUtils() {
      * @return retorna las columnas a eliminar, agregar o renombrar
      */
     public HashMap<String, String> CompareColumnName(String modelProperties, ResultSet rst) throws SQLException {
-        String local_p = this.GetModelColumns(modelProperties, true);
-        ArrayList<String> modelColumns = this.AuxiliarmodelProperties(local_p);
+        String localProperties = this.GetModelColumns(modelProperties, true);
+        ArrayList<String> modelColumns = this.AuxiliarmodelProperties(localProperties);
         ArrayList<String> tableColumns = this.GetTableData(rst).get("columns");
         HashMap<String, String> resultado = new HashMap<>();
         if(modelColumns.size() == tableColumns.size()) {
@@ -383,9 +383,9 @@ public record QueryUtils() {
         if(modelTypes.size() == tableTypes.size()) {
             String rename = "";
             for(int i=0; i<modelTypes.size(); ++i) {
-                String clean_types = modelTypes.get(i).replace("'", "");
-                if(tableTypes.contains(clean_types) == false) {
-                    rename += clean_types + ":" + i + ", ";
+                String cleanTypes = modelTypes.get(i).replace("'", "");
+                if(tableTypes.contains(cleanTypes) == false) {
+                    rename += cleanTypes + ":" + i + ", ";
                 }
             }
             resultado.put("rename", rename);

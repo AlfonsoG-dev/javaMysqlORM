@@ -27,11 +27,11 @@ public class QueryExecution {
     /**
      * record que crea las sentencias sql
      * */
-    private QueryBuilder query_builder;
+    private QueryBuilder queryBuilder;
     /**
      * clase con las herramientas para crear las querys
      */
-    private QueryUtils query_util;
+    private QueryUtils queryUtil;
 
     //constructor
 
@@ -39,10 +39,10 @@ public class QueryExecution {
      * constructor de la clase
      * @param tb_name: nombre de la tabla; tb_name != null && tb_name != ""
      */
-    public QueryExecution(String tb_name, Connection miConector) {
-        table = tb_name;
-        query_builder = new QueryBuilder(tb_name);
-        query_util = new QueryUtils();
+    public QueryExecution(String tbName, Connection miConector) {
+        table = tbName;
+        queryBuilder = new QueryBuilder(tbName);
+        queryUtil = new QueryUtils();
         cursor = miConector;
     }
 
@@ -93,8 +93,8 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
     */
     public ResultSet ExecuteFindOne(PreparedStatement pstm, String options, String type) throws SQLException {
-        String sql = this.query_builder.CreateFindQuery(options, type);
-        String val = this.query_util.GetOptionValue(options);
+        String sql = this.queryBuilder.CreateFindQuery(options, type);
+        String val = this.queryUtil.GetOptionValue(options);
         pstm = this.cursor.prepareStatement(sql);
         pstm.setString(1, val);
         ResultSet rst = pstm.executeQuery();
@@ -111,7 +111,7 @@ public class QueryExecution {
     */
     public ResultSet ExecuteFindByColumnName(Statement stm, String options, String type) throws SQLException {
         stm = this.cursor.createStatement();
-        String sql = this.query_builder.CreateFindByColumnQuery(options, type);
+        String sql = this.queryBuilder.CreateFindByColumnQuery(options, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -128,7 +128,7 @@ public class QueryExecution {
     */
     public ResultSet ExecuteGetValueOfColumnName (Statement stm, String options, String columns, String type) throws SQLException {
         stm = this.cursor.createStatement();
-        String sql = this.query_builder.CreateFindColumnValueQuery(options, columns, type);
+        String sql = this.queryBuilder.CreateFindColumnValueQuery(options, columns, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -141,7 +141,7 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
     */
     public int ExecuteInsertNewRegister(Statement stm, ModelMethods model) throws SQLException {
-        String sql = this.query_builder.CreateInsertRegisterQuery(model);
+        String sql = this.queryBuilder.CreateInsertRegisterQuery(model);
         stm = this.cursor.createStatement();
         int rst = stm.executeUpdate(sql);
         return rst;
@@ -156,8 +156,8 @@ public class QueryExecution {
      * @throws SQLException error al ejecutar la sentencia sql
      * @return el resultado de la ejecución
      */
-    public ResultSet ExecuteInnerJoin(Statement stm, ModelMethods local_model, ModelMethods ref_model, String ref_table) throws SQLException {
-        String sql = this.query_builder.CreateInnerJoinQuery(local_model, ref_model, ref_table);
+    public ResultSet ExecuteInnerJoin(Statement stm, ModelMethods localModel, ModelMethods refModel, String refTable) throws SQLException {
+        String sql = this.queryBuilder.CreateInnerJoinQuery(localModel, refModel, refTable);
         stm = this.cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
         return rst;
@@ -174,7 +174,7 @@ public class QueryExecution {
     */
     public int ExecuteUpdateRegister(Statement stm, ModelMethods model, String conditions, String type) throws SQLException {
         stm = this.cursor.createStatement();
-        String sql = this.query_builder.CreateModifyRegisterQuery(model, conditions, type);
+        String sql = this.queryBuilder.CreateModifyRegisterQuery(model, conditions, type);
         int retorno = stm.executeUpdate(sql);
         return retorno;
     }
@@ -189,7 +189,7 @@ public class QueryExecution {
     */
     public int ExecuteEliminarRegistro(Statement stm, String options, String type) throws SQLException {
         stm = this.cursor.createStatement();
-        String sql = this.query_builder.CreateDeleteRegisterQuery(options, type);
+        String sql = this.queryBuilder.CreateDeleteRegisterQuery(options, type);
         int result = stm.executeUpdate(sql);
         return result;
     }

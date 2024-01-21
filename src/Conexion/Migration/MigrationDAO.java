@@ -14,7 +14,7 @@ public class MigrationDAO {
     /**
      * ejecutor de la sentencia sql
      */
-    private MigrationExecution migration_execution;
+    private MigrationExecution migrationExecution;
     /**
      * database Connection cursor
      */
@@ -24,7 +24,7 @@ public class MigrationDAO {
      */
     public MigrationDAO(String nTableName, Connection miCursor) {
         cursor = miCursor;
-        migration_execution = new MigrationExecution(nTableName, cursor);
+        migrationExecution = new MigrationExecution(nTableName, cursor);
     }
     /**
      * crea la base de datos
@@ -36,7 +36,7 @@ public class MigrationDAO {
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExecuteCreateDatabase(DbName);
+            stm = migrationExecution.ExecuteCreateDatabase(DbName);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 System.out.println("database created");
@@ -74,7 +74,7 @@ public class MigrationDAO {
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExecuteSelectDatabase(DbName, stm);
+            stm = migrationExecution.ExecuteSelectDatabase(DbName, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
@@ -112,7 +112,7 @@ public class MigrationDAO {
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            rst = migration_execution.ExecuteCreateTable(model, stm).getGeneratedKeys();
+            rst = migrationExecution.ExecuteCreateTable(model, stm).getGeneratedKeys();
             if(this.ShowTableData() == true && rst.getMetaData().getColumnCount() > 0) {
                 System.out.println("tabla creada");
                 resultado = true;
@@ -149,7 +149,7 @@ public class MigrationDAO {
         ResultSet rst = null;
         boolean comprobar = false;
         try {
-            rst = migration_execution.ExecuteShowTableData(stm);
+            rst = migrationExecution.ExecuteShowTableData(stm);
             if(rst.next() == true) {
                 comprobar = true;
             }
@@ -181,12 +181,12 @@ public class MigrationDAO {
      * @param model: modelo con las columnas a agregar
      * @return true si se agrega de lo contrario false
      */
-    public boolean AddColumn(ModelMethods local_model, ModelMethods ref_model,String ref_table, boolean includePKFK) {
+    public boolean AddColumn(ModelMethods localModel, ModelMethods refModel,String refTable, boolean includePKFK) {
         Statement stm = null;
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExecuteAddColumn(local_model, ref_model, ref_table, includePKFK, stm);
+            stm = migrationExecution.ExecuteAddColumn(localModel, refModel, refTable, includePKFK, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
@@ -224,7 +224,7 @@ public class MigrationDAO {
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExceuteRenameColumn(model, stm);
+            stm = migrationExecution.ExceuteRenameColumn(model, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
@@ -262,7 +262,7 @@ public class MigrationDAO {
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExecuteChangeColumnType(model, includePKFK, stm);
+            stm = migrationExecution.ExecuteChangeColumnType(model, includePKFK, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
@@ -300,7 +300,7 @@ public class MigrationDAO {
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExecuteDeleteColumn(model, includePKFK, stm);
+            stm = migrationExecution.ExecuteDeleteColumn(model, includePKFK, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
