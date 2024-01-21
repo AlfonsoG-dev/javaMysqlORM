@@ -274,6 +274,7 @@ public record QueryUtils() {
         if(type.equals("and")) {
             cleanValues = this.CleanValues(res, 4);
         } else if(type.equals("not")) {
+            // TODO: add not assignment for conditional value
             cleanValues = this.CleanValues(res, 4);
         } else if(type.equals("or")) {
             cleanValues = this.CleanValues(res, 3);
