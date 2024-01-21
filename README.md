@@ -20,15 +20,8 @@
 - [ ] use min and max in statements.
 - [ ] creation of tablespace.
 - [ ] add method to execute the given sql query.
-- [ ] add select into query.
-- [ ] not conditional is not implemented correctly.
-- [ ] add check constraint to alter table operation.
-- [ ] add rename constraint to alter table operation.
-- [ ] to add a constraint that is not fk o pk use `change column 'column_name' 'column_name'type NOT NULL UNIQUE`
-
-## Errors
-- [ ] error when trying to add a new column
-- [ ] error when trying to delete a column
+- [ ] add select into DAO operation.
+- [ ] logit operator 'not' is not implemented correctly.
 
 -----
 

@@ -16,7 +16,11 @@ public record QueryUtils() {
      * @return los valores limpios
     */
     public String CleanValues(String options, int val) {
-        return options.substring(0, options.length()-val);
+        if(options.length() > 0) {
+            return options.substring(0, options.length()-val);
+        } else {
+            return options;
+        }
     }
     /**
      * regresa la cantidad de columnas en la sentencia sql
@@ -120,13 +124,20 @@ public record QueryUtils() {
         String[] data = ModelProperties.split("\n");
         String user_data = "";
         if(includePKFK == false) {
-            for(int i = 1; i < data.length; i++) {
-                user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
+            for(int i = 0; i < data.length; i++) {
+                String columnType = data[i].split(":")[1].stripIndent();
+                String point_strip = "";
+                if(columnType.contains(".")) {
+                    point_strip = columnType.split("\\.")[0].stripIndent();
+                } else {
+                    point_strip = columnType;
+                }
+                user_data += "'" + point_strip + "'" + ",";
             }
         }
         else {
             for(int i = 0; i < data.length; i++) {
-                user_data += "'"+data[i].split(":")[1].stripIndent()+ "'" + ",";
+                user_data += "'"+ data[i].split(":")[1].stripIndent() + "'" + ",";
             }
         }
         return this.CleanValues(user_data, 1);
@@ -335,7 +346,7 @@ public record QueryUtils() {
         else if(model_columns.size() > table_columns.size()) {
             String agregar = "";
             for(int i=0; i<model_columns.size(); i++) {
-                if(table_columns.contains(model_columns.get(i)) == false) {
+                if(!table_columns.contains(model_columns.get(i))) {
                     agregar += model_columns.get(i) + ", ";
                 }
             }
