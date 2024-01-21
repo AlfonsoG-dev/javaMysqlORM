@@ -181,19 +181,19 @@ public class MigrationDAO {
      * @param model: modelo con las columnas a agregar
      * @return true si se agrega de lo contrario false
      */
-    public boolean AddColumn(ModelMethods local_model, ModelMethods ref_model, String ref_table) {
+    public boolean AddColumn(ModelMethods local_model, ModelMethods ref_model,String ref_table, boolean includePKFK) {
         Statement stm = null;
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExecuteAddColumn(local_model, ref_model, ref_table, stm);
+            stm = migration_execution.ExecuteAddColumn(local_model, ref_model, ref_table, includePKFK, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
                 System.out.println("se agregaron las columnas");
             }
         } catch(Exception e) {
-            System.err.println(e);
+            e.printStackTrace();
         } finally {
             if(rst != null) {
                 try {
@@ -257,12 +257,12 @@ public class MigrationDAO {
      * @param model: modelo con el tipo de dato a modificar
      * @return true si cambio el nombre de lo contrario false
      */
-    public boolean ChangeType(ModelMethods model) {
+    public boolean ChangeType(ModelMethods model, boolean includePKFK) {
         Statement stm = null;
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExecuteChangeColumnType(model, stm);
+            stm = migration_execution.ExecuteChangeColumnType(model, includePKFK, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;
@@ -295,12 +295,12 @@ public class MigrationDAO {
      * @param model: modelo al que le falta una columna que es la que se elimina
      * @return true si se elimina la columna false de lo contrario
      */
-    public boolean DeleteColumn(ModelMethods model) {
+    public boolean DeleteColumn(ModelMethods model, boolean includePKFK) {
         Statement stm = null;
         ResultSet rst = null;
         boolean resultado = false;
         try {
-            stm = migration_execution.ExecuteDeleteColumn(model, stm);
+            stm = migration_execution.ExecuteDeleteColumn(model, includePKFK, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 resultado = true;

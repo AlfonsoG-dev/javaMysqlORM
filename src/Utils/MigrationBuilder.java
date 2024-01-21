@@ -75,8 +75,8 @@ public class MigrationBuilder extends QueryBuilder {
      * @param AlterOperation: tipo de operacíon a realizar
      * @return sentencia para alterar la tabla
      */
-    private final String CreateAlterTableQuery(String AlterOperations) {
-        return "alter table " + this.tableName + " " + AlterOperations;
+    private final String CreateAlterTableQuery(String alterOperations) {
+        return "alter table " + this.tableName + " " + alterOperations;
     }
     /**
      * crea la sentencia sql para agregar una columna a la tabla
@@ -85,27 +85,32 @@ public class MigrationBuilder extends QueryBuilder {
      * @throws SQLException: error de la sentencia sql
      * @return la sentencia sql para agregar una columna a la tabla
      */
-    public String CreateAddColumnQuery(String model_properties, String ref_model_properties, String ref_table, ResultSet rst) throws SQLException {
+    public String CreateAddColumnQuery(String model_properties, String ref_model_properties, String ref_table, boolean includePKFK , ResultSet rst) throws SQLException {
         String sql = "";
         String add_columns = query_util.CompareColumnName(model_properties, rst).get("agregar");
+        if(includePKFK == true) {
+            System.out.println("you better user CreateAddConstraintQuery to add a pk or fk column");
+        }
         if(add_columns != "" && add_columns != null) {
-            String columns = query_util.GetModelColumns(add_columns, true);
+            String columns = query_util.GetModelColumns(add_columns, includePKFK);
             String[] clean_columns = query_util.CleanValues(columns, 1).split(",");
-            String[] model_types = query_util.GetModelType(model_properties, true).split(",");
-            String[] model_columns = query_util.GetModelColumns(model_properties, true).split(",");
+            String[] model_types = query_util.GetModelType(model_properties, includePKFK).split(",");
+            String[] model_columns = query_util.GetModelColumns(model_properties, includePKFK).split(",");
             for(String k: clean_columns) {
                 int index_type = query_util.SearchColumnType(model_properties, k);
-                String clear_types = model_types[index_type].replace("'", "");
-                sql += "add column " + k + " " + clear_types + " after " + model_columns[index_type-1] + ", ";
-                if(k.contains("fk")) {
-                    sql += this.CreateAddConstraintQuery(model_properties, ref_model_properties, ref_table, rst);
-                }
+                String clear_types = index_type < model_types.length ? model_types[index_type].replace("'", "") : "null";
+                String clear_model_columns  = index_type-1 < model_columns.length ? model_columns[index_type-1] : "null";
+                sql += "add column " + k + " " + clear_types + " after " + clear_model_columns + ", ";
             }
         }
         String clear_sql = "";
         String res = "";
         if(sql != "" && sql != null) {
-            clear_sql = query_util.CleanValues(sql, 0);
+            if(includePKFK == true) {
+                clear_sql = query_util.CleanValues(sql, 2);
+            } else {
+                clear_sql = query_util.CleanValues(sql, 0);
+            }
             res = this.CreateAlterTableQuery(clear_sql);
         }
         return res;
@@ -141,12 +146,12 @@ public class MigrationBuilder extends QueryBuilder {
      * crea la sentencia sql para modificar el tipo de dato de una columna
      * @param model_properties: propiedades del modelo
      */
-    public String CreateChangeTypeQuery(String model_properties, ResultSet rst) throws SQLException {
+    public String CreateChangeTypeQuery(String model_properties, boolean includePKFK,ResultSet rst) throws SQLException {
         String sql = "";
         String rename_types = query_util.CompareColumnType(model_properties, rst).get("rename");
         if(rename_types != "" && rename_types != null) {
             String[] types = rename_types.split(", ");
-            String[] model_columns = query_util.GetModelColumns(model_properties, true).split(",");
+            String[] model_columns = query_util.GetModelColumns(model_properties, includePKFK).split(",");
             for(String t: types) {
                 String type = t.split(":")[0];
                 int index = Integer.parseInt(t.split(":")[1]);
@@ -168,16 +173,19 @@ public class MigrationBuilder extends QueryBuilder {
      * @throws SQLException: error de la sentencia sql
      * @return la sentencia sql para eliminar columnas
      */
-    public String CreateDeleteColumnQuery(String model_properties, ResultSet rst) throws SQLException {
+    public String CreateDeleteColumnQuery(String model_properties, boolean includePKFK, ResultSet rst) throws SQLException {
         String sql = "";
         String delete_columns = query_util.CompareColumnName(model_properties, rst).get("eliminar");
+        if(includePKFK == true) {
+            System.out.println("you better use CreateDeleteConstraintQuery to delete pk or fk columns");
+        }
         if(delete_columns != "" && delete_columns != null) {
             String[] columns = delete_columns.split(", ");
             for(String k: columns) {
                 String[] datos = k.split(":");
                 sql += "drop column "  + datos[0] + ", ";
                 if(datos[0].contains("fk")) {
-                    sql += this.CreateDeleteConstraintQuery(model_properties, rst);
+                    sql += this.CreateDeleteConstraintQuery(model_properties, includePKFK, rst);
                 }
             }
         }
@@ -206,7 +214,7 @@ public class MigrationBuilder extends QueryBuilder {
             String[] columns = add_columns.split(", ");
             for(int i=0; i<columns.length; ++i) {
                 if(columns[i].contains("pk") == true) {
-                    sql += "add constraint " + columns[i] + "primary key(" + columns[i] + "), ";
+                    sql += "add constraint " + columns[i] + " primary key(" + columns[i] + "), ";
                 }
                 if(columns[i].contains("fk") == true) {
                     sql += "add constraint " + columns[i] + " foreign key(" + columns[i] +") references " + ref_table + "(" + ref_pk + ") on delete cascade on update cascade, ";
@@ -228,14 +236,14 @@ public class MigrationBuilder extends QueryBuilder {
      * @throws SQLException: error de la consulta sql
      * @return la sentencia sql para eliminar el constraint de la pk o fk
      */
-    public String CreateDeleteConstraintQuery(String model_properties, ResultSet rst) throws SQLException {
+    public String CreateDeleteConstraintQuery(String model_properties, boolean includePKFK, ResultSet rst) throws SQLException {
         String sql = "";
         String delete_columns = query_util.CompareColumnName(model_properties, rst).get("eliminar");
         if(delete_columns != "" && delete_columns != null) {
             String k1 = delete_columns.split(", ")[0];
             String[] k2 = k1.split(":");
-            String[] model_types = query_util.GetModelType(model_properties, true).split(",");
-            String[] model_columns = query_util.GetModelColumns(model_properties, true).split(",");
+            String[] model_types = query_util.GetModelType(model_properties, includePKFK).split(",");
+            String[] model_columns = query_util.GetModelColumns(model_properties, includePKFK).split(",");
             int index = Integer.parseInt(k2[1]);
             if(model_types[index].contains("primary key")) {
                 sql += "drop primary key , ";

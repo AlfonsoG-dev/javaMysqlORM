@@ -16,7 +16,11 @@ public record QueryUtils() {
      * @return los valores limpios
     */
     public String CleanValues(String options, int val) {
-        return options.substring(0, options.length()-val);
+        if(options.length() > 0) {
+            return options.substring(0, options.length()-val);
+        } else {
+            return options;
+        }
     }
     /**
      * regresa la cantidad de columnas en la sentencia sql
@@ -335,7 +339,7 @@ public record QueryUtils() {
         else if(model_columns.size() > table_columns.size()) {
             String agregar = "";
             for(int i=0; i<model_columns.size(); i++) {
-                if(table_columns.contains(model_columns.get(i)) == false) {
+                if(!table_columns.contains(model_columns.get(i))) {
                     agregar += model_columns.get(i) + ", ";
                 }
             }
