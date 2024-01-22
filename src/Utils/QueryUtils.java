@@ -236,6 +236,47 @@ public record QueryUtils() {
         return cleanValues;
     }
     /**
+     * combina la llave con el valor para el condicional sql tipo in
+     * @param options: las columnas que representan la llave
+     * @param condition: condicion o sentencia sql tipo SELECT
+     * @param type: operador logico para la condicion
+     * @return el condicional combinado tipo in
+     */
+    public String GetInConditional(String columns, String condition, String type) {
+        String conditionValue = "", inOptions = "", res = "", cleanValues = "";
+        String[] myColumns = columns.split(",");
+        if(condition.toLowerCase().startsWith("select")) {
+            for(String c: myColumns) {
+                if(type.toLowerCase().equals("not")) {
+                    res += c + " not in (" + condition + ")" + " " + type;
+                } else {
+                    res += c + " in (" + condition + ")" + " " + type;
+                }
+            }
+        } else {
+            String[] partition = condition.split(",");
+            for(String p: partition) {
+                conditionValue += "('" + p.trim() + "', ";
+            }
+            inOptions = conditionValue.substring(0, condition.length()-2);
+            for(String c: myColumns) {
+                if(type.toLowerCase().equals("not")) {
+                    res += c + " not in " + inOptions + " " + type;
+                } else {
+                    res += c + " in " + inOptions + " " + type;
+                }
+            }
+        }
+        if(type.equals("and")) {
+            cleanValues = this.CleanValues(res, 4);
+        } else if(type.equals("not")) {
+            cleanValues = this.CleanValues(res, 4);
+        } else if(type.equals("or")) {
+            cleanValues = this.CleanValues(res, 3);
+        }
+        return cleanValues;
+    }
+    /**
      * asigna los valores a las columnas del modelo separados por ","
      * @param nObject: objeto que contiene la información del modelo
      * @return los valores asignados a la columna
