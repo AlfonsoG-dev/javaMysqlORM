@@ -50,7 +50,12 @@ public record QueryUtils() {
         String[] data = modelProperties.split("\n");
         String columName = "";
         for(int i = 0; i < data.length; i++) {
-            columName += data[i].split(":")[0].stripIndent() + ", ";
+            String myColumn = data[i].split(":")[0].stripIndent();
+            if(myColumn == null || myColumn.isEmpty()) {
+                myColumn = "";
+            } else {
+                columName += myColumn + ", ";
+            }
         }
         String[] columns = columName.split(",");
         String cleanColumName = "";
@@ -64,12 +69,7 @@ public record QueryUtils() {
                 cleanColumName += columns[i].stripIndent() + ",";
             }
         }
-        String cleanvalues = "";
-        if(includePKFK == true) {
-            cleanvalues = this.CleanValues(cleanColumName, 2);
-        } else {
-            cleanvalues = cleanColumName;
-        }
+        String cleanvalues = this.CleanValues(cleanColumName, 2);
         return cleanvalues;
     }
     /**
@@ -135,7 +135,10 @@ public record QueryUtils() {
                 if(columnType.contains(".")) {
                     pointStrip = columnType.split("\\.")[0].stripIndent();
                 } else {
-                    pointStrip = columnType;
+                    if((i+1) < data.length) {
+                        String column = data[i+1].split(":")[1].stripIndent();
+                        pointStrip = column;
+                    }
                 }
                 userData += "'" + pointStrip + "'" + ",";
             }

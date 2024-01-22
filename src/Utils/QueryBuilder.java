@@ -152,7 +152,14 @@ public class QueryBuilder {
      * @return la sentencia sql para registrar
      */
     public String CreateInsertRegisterQuery(ModelMethods model) {
-        String cleanData = queryUtil.GetModelType(model.GetAllProperties(), false);
+        String[] data = queryUtil.GetModelType(model.GetAllProperties(), false).split(",");
+        String miData = "", cleanData = "";
+        for(String d: data) {
+            if(!d.equals("''")) {
+                miData += d +",";
+            }
+        }
+        cleanData = miData.substring(0, miData.length()-1);
         String column = queryUtil.GetModelColumns(model.GetAllProperties(), false);
         String sql = "insert into " + tbName + " (" + column +") values (" + cleanData + ")";
         return sql;
