@@ -18,7 +18,6 @@
 
 ## TODO's
 - [ ] view statements.
-- [ ] use min and max in statements.
 - [ ] creation of table space.
 - [ ] add method to execute the given SQL query.
 - [ ] add insert into select DAO operation.

@@ -64,12 +64,22 @@ public class QueryBuilder {
      */
     public String CreateFindColumnValueQuery(String options, String columns, String type) {
         String sql = "";
-        String cleanValues = queryUtil.GetNormalConditional(options, type);
-        if( columns == null || columns.isEmpty() == true) {
-            sql =  "select *" +" from " + tbName + " where " + cleanValues.stripIndent();
+        String cleanValues = "";
+        if(columns == null || columns.isEmpty() == true) {
+            if(options == null || options.isEmpty()) {
+                sql =  "select *" +" from " + tbName;
+            } else {
+                cleanValues = queryUtil.GetNormalConditional(options, type);
+                sql =  "select *" +" from " + tbName + " where " + cleanValues.stripIndent();
+            }
         }
         else if(columns != null || columns.isEmpty() == false) {
-            sql =  "select "+ columns +" from " + tbName + " where " + cleanValues.stripIndent();
+            if(options == null || options.isEmpty()) {
+                sql =  "select "+ columns +" from " + tbName;
+            } else {
+                cleanValues = queryUtil.GetNormalConditional(options, type);
+                sql =  "select "+ columns +" from " + tbName + " where " + cleanValues.stripIndent();
+            }
         }
         return sql;
     }
@@ -82,11 +92,20 @@ public class QueryBuilder {
      */
     public String CreateFindInQuery(String returnOptions, String columns, String condition, String type) {
         String sql = "", inCondition = "";
-        inCondition = queryUtil.GetInConditional(columns, condition, type);
         if(returnOptions == null) {
-            sql = "select * from " + tbName + " where " + inCondition;
+            if(condition == null || condition.isEmpty() && (columns == null || columns.isEmpty())) {
+                sql = "select * from " + tbName;
+            } else {
+                inCondition = queryUtil.GetInConditional(columns, condition, type);
+                sql = "select * from " + tbName + " where " + inCondition;
+            }
         } else if(returnOptions != null && !returnOptions.isEmpty()) {
-            sql = "select " + returnOptions + " from " + tbName + " where " + inCondition;
+            if(condition == null || condition.isEmpty() && (columns == null || columns.isEmpty())) {
+                sql = "select " + returnOptions + " from " + tbName;
+            } else {
+                inCondition = queryUtil.GetInConditional(columns, condition, type);
+                sql = "select " + returnOptions + " from " + tbName + " where " + inCondition;
+            }
         }
         return sql;
     }
@@ -98,8 +117,13 @@ public class QueryBuilder {
      * @return la sentencia sql para buscar por patrón
      */
     public String CreateFindPatternQuery(String pattern, String[] options, String type) {
-        String patternCondition = queryUtil.GetPatternCondition(pattern, options, type);
-        String sql = "select * from "  + this.tbName + " where " + patternCondition;
+        String sql = "", patternCondition = "";
+        if(pattern == null || options == null) {
+            sql = "select * from "  + this.tbName;
+        } else {
+            patternCondition = queryUtil.GetPatternCondition(pattern, options, type);
+            sql = "select * from "  + this.tbName + " where " + patternCondition;
+        }
         return sql;
     }
     /**
@@ -154,9 +178,14 @@ public class QueryBuilder {
      * @return la sentencia sql para modificar
      */
     public String CreateModifyRegisterQuery(ModelMethods model, String condicional, String type) {
-        String condition = queryUtil.GetNormalConditional(condicional, type);
+        String sql = "", condition = "";
         String cleanKeyValue = queryUtil.GetAsignModelValues(model.GetAllProperties());
-        String sql = "update " + tbName + " set " +  cleanKeyValue + " where " + condition;
+        if(condicional == null || condicional.isEmpty()) {
+            sql = "update " + tbName + " set " +  cleanKeyValue;
+        } else {
+            condition = queryUtil.GetNormalConditional(condicional, type);
+            sql = "update " + tbName + " set " +  cleanKeyValue + " where " + condition;
+        }
         return sql;
    }
    /**
@@ -166,8 +195,13 @@ public class QueryBuilder {
     * @return la sentencia sql
     **/
    public String CreateDeleteRegisterQuery(String options, String type) {
-       String condicional = queryUtil.GetNormalConditional(options, type);
-       String sql = "delete from " + tbName + " where " + condicional;
+       String sql = "", condicional = "";
+       if(options == null || options.isEmpty()) {
+           sql = "delete from " + tbName;
+       } else {
+           condicional = queryUtil.GetNormalConditional(options, type);
+           sql = "delete from " + tbName + " where " + condicional;
+       }
        return sql;
    }
 }
