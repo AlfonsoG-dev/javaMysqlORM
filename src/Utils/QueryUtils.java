@@ -179,15 +179,20 @@ public record QueryUtils() {
     }
     /**
      * combina la llave con el valor para el condicional sql
+     * <br> pre: </br> if type is not use and for the next condition
      * @param options:  las columnas a asignadas  el valor
+     * @param type: logic operator type: and, or, not
      * @return las columnas asignadas el valor
      */
     public String GetPrepareConditional(String options, String type) {
         String conditionalValue = "";
         String[] div = options.split(",");
         for(String val: div) {
-            // TODO: add not assignment for conditional value
-            conditionalValue += val.split(":")[0] + "=" + "?" + " " + type;
+            if(type.toLowerCase().equals("not")) {
+                conditionalValue += "not " + val.split(":")[0] + "=" + "?" + " and";
+            } else {
+                conditionalValue += val.split(":")[0] + "=" + "?" + " " + type;
+            }
         }
         String cleanValues = "";
         if(type.equals("and")) {
@@ -208,11 +213,17 @@ public record QueryUtils() {
         String conditionalValue = "";
         String[] div = options.split(",");
         for(String val: div) {
-            // TODO: add not assignment for conditional value
-            conditionalValue += val.split(":")[0] +
-            "="+ "'"+
-            val.split(":")[1].stripIndent()+
-            "'" + " " + type;
+            if(type.toLowerCase().equals("not")) {
+                conditionalValue += "not" + val.split(":")[0] +
+                    "="+ "'"+
+                    val.split(":")[1].stripIndent()+
+                    "'" + " and";
+            } else {
+                conditionalValue += val.split(":")[0] +
+                    "="+ "'"+
+                    val.split(":")[1].stripIndent()+
+                    "'" + " " + type;
+            }
         }
         String cleanValues = "";
         if(type.equals("and")) {
@@ -268,13 +279,16 @@ public record QueryUtils() {
     public String GetPatternCondition(String pattern, String[] options, String type) {
         String res = "";
         for(String k: options) {
-            res += k + " like " + "'" + pattern + "'" + " " + type + " ";
+            if(type.toLowerCase().equals("not")) {
+                res += "not" + k + " like " + "'" + pattern + "'" + " and";
+            } else {
+                res += k + " like " + "'" + pattern + "'" + " " + type;
+            }
         }
         String cleanValues = "";
         if(type.equals("and")) {
             cleanValues = this.CleanValues(res, 4);
         } else if(type.equals("not")) {
-            // TODO: add not assignment for conditional value
             cleanValues = this.CleanValues(res, 4);
         } else if(type.equals("or")) {
             cleanValues = this.CleanValues(res, 3);
