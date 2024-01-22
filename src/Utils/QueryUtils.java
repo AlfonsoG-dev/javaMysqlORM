@@ -237,7 +237,7 @@ public record QueryUtils() {
     }
     /**
      * combina la llave con el valor para el condicional sql tipo in
-     * @param options: las columnas que representan la llave
+     * @param columns: las columnas que representan la llave
      * @param condition: condicion o sentencia sql tipo SELECT
      * @param type: operador logico para la condicion
      * @return el condicional combinado tipo in

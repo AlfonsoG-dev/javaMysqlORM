@@ -65,17 +65,19 @@ public class QueryBuilder {
     }
     /**
      * crea la query para la buscar un registro dentro de varias posibilidades
-     * @param column: columna cuyo dato se encuentra entre las opciones
-     * @param options: opciones para el dato de la columna
+     * @param returnOptions: columns to return
+     * @param columns: columns to search in condition
+     * @param condition: type of condition in ('', '')
      * @return la sentencia sql para buscar dentro de una lista de datos
      */
-    public String CreateFindInQuery(String column, String[] options) {
-        String res = "";
-        for(String o: options) {
-            res += "'" + o + "'" + ", ";
+    public String CreateFindInQuery(String returnOptions, String columns, String condition, String type) {
+        String sql = "", inCondition = "";
+        inCondition = queryUtil.GetInConditional(columns, condition, type);
+        if(returnOptions == null) {
+            sql = "select * from " + tbName + " where " + inCondition;
+        } else if(returnOptions != null && !returnOptions.isEmpty()) {
+            sql = "select " + returnOptions + " from " + tbName + " where " + inCondition;
         }
-        String cleanRes = queryUtil.CleanValues(res, 2);
-        String sql = "select * from " + this.tbName + " where " + column + " in (" + cleanRes + ")";
         return sql;
     }
     /**

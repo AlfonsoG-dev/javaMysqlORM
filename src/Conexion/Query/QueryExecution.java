@@ -116,6 +116,15 @@ public class QueryExecution {
         return rst;
     }
     /**
+     * ejecuta la busqueda dentro de una serie de datos o una sentencia sql tipo SELECT.
+     */
+    public ResultSet ExecuteFinInQuery(Statement stm, String returnOptions, String columns, String condition, String type)  throws SQLException {
+        stm = this.cursor.createStatement();
+        String sql = queryBuilder.CreateFindInQuery(returnOptions, columns, condition, type);
+        ResultSet rst = stm.executeQuery(sql);
+        return rst;
+    }
+    /**
      * ejecuta la busqueda por columna y valor y retorna el valor de las columnas seleccionadas
      * puede recibir 1 o varias columnas con el valor
      * puede retornar 1 o varios valores de la columna seleccionada

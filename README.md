@@ -22,8 +22,6 @@
 - [ ] creation of table space.
 - [ ] add method to execute the given SQL query.
 - [ ] add insert into select DAO operation.
-- [ ] logic operator 'not' is not implemented correctly.
-- [ ] introduce in conditional: `select * from someting where column in (option1, option2)`
 
 -----
 

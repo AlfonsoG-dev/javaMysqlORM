@@ -210,6 +210,46 @@ public class QueryDAO<T> {
         return buscado;
     }
     /**
+     * busca el registro entre una serie de valores o una sentencia sql tipo SELECT.
+     * <br> pre: </br> select * from cuenta where user_id_fk in (select id_pk from user where nombre='admin'); 
+     * select * from cuenta where id_pk in ('0', '2'); 
+     * @param columns: column to search
+     * @param condition: condition for the search
+     * @return the object of the generic type
+     */
+    public T FindIn(String returnOptions, String columns, String condition, String type) {
+        T buscado = null;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = queryExecution.ExecuteFinInQuery(stm, returnOptions, columns, condition, type);
+            int lenght = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+            while(rst.next()) {
+                buscado = modelBuilderMethods.CreateFromRST(rst, lenght);
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+                stm = null;
+            }
+        }
+        return buscado;
+    }
+    /**
      * busca y retorna el valor de la columna o columnas
      * @param options: column name
      * @param column: las columnas a buscar el valor
