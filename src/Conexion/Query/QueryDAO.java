@@ -217,15 +217,22 @@ public class QueryDAO<T> {
      * @param condition: condition for the search
      * @return the object of the generic type
      */
-    public T FindIn(String returnOptions, String columns, String condition, String type) {
-        T buscado = null;
+    public String FindIn(String returnOptions, String columns, String condition, String type) {
+        String buscado = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
             rst = queryExecution.ExecuteFinInQuery(stm, returnOptions, columns, condition, type);
-            int lenght = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+            int len = 0;
+            if(returnOptions == null || returnOptions.isEmpty()) {
+                len = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+            } else if(returnOptions != null || !returnOptions.isEmpty()) {
+                len = returnOptions.split(",").length;
+            }
             while(rst.next()) {
-                buscado = modelBuilderMethods.CreateFromRST(rst, lenght);
+                for(int i=1; i<=len; ++i) {
+                    buscado += rst.getString(i).replaceAll("null", "") + ", ";
+                }
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -247,7 +254,7 @@ public class QueryDAO<T> {
                 stm = null;
             }
         }
-        return buscado;
+        return buscado.substring(0, buscado.length()-2);
     }
     /**
      * busca y retorna el valor de la columna o columnas
@@ -271,7 +278,7 @@ public class QueryDAO<T> {
             }
             while(rst.next()) {
                 for(int i=1; i<= len; i++) {
-                    result += rst.getString(i) + ", ";
+                    result += rst.getString(i).replaceAll("null", "") + ", ";
                 }
             }
         } catch (Exception e) {
@@ -293,9 +300,6 @@ public class QueryDAO<T> {
                 }
                 stm = null;
             }
-        }
-        if(result == "") {
-            result = null;
         }
         return result.substring(0, result.length()-2);
     }

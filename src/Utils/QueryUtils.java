@@ -243,27 +243,28 @@ public record QueryUtils() {
      * @return el condicional combinado tipo in
      */
     public String GetInConditional(String columns, String condition, String type) {
-        String conditionValue = "", inOptions = "", res = "", cleanValues = "";
+        String inOptions = "", res = "", cleanValues = "";
         String[] myColumns = columns.split(",");
         if(condition.toLowerCase().startsWith("select")) {
             for(String c: myColumns) {
                 if(type.toLowerCase().equals("not")) {
-                    res += c + " not in (" + condition + ")" + " " + type;
+                    res += c + " not in (" + condition + ")" + " " + "and";
                 } else {
                     res += c + " in (" + condition + ")" + " " + type;
                 }
             }
         } else {
             String[] partition = condition.split(",");
+            inOptions = "(";
             for(String p: partition) {
-                conditionValue += "('" + p.trim() + "', ";
+                inOptions += "'" + p.trim() + "', ";
             }
-            inOptions = conditionValue.substring(0, condition.length()-2);
+            String cOPtions = this.CleanValues(inOptions, 3);
             for(String c: myColumns) {
                 if(type.toLowerCase().equals("not")) {
-                    res += c + " not in " + inOptions + " " + type;
+                    res += c + " not in " + cOPtions + "') " + "and";
                 } else {
-                    res += c + " in " + inOptions + " " + type;
+                    res += c + " in " + cOPtions + "') " + type;
                 }
             }
         }
