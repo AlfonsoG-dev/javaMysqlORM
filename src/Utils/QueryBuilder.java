@@ -30,8 +30,13 @@ public class QueryBuilder {
      * @return: el usuario buscado
      */
     public String CreateFindQuery(String options, String type) {
-        String cleanValues = queryUtil.GetPrepareConditional(options, type);
-        String sql = "select *" + " from "+ tbName+ " where " + cleanValues;
+        String sql = "", cleanValues = "";
+        if(options == null || options.isEmpty()) {
+            sql = "select *" + " from "+ tbName;
+        } else {
+            cleanValues = queryUtil.GetPrepareConditional(options, type);
+            sql = "select *" + " from "+ tbName+ " where " + cleanValues;
+        }
         return sql;
     }
     /**
@@ -41,8 +46,13 @@ public class QueryBuilder {
      * @return: el usuario buscado
      */
     public String CreateFindByColumnQuery(String options, String type) {
-        String cleanValues = queryUtil.GetNormalConditional(options, type);
-        String sql = "select *" +" from " + tbName + " where " + cleanValues.stripIndent();
+        String sql = "", cleanValues = "";
+        if(options == null || options.isEmpty()) {
+            sql = "select *" +" from " + tbName;
+        } else {
+            cleanValues = queryUtil.GetNormalConditional(options, type);
+            sql = "select *" +" from " + tbName + " where " + cleanValues.stripIndent();
+        }
         return sql;
     }
     /**
@@ -93,12 +103,24 @@ public class QueryBuilder {
         return sql;
     }
     /**
-     * crea la query para buscar el min o max de la tabla
-     * <br> pre: </br> solo se debe utilizar para datos numéricos
+     * crea la query para buscar el min o max de la tabla.
+     * select min(column) as alias_name from table where condition;
+     * <br> pre: </br> utilizando columna tipo varchar el resultado es en orden alfabetico, de lo contrario 
+     * se ordena numericamente
+     * @param columns: 'min: nombre, max: password'
+     * @param condition: condition for where clausule
+     * @param type: and or not
      */
-    public String CreateFindMinMaxQuery() {
-        //TODO: implementar select min(column) or select max(column)
-        return "";
+    public String CreateFindMinMaxQuery(String columns, String condition, String type) {
+        String sql = "", getCondition = "";
+        String minMaxSelection = queryUtil.GetMinMaxSelection(columns);
+        if(condition == null || condition.isEmpty()) {
+            sql = "select " + minMaxSelection + " from " + tbName;
+        } else {
+            getCondition = queryUtil.GetNormalConditional(condition, type);
+            sql = "select " + minMaxSelection + " from " + tbName + " where " + getCondition;
+        }
+        return sql;
     }
     /**
      * crea la sentencia sql para el registro de datos

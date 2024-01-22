@@ -257,6 +257,52 @@ public class QueryDAO<T> {
         return buscado.substring(0, buscado.length()-2);
     }
     /**
+     * get the min or max of each of the given columns 
+     * @param columns: 'min: nombre, max: password'
+     * @param condition: condition for where clausule
+     * @param type: and or not
+     * @return the min or max object data
+     */
+    public String GetMinMax( String columns, String condition, String type) {
+        String buscado = null;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = queryExecution.ExecuteFindMinMax(stm, columns, condition, type);
+            int len = 0;
+            if(columns == null || columns.isEmpty()) {
+                len = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+            } else if(columns != null || !columns.isEmpty()) {
+                len = columns.split(",").length;
+            }
+            while(rst.next()) {
+                for(int i=1; i<=len; ++i) {
+                    buscado += rst.getString(i).replaceAll("null", "") + ", ";
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+                stm = null;
+            }
+        }
+        return buscado.substring(0, buscado.length()-2);
+    }
+    /**
      * busca y retorna el valor de la columna o columnas
      * @param options: column name
      * @param column: las columnas a buscar el valor

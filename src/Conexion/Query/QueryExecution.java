@@ -117,10 +117,32 @@ public class QueryExecution {
     }
     /**
      * ejecuta la busqueda dentro de una serie de datos o una sentencia sql tipo SELECT.
+     * @param stm: ejecutor de sentencias sql
+     * @param returnOptions: columns to return
+     * @param columns: columns for the conditional
+     * @param condition: conditional
+     * @param type: and or not
+     * @throws SQLException: sql exception
+     * @return result of the execution
      */
     public ResultSet ExecuteFinInQuery(Statement stm, String returnOptions, String columns, String condition, String type)  throws SQLException {
         stm = this.cursor.createStatement();
         String sql = queryBuilder.CreateFindInQuery(returnOptions, columns, condition, type);
+        ResultSet rst = stm.executeQuery(sql);
+        return rst;
+    }
+    /**
+     * ejecuta la busqueda retornando min or max
+     * @param stm: ejecutor de sentencias sql
+     * @param columns: 'min: nombre, max: password'
+     * @param condition: condition for where clausule
+     * @param type: and or not
+     * @throws SQLException: error de ejecución
+     * @return result of the executio
+     */
+    public ResultSet ExecuteFindMinMax(Statement stm, String columns, String condition, String type) throws SQLException {
+        stm = this.cursor.createStatement();
+        String sql = queryBuilder.CreateFindMinMaxQuery(columns, condition, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
