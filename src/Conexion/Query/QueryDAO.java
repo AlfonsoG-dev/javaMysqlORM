@@ -395,12 +395,12 @@ public class QueryDAO<T> {
      * @param ref_table: table name of the reference model 
      * @return a string with the format -> source_name: source_password, reference_name: reference_password
      */
-    public String InnerJoin(ModelMethods source, ModelMethods reference, String refTable) {
+    public String InnerJoin(ModelMethods source, ModelMethods reference, String refTable, String condition, String type) {
         String result = "";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.ExecuteInnerJoin(stm, source, reference, refTable);
+            rst = queryExecution.ExecuteInnerJoin(stm, source, reference, refTable, condition, type);
             while(rst.next()) {
                 result += tbName + "->" + rst.getString(tbName + "_nombre") + ": " +
                     rst.getString(tbName + "_password") + ", " +

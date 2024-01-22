@@ -170,11 +170,17 @@ public class QueryBuilder {
      * @param RefModel: modelo que posee los datos de referencia
      * @return la sentencia sql para inner join
      */
-    public String CreateInnerJoinQuery(ModelMethods localModel, ModelMethods refModel, String refTable) {
+    public String CreateInnerJoinQuery(ModelMethods localModel, ModelMethods refModel, String refTable, String condition, String type) {
         String refNombres = queryUtil.AsignTableNameToColumns(refModel.GetAllProperties(), refTable);
         String localNombres = queryUtil.AsignTableNameToColumns(localModel.GetAllProperties(), this.tbName);
         String pkfk = queryUtil.InnerJoinConditional(localModel.GetAllProperties(), refModel.GetAllProperties(), this.tbName, refTable);
-        String sql = "select " + localNombres + ", " + refNombres + " from " + this.tbName + " inner join " + refTable + " on " + pkfk;
+        String sql = "";
+        if(condition == null || condition.isEmpty()) {
+            sql = "select " + localNombres + ", " + refNombres + " from " + this.tbName + " inner join " + refTable + " on " + pkfk;
+        } else {
+            String conditional = queryUtil.GetNormalConditional(condition, type);
+            sql = "select " + localNombres + ", " + refNombres + " from " + this.tbName + " inner join " + refTable + " on " + pkfk + " where " + conditional;
+        }
         return sql;
     }
     /** 

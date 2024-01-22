@@ -201,8 +201,8 @@ public class QueryExecution {
      * @throws SQLException error al ejecutar la sentencia sql
      * @return el resultado de la ejecución
      */
-    public ResultSet ExecuteInnerJoin(Statement stm, ModelMethods localModel, ModelMethods refModel, String refTable) throws SQLException {
-        String sql = this.queryBuilder.CreateInnerJoinQuery(localModel, refModel, refTable);
+    public ResultSet ExecuteInnerJoin(Statement stm, ModelMethods localModel, ModelMethods refModel, String refTable, String condition, String type) throws SQLException {
+        String sql = this.queryBuilder.CreateInnerJoinQuery(localModel, refModel, refTable, condition, type);
         stm = this.cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
         return rst;
