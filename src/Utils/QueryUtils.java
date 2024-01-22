@@ -178,6 +178,26 @@ public record QueryUtils() {
         return cleanValues;
     }
     /**
+     * combine min and max operators for each column after ':' in options
+     * @param columns: 'min: nombre, max: password'
+     * @return min(column) as min_column, max(column) as max_column
+     */
+    public String GetMinMaxSelection(String columns) {
+        String build = "", cleanValue = "";
+        String[] values = columns.split(",");
+        for(String v: values) {
+            String minMax = v.split(":")[0].trim();
+            String value = v.split(":")[1].trim();
+            if(minMax.equals("min")) {
+                build += "min(" + value +") as min_" + value + ", ";
+            } else if(minMax.equals("max")) {
+                build += "max(" + value +") as max_" + value + ", ";
+            }
+        }
+        cleanValue = build.substring(0, build.length()-2);
+        return cleanValue;
+    }
+    /**
      * combina la llave con el valor para el condicional sql
      * <br> pre: </br> if type is not use and for the next condition
      * @param options:  las columnas a asignadas  el valor
