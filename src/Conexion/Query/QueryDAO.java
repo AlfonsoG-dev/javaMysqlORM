@@ -222,7 +222,7 @@ public class QueryDAO<T> {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.ExecuteFinInQuery(stm, returnOptions, columns, condition, type);
+            rst = queryExecution.ExecuteFinIn(stm, returnOptions, columns, condition, type);
             int len = 0;
             if(returnOptions == null || returnOptions.isEmpty()) {
                 len = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
@@ -255,6 +255,45 @@ public class QueryDAO<T> {
             }
         }
         return buscado.substring(0, buscado.length()-2);
+    }
+    /**
+     * busca los datos con regex o patrones
+     * @param pattern: regex o patron a buscar
+     * @param options: columnas a comparar con el patron
+     * @param type: and or not
+     * @return an object of the generic type
+     */
+    public T FindPattern(String pattern, String options, String type) {
+        T buscado = null;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = queryExecution.ExecuteFindPattern(stm, pattern, options, type);
+            int lenght = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+            while(rst.next()) {
+                buscado = modelBuilderMethods.CreateFromRST(rst, lenght);
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+                stm = null;
+            }
+        }
+        return buscado;
     }
     /**
      * get the min or max of each of the given columns 

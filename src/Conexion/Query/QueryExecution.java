@@ -125,7 +125,7 @@ public class QueryExecution {
      * @throws SQLException: sql exception
      * @return result of the execution
      */
-    public ResultSet ExecuteFinInQuery(Statement stm, String returnOptions, String columns, String condition, String type)  throws SQLException {
+    public ResultSet ExecuteFinIn(Statement stm, String returnOptions, String columns, String condition, String type)  throws SQLException {
         stm = this.cursor.createStatement();
         String sql = queryBuilder.CreateFindInQuery(returnOptions, columns, condition, type);
         ResultSet rst = stm.executeQuery(sql);
@@ -147,6 +147,20 @@ public class QueryExecution {
         return rst;
     }
     /**
+     * busca los datos utilizando regex o patrones
+     * @param stm: ejecutor de sentencias sql
+     * @param pattern: regex o patron a buscar
+     * @param options: columnas a comparar con el patron
+     * @param type: and or not
+     * @throws SQLException: error de ejecución
+     */
+    public ResultSet ExecuteFindPattern(Statement stm, String pattern, String options, String type) throws SQLException {
+        stm = this.cursor.createStatement();
+        String sql = queryBuilder.CreateFindPatternQuery(table, options.trim().split(","), type);
+        ResultSet rst = stm.executeQuery(sql);
+        return rst;
+    }
+    /**
      * ejecuta la busqueda por columna y valor y retorna el valor de las columnas seleccionadas
      * puede recibir 1 o varias columnas con el valor
      * puede retornar 1 o varios valores de la columna seleccionada
@@ -157,7 +171,7 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteGetValueOfColumnName (Statement stm, String options, String columns, String type) throws SQLException {
+    public ResultSet ExecuteGetValueOfColumnName(Statement stm, String options, String columns, String type) throws SQLException {
         stm = this.cursor.createStatement();
         String sql = this.queryBuilder.CreateFindColumnValueQuery(options, columns, type);
         ResultSet rst = stm.executeQuery(sql);
