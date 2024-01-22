@@ -214,7 +214,7 @@ public record QueryUtils() {
         String[] div = options.split(",");
         for(String val: div) {
             if(type.toLowerCase().equals("not")) {
-                conditionalValue += "not" + val.split(":")[0] +
+                conditionalValue += "not " + val.split(":")[0] +
                     "="+ "'"+
                     val.split(":")[1].stripIndent()+
                     "'" + " and";
@@ -322,7 +322,7 @@ public record QueryUtils() {
         String res = "";
         for(String k: options) {
             if(type.toLowerCase().equals("not")) {
-                res += "not" + k + " like " + "'" + pattern + "'" + " and";
+                res += k + " not like " + "'" + pattern + "'" + " and";
             } else {
                 res += k + " like " + "'" + pattern + "'" + " " + type;
             }
