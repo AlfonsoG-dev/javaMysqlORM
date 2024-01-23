@@ -39,9 +39,9 @@ public class MigrationExecution {
      * @throws SQLException error al ejecutar la sentencia sql
      * @return ejecutor de la sentencia
      */
-    public Statement ExecuteCreateDatabase(String DbName) throws SQLException {
-        String sql = migrationBuilder.CreateDataBaseQuery(DbName);
-        Statement stm = this.cursor.createStatement();
+    public Statement executeCreateDatabase(String dbName) throws SQLException {
+        String sql = migrationBuilder.createDataBaseQuery(dbName);
+        Statement stm = cursor.createStatement();
         stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         return stm;
     }
@@ -52,9 +52,9 @@ public class MigrationExecution {
      * @throws SQLException: error al ejecutar la sentencia sql
      * @return el ejecutor de la sentencia
      */
-    public Statement ExecuteSelectDatabase(String DbName, Statement stm) throws SQLException {
-        String sql = migrationBuilder.CreateSelectDatabase(DbName);
-        stm = this.cursor.createStatement();
+    public Statement executeSelectDatabase(String dbName, Statement stm) throws SQLException {
+        String sql = migrationBuilder.createSelectDatabase(dbName);
+        stm = cursor.createStatement();
         stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         return stm;
     }
@@ -65,9 +65,9 @@ public class MigrationExecution {
      * @throws SQLException error al ejecutar la sentencia sql
      * @return resultado de la ejecución de la sentencia sql
      */
-    public Statement ExecuteCreateTable(ModelMethods model, Statement stm) throws SQLException {
-        String sql = migrationBuilder.CreateTableQuery(model);
-        stm = this.cursor.createStatement();
+    public Statement executeCreateTable(ModelMethods model, Statement stm) throws SQLException {
+        String sql = migrationBuilder.createTableQuery(model);
+        stm = cursor.createStatement();
         stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         return stm;
     }
@@ -77,9 +77,9 @@ public class MigrationExecution {
      * @return resultado de la ejecución
      * @throws SQLException error al ejecutar
      */
-    public ResultSet ExecuteShowTableData(Statement stm) throws SQLException {
+    public ResultSet executeShowTableData(Statement stm) throws SQLException {
         String sql = "show columns from " + this.tableName;
-        stm = this.cursor.createStatement();
+        stm = cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -90,12 +90,12 @@ public class MigrationExecution {
      * @throws SQLException error al ejecutar la sentencia sql
      * @return el ejecutor de la sentencia
      */
-    public Statement ExecuteAddColumn(ModelMethods model, ModelMethods refModel, String refTable, boolean includePKFK, Statement stm) throws SQLException {
-        ResultSet rst = this.ExecuteShowTableData(stm);
+    public Statement executeAddColumn(ModelMethods model, ModelMethods refModel, String refTable, boolean includePKFK, Statement stm) throws SQLException {
+        ResultSet rst = executeShowTableData(stm);
         String sql =  "";              
-        sql = migrationBuilder.CreateAddColumnQuery(model.InitModel(), refModel.InitModel(), refTable, includePKFK, rst);
+        sql = migrationBuilder.createAddColumnQuery(model.initModel(), refModel.initModel(), refTable, includePKFK, rst);
         if(sql != "" || sql != null) {
-            stm = this.cursor.createStatement();
+            stm = cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         }
         return stm;
@@ -107,11 +107,11 @@ public class MigrationExecution {
      * @throws SQLException: error al ejecutar la sentencia sql
      * @return el ejecutor de la sentencia
      */
-    public Statement ExceuteRenameColumn(ModelMethods model, Statement stm) throws SQLException {
-        ResultSet rst = this.ExecuteShowTableData(stm);
-        String sql = migrationBuilder.CreateRenameColumnQuery(model.InitModel(), rst);
+    public Statement exceuteRenameColumn(ModelMethods model, Statement stm) throws SQLException {
+        ResultSet rst = executeShowTableData(stm);
+        String sql = migrationBuilder.createRenameColumnQuery(model.initModel(), rst);
         if(sql != "" || sql != null) {
-            stm = this.cursor.createStatement();
+            stm = cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         }
         return stm;
@@ -123,11 +123,11 @@ public class MigrationExecution {
      * @throws SQLException: error al ejecutar la sentencia sql
      * @return el ejecutor de la sentencia
      */
-    public Statement ExecuteChangeColumnType(ModelMethods model, boolean includePKFK, Statement stm) throws SQLException {
-        ResultSet rst = this.ExecuteShowTableData(stm);
-        String sql = migrationBuilder.CreateChangeTypeQuery(model.InitModel(), includePKFK, rst);
+    public Statement executeChangeColumnType(ModelMethods model, boolean includePKFK, Statement stm) throws SQLException {
+        ResultSet rst = executeShowTableData(stm);
+        String sql = migrationBuilder.createChangeTypeQuery(model.initModel(), includePKFK, rst);
         if(sql != "" || sql != null) {
-            stm = this.cursor.createStatement();
+            stm = cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         }
         return stm;
@@ -139,12 +139,12 @@ public class MigrationExecution {
      * @throws SQLException: error al ejecutar la sentencia sql
      * @return el ejecutor de la sentencia
      */
-    public Statement ExecuteDeleteColumn(ModelMethods model, boolean includePKFK, Statement stm) throws SQLException {
-        ResultSet rst = this.ExecuteShowTableData(stm);
-        String sql = migrationBuilder.CreateDeleteColumnQuery(model.InitModel(), includePKFK, rst);
+    public Statement executeDeleteColumn(ModelMethods model, boolean includePKFK, Statement stm) throws SQLException {
+        ResultSet rst = executeShowTableData(stm);
+        String sql = migrationBuilder.createDeleteColumnQuery(model.initModel(), includePKFK, rst);
         System.out.println(sql);
         if(sql != "" || sql != null) {
-            stm = this.cursor.createStatement();
+            stm = cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         }
         return stm;

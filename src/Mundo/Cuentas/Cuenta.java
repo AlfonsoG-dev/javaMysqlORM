@@ -192,7 +192,7 @@ public class Cuenta implements ModelMethods {
      * @return String con las propiedades del usuario
      */
     @Override
-    public String GetAllProperties() {
+    public String getAllProperties() {
         String all = "id_pk: " + this.getId_pk() + "\n";
         if(this.getNombre() != null && this.getNombre() != "" ) {
             all +="nombre: " + this.getNombre() + "\n";
@@ -220,9 +220,9 @@ public class Cuenta implements ModelMethods {
      * @return String con los valores para inicializar el modelo
      */
     @Override
-    public String InitModel() {
+    public String initModel() {
         ModelMetadata metadata = new ModelMetadata("Mundo.Cuentas.Cuenta");
-        return metadata.GetModelProperties();
+        return metadata.getModelProperties();
     }
 
 }

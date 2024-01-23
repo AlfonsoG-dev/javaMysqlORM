@@ -25,8 +25,8 @@ public class ModelMetadata {
      * @throws ClassNotFoundException: error al buscar la clase
      * @return la lista de los campos de la clase
      */
-    private Field[] GetModelFiedls() throws ClassNotFoundException {
-        Class<?> miClase = Class.forName(this.modelName);
+    private Field[] getModelFiedls() throws ClassNotFoundException {
+        Class<?> miClase = Class.forName(modelName);
         Field[] myFields = miClase.getDeclaredFields();
         return myFields;
     }
@@ -35,10 +35,10 @@ public class ModelMetadata {
      * @param model: nombre del modelo
      * @return las columnas del modelo
      */
-    private String GetModelColumns() {
+    private String getModelColumns() {
         String resultado = "";
         try {
-            Field[] myFields = this.GetModelFiedls();
+            Field[] myFields = getModelFiedls();
             if(myFields.length > 0) {
                 for(Field f: myFields) {
                     resultado += f.getName() + ", ";
@@ -54,10 +54,10 @@ public class ModelMetadata {
      * genera una lista de annotations del modelo
      * @return la lista de annotations del modelo
      */
-    private ArrayList<Annotation[]> GetAnotations() {
+    private ArrayList<Annotation[]> getModelAnnotations() {
         ArrayList<Annotation[]> resultado = new ArrayList<>();
         try {
-            Field[] myFields = this.GetModelFiedls();
+            Field[] myFields = getModelFiedls();
             if(myFields.length > 0) {
                 for(Field f: myFields) {
                     if(f.getAnnotations().length > 0) {
@@ -75,9 +75,9 @@ public class ModelMetadata {
      * @param type: el tipo de annotations a generar
      * @return un String con los datos de las annotations
      */
-    private String GetAnnotationConstraint() {
+    private String getAnnotationConstraint() {
         String constraint = "";
-        ArrayList<Annotation[]> misAnnotations = this.GetAnotations();
+        ArrayList<Annotation[]> misAnnotations = getModelAnnotations();
         for(Annotation[] m: misAnnotations) {
             constraint += m[0] + " and ";
         }
@@ -89,10 +89,10 @@ public class ModelMetadata {
      * <br> pre: </br> el orden en el que se crean los datos debe ser el mismo de las annotations
      * @return un String con los constraint de cada columna
      */
-    private String GetModelColumConstraint() {
+    private String getModelColumConstraint() {
         String resultado = "";
         try {
-            String[] myConstraint = this.GetAnnotationConstraint().split(" and ");
+            String[] myConstraint = getAnnotationConstraint().split(" and ");
             String datos = "";
             for(String c: myConstraint) {
                 String[] f = c.split(".miConstraint");
@@ -116,10 +116,10 @@ public class ModelMetadata {
      * <br> pre: </br> el orden en el que se crean los datos debe ser el mismo de las annotations
      * @return un String con el tipo de dato de cada columna
      */
-    private String GetModelColumnType() {
+    private String getModelColumnType() {
         String resultado = "";
         try {
-            String[] myConstraint = this.GetAnnotationConstraint().split(" and ");
+            String[] myConstraint = getAnnotationConstraint().split(" and ");
             String datos = "";
             for(String c: myConstraint) {
                 String[] f = c.split(".miConstraint");
@@ -147,11 +147,11 @@ public class ModelMetadata {
      * genera un String con los datos combinados del modelo
      * @return el string con los datos del modelo
      */
-    public String GetModelProperties() {
+    public String getModelProperties() {
         String build = "";
-        String[] columns = this.GetModelColumns().split(", ");
-        String[] types = this.GetModelColumnType().split(", ");
-        String[] constraint = this.GetModelColumConstraint().split(", ");
+        String[] columns = getModelColumns().split(", ");
+        String[] types = getModelColumnType().split(", ");
+        String[] constraint = getModelColumConstraint().split(", ");
         for(int i=0; i<columns.length; ++i) {
             if(constraint[i] != "") {
                 build += columns[i] + ": " + types[i] + " " + constraint[i] + "\n";

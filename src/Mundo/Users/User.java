@@ -184,7 +184,7 @@ public class User implements ModelMethods {
      * @return String con las propiedades del usuario ordenadas
      * */
     @Override
-    public String GetAllProperties() {
+    public String getAllProperties() {
         String all = "id_pk: " + this.getId_pk() + "\n";
         if(this.getNombre() != null && this.getNombre() != "" ) {
             all +="nombre: " + this.getNombre() + "\n";
@@ -211,8 +211,8 @@ public class User implements ModelMethods {
      * @return string con las propiedades del modelo de base de datos
      */
     @Override
-    public String InitModel() {
+    public String initModel() {
         ModelMetadata metadata = new ModelMetadata("Mundo.Users.User");
-        return metadata.GetModelProperties();
+        return metadata.getModelProperties();
     }
 }

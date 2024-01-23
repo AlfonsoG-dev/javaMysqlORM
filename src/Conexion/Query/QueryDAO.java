@@ -53,7 +53,7 @@ public class QueryDAO<T> {
      * {@link Connection} cursor
      * @return {@link Connection}
      */
-    public Connection GetConnection() {
+    public Connection getConnection() {
         return cursor;
     }
 
@@ -61,12 +61,12 @@ public class QueryDAO<T> {
      * se utiliza para dar la cantidad de datos en la tabla
      * @return cantidad de datos
      */
-    public int CountData() {
+    public int countData() {
         int count = 0;
         PreparedStatement pstm = null;
         ResultSet rst = null;
         try{
-            rst = queryExecution.ExecuteCountData(pstm);
+            rst = queryExecution.executeCountData(pstm);
             while(rst.next()) {
                 count++;
             }
@@ -98,15 +98,15 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return lista de registros
      */
-    public ArrayList<T> ReadAll() {
+    public ArrayList<T> readAll() {
         PreparedStatement pstm = null;
         ResultSet rst = null;
         ArrayList<T> resultados = new ArrayList<T>();
         try {
-            rst = queryExecution.ExecuteReadAll(pstm);
-            int lenght = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+            rst = queryExecution.executeReadAll(pstm);
+            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                resultados.add(modelBuilderMethods.CreateFromRST(rst, lenght));
+                resultados.add(modelBuilderMethods.createFromRST(rst, lenght));
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -138,15 +138,15 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return el usuario buscado
      */
-    public T FindOne(String options, String type) {
+    public T findOne(String options, String type) {
         T buscado = null;
         ResultSet rst = null;
         PreparedStatement pstm = null;
         try {
-            rst = queryExecution.ExecuteFindOne(pstm, options, type);
-            int lenght = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+            rst = queryExecution.executeFindOne(pstm, options, type);
+            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                buscado = modelBuilderMethods.CreateFromRST(rst, lenght);
+                buscado = modelBuilderMethods.createFromRST(rst, lenght);
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -177,15 +177,15 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return el registro buscado
      */
-    public T FindByColumnName(String options, String type) {
+    public T findByColumnName(String options, String type) {
         T buscado = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.ExecuteFindByColumnName(stm, options, type);
-            int lenght = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+            rst = queryExecution.executeFindByColumnName(stm, options, type);
+            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                buscado = modelBuilderMethods.CreateFromRST(rst, lenght);
+                buscado = modelBuilderMethods.createFromRST(rst, lenght);
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -217,15 +217,15 @@ public class QueryDAO<T> {
      * @param condition: condition for the search
      * @return the object of the generic type
      */
-    public String FindIn(String returnOptions, String columns, String condition, String type) {
+    public String findIn(String returnOptions, String columns, String condition, String type) {
         String buscado = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.ExecuteFinIn(stm, returnOptions, columns, condition, type);
+            rst = queryExecution.executeFinIn(stm, returnOptions, columns, condition, type);
             int len = 0;
             if(returnOptions == null || returnOptions.isEmpty()) {
-                len = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+                len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             } else if(returnOptions != null || !returnOptions.isEmpty()) {
                 len = returnOptions.split(",").length;
             }
@@ -263,15 +263,15 @@ public class QueryDAO<T> {
      * @param type: and or not
      * @return an object of the generic type
      */
-    public T FindPattern(String pattern, String options, String type) {
+    public T findPattern(String pattern, String options, String type) {
         T buscado = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.ExecuteFindPattern(stm, pattern, options, type);
-            int lenght = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+            rst = queryExecution.executeFindPattern(stm, pattern, options, type);
+            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
-                buscado = modelBuilderMethods.CreateFromRST(rst, lenght);
+                buscado = modelBuilderMethods.createFromRST(rst, lenght);
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -302,15 +302,15 @@ public class QueryDAO<T> {
      * @param type: and or not
      * @return the min or max object data
      */
-    public String GetMinMax( String columns, String condition, String type) {
+    public String getMinMax( String columns, String condition, String type) {
         String buscado = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.ExecuteFindMinMax(stm, columns, condition, type);
+            rst = queryExecution.executeFindMinMax(stm, columns, condition, type);
             int len = 0;
             if(columns == null || columns.isEmpty()) {
-                len = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+                len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             } else if(columns != null || !columns.isEmpty()) {
                 len = columns.split(",").length;
             }
@@ -348,15 +348,15 @@ public class QueryDAO<T> {
      * @param type: tipo de condicion para la setencia sql
      * @return value of column name
      */
-    public String GetValueOfColumnName(String options, String columns, String type) {
+    public String getValueOfColumnName(String options, String columns, String type) {
         String result ="";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.ExecuteGetValueOfColumnName(stm, options, columns, type);
+            rst = queryExecution.executeGetValueOfColumnName(stm, options, columns, type);
             int len = 0;
             if(columns == null || columns.isEmpty() == true) {
-                len = queryUtil.GetMetadataNumColumns(rst.getMetaData().toString());
+                len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             }
             else if(columns != null || columns.isEmpty() == false) {
                 len = columns.split(",").length;
@@ -395,12 +395,12 @@ public class QueryDAO<T> {
      * @param ref_table: table name of the reference model 
      * @return a string with the format -> source_name: source_password, reference_name: reference_password
      */
-    public String InnerJoin(ModelMethods source, ModelMethods reference, String refTable, String condition, String type) {
+    public String innerJoin(ModelMethods source, ModelMethods reference, String refTable, String condition, String type) {
         String result = "";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.ExecuteInnerJoin(stm, source, reference, refTable, condition, type);
+            rst = queryExecution.executeInnerJoin(stm, source, reference, refTable, condition, type);
             while(rst.next()) {
                 result += tbName + "->" + rst.getString(tbName + "_nombre") + ": " +
                     rst.getString(tbName + "_password") + ", " +
@@ -422,7 +422,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se registra de lo contrario false
      */
-    public boolean InsertNewRegister(ModelMethods model, String condition, String type) throws SQLException {
+    public boolean insertNewRegister(ModelMethods model, String condition, String type) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         try {
@@ -430,12 +430,12 @@ public class QueryDAO<T> {
                 throw new Exception("el objeto no deberia ser null");
             }
             cursor.beginRequest();
-            T buscado = this.FindByColumnName(condition, type);
+            T buscado = findByColumnName(condition, type);
             if(buscado == null) {
                 cursor.endRequest();
-                int rst = queryExecution.ExecuteInsertNewRegister(stm, model);
+                int rst = queryExecution.executeInsertNewRegister(stm, model);
                 if(rst > 0){
-                    System.out.println(model.GetAllProperties());
+                    System.out.println(model.getAllProperties());
                     registrado = true;
                 }
             } else {
@@ -466,7 +466,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se modifican los datos de lo contrario false
      **/
-    public boolean UpdateRegister(ModelMethods model, String conditions, String type) throws SQLException {
+    public boolean updateRegister(ModelMethods model, String conditions, String type) throws SQLException {
         boolean registrado = false;
         Statement stm = null;
         try {
@@ -474,12 +474,12 @@ public class QueryDAO<T> {
                 throw new Exception("model no deberia ser null");
             }
             cursor.beginRequest();
-            T buscado = this.FindByColumnName(conditions.split(",")[0], type);
+            T buscado = findByColumnName(conditions.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
-                int result = queryExecution.ExecuteUpdateRegister(stm, model, conditions, type);
+                int result = queryExecution.executeUpdateRegister(stm, model, conditions, type);
                 if(result > 0) {
-                    System.out.println(model.GetAllProperties());
+                    System.out.println(model.getAllProperties());
                     registrado = true;
                 }
             } else {
@@ -509,7 +509,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si elimina de lo contrario false
      * */
-    public boolean EliminarRegistro(String options, String type) throws SQLException {
+    public boolean eliminarRegistro(String options, String type) throws SQLException {
         boolean eliminar = false;
         Statement stm = null;
         try {
@@ -517,10 +517,10 @@ public class QueryDAO<T> {
                 throw new Exception("no deberia ser null ni vacio");
             }
             cursor.beginRequest();
-            T buscado = this.FindByColumnName(options.split(",")[0], type);
+            T buscado = findByColumnName(options.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
-                int rst = queryExecution.ExecuteEliminarRegistro(stm, options, type);
+                int rst = queryExecution.executeEliminarRegistro(stm, options, type);
                 if(rst > 0) {
                     System.out.println(options);
                     eliminar = true;

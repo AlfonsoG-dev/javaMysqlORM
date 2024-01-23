@@ -9,12 +9,12 @@ public interface ModelMethods {
      * crea un String con las propiedades de la clase 
      * @return String con las propiedades ordenadas
     */
-    public String GetAllProperties();
+    public String getAllProperties();
 
     /**
      * crea un HashMap de Strings con las propiedades del modelo de base de datos
      * @return HashMap con el modelo de la base de datos
      */
-    public String InitModel();
+    public String initModel();
 
 }

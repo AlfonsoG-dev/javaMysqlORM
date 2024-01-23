@@ -11,7 +11,7 @@ public interface ModelBuilderMethods<T>{
      * @throws SQLException: error al ejecutar la consulta sql
      * @return la lista de resultados
      */
-    public String[] ResultDataValidator(ResultSet rst, int capacity) throws SQLException;
+    public String[] resultDataValidator(ResultSet rst, int capacity) throws SQLException;
     /**
      * crea el usuario con los datos del ResultSet
      * @param rst: resultados de la consulta sql
@@ -19,11 +19,11 @@ public interface ModelBuilderMethods<T>{
      * @throws SQLException: error el ejecutar la consulta sql
      * @return el objeto T con los datos de la consulta sql
      */
-    public T CreateFromRST(ResultSet rst, int capacity) throws SQLException;
+    public T createFromRST(ResultSet rst, int capacity) throws SQLException;
     /**
      * crea el usuario con los datos de un String
      * @param datos: String con los datos
      * @return el objeto T con los datos del String
      */
-    public T CreateFromSTR(String datos);
+    public T createFromSTR(String datos);
 }

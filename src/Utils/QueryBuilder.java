@@ -29,12 +29,12 @@ public class QueryBuilder {
      * @param type: tipo de condicion para la sentencia sql
      * @return: el usuario buscado
      */
-    public String CreateFindQuery(String options, String type) {
+    public String createFindQuery(String options, String type) {
         String sql = "", cleanValues = "";
         if(options == null || options.isEmpty()) {
             sql = "select *" + " from "+ tbName;
         } else {
-            cleanValues = queryUtil.GetPrepareConditional(options, type);
+            cleanValues = queryUtil.getPrepareConditional(options, type);
             sql = "select *" + " from "+ tbName+ " where " + cleanValues;
         }
         return sql;
@@ -45,12 +45,12 @@ public class QueryBuilder {
      * @param type: tipo de condicion para la sentencia sql
      * @return: el usuario buscado
      */
-    public String CreateFindByColumnQuery(String options, String type) {
+    public String createFindByColumnQuery(String options, String type) {
         String sql = "", cleanValues = "";
         if(options == null || options.isEmpty()) {
             sql = "select *" +" from " + tbName;
         } else {
-            cleanValues = queryUtil.GetNormalConditional(options, type);
+            cleanValues = queryUtil.getNormalConditional(options, type);
             sql = "select *" +" from " + tbName + " where " + cleanValues.stripIndent();
         }
         return sql;
@@ -62,14 +62,14 @@ public class QueryBuilder {
      * @param type: tipo de condicion para la sentencia sql
      * @return la sentencia sql con los valores a retornar y los valores de condicion
      */
-    public String CreateFindColumnValueQuery(String options, String columns, String type) {
+    public String createFindColumnValueQuery(String options, String columns, String type) {
         String sql = "";
         String cleanValues = "";
         if(columns == null || columns.isEmpty() == true) {
             if(options == null || options.isEmpty()) {
                 sql =  "select *" +" from " + tbName;
             } else {
-                cleanValues = queryUtil.GetNormalConditional(options, type);
+                cleanValues = queryUtil.getNormalConditional(options, type);
                 sql =  "select *" +" from " + tbName + " where " + cleanValues.stripIndent();
             }
         }
@@ -77,7 +77,7 @@ public class QueryBuilder {
             if(options == null || options.isEmpty()) {
                 sql =  "select "+ columns +" from " + tbName;
             } else {
-                cleanValues = queryUtil.GetNormalConditional(options, type);
+                cleanValues = queryUtil.getNormalConditional(options, type);
                 sql =  "select "+ columns +" from " + tbName + " where " + cleanValues.stripIndent();
             }
         }
@@ -90,20 +90,20 @@ public class QueryBuilder {
      * @param condition: type of condition in ('', '')
      * @return la sentencia sql para buscar dentro de una lista de datos
      */
-    public String CreateFindInQuery(String returnOptions, String columns, String condition, String type) {
+    public String createFindInQuery(String returnOptions, String columns, String condition, String type) {
         String sql = "", inCondition = "";
         if(returnOptions == null) {
             if(condition == null || condition.isEmpty() && (columns == null || columns.isEmpty())) {
                 sql = "select * from " + tbName;
             } else {
-                inCondition = queryUtil.GetInConditional(columns, condition, type);
+                inCondition = queryUtil.getInConditional(columns, condition, type);
                 sql = "select * from " + tbName + " where " + inCondition;
             }
         } else if(returnOptions != null && !returnOptions.isEmpty()) {
             if(condition == null || condition.isEmpty() && (columns == null || columns.isEmpty())) {
                 sql = "select " + returnOptions + " from " + tbName;
             } else {
-                inCondition = queryUtil.GetInConditional(columns, condition, type);
+                inCondition = queryUtil.getInConditional(columns, condition, type);
                 sql = "select " + returnOptions + " from " + tbName + " where " + inCondition;
             }
         }
@@ -116,12 +116,12 @@ public class QueryBuilder {
      * @param type: tipo de condicion para la sentencia sql
      * @return la sentencia sql para buscar por patrón
      */
-    public String CreateFindPatternQuery(String pattern, String[] options, String type) {
+    public String createFindPatternQuery(String pattern, String[] options, String type) {
         String sql = "", patternCondition = "";
         if(pattern == null || options == null) {
             sql = "select * from "  + this.tbName;
         } else {
-            patternCondition = queryUtil.GetPatternCondition(pattern, options, type);
+            patternCondition = queryUtil.getPatternCondition(pattern, options, type);
             sql = "select * from "  + this.tbName + " where " + patternCondition;
         }
         return sql;
@@ -135,13 +135,13 @@ public class QueryBuilder {
      * @param condition: condition for where clausule
      * @param type: and or not
      */
-    public String CreateFindMinMaxQuery(String columns, String condition, String type) {
+    public String createFindMinMaxQuery(String columns, String condition, String type) {
         String sql = "", getCondition = "";
-        String minMaxSelection = queryUtil.GetMinMaxSelection(columns);
+        String minMaxSelection = queryUtil.getMinMaxSelection(columns);
         if(condition == null || condition.isEmpty()) {
             sql = "select " + minMaxSelection + " from " + tbName;
         } else {
-            getCondition = queryUtil.GetNormalConditional(condition, type);
+            getCondition = queryUtil.getNormalConditional(condition, type);
             sql = "select " + minMaxSelection + " from " + tbName + " where " + getCondition;
         }
         return sql;
@@ -151,8 +151,8 @@ public class QueryBuilder {
      * @param nObject: objeto con el método para crear la sentencia sql
      * @return la sentencia sql para registrar
      */
-    public String CreateInsertRegisterQuery(ModelMethods model) {
-        String[] data = queryUtil.GetModelType(model.GetAllProperties(), false).split(",");
+    public String createInsertRegisterQuery(ModelMethods model) {
+        String[] data = queryUtil.getModelType(model.getAllProperties(), false).split(",");
         String miData = "", cleanData = "";
         for(String d: data) {
             if(!d.equals("''")) {
@@ -160,7 +160,7 @@ public class QueryBuilder {
             }
         }
         cleanData = miData.substring(0, miData.length()-1);
-        String column = queryUtil.GetModelColumns(model.GetAllProperties(), false);
+        String column = queryUtil.getModelColumns(model.getAllProperties(), false);
         String sql = "insert into " + tbName + " (" + column +") values (" + cleanData + ")";
         return sql;
     }
@@ -170,15 +170,15 @@ public class QueryBuilder {
      * @param RefModel: modelo que posee los datos de referencia
      * @return la sentencia sql para inner join
      */
-    public String CreateInnerJoinQuery(ModelMethods localModel, ModelMethods refModel, String refTable, String condition, String type) {
-        String refNombres = queryUtil.AsignTableNameToColumns(refModel.GetAllProperties(), refTable);
-        String localNombres = queryUtil.AsignTableNameToColumns(localModel.GetAllProperties(), this.tbName);
-        String pkfk = queryUtil.InnerJoinConditional(localModel.GetAllProperties(), refModel.GetAllProperties(), this.tbName, refTable);
+    public String createInnerJoinQuery(ModelMethods localModel, ModelMethods refModel, String refTable, String condition, String type) {
+        String refNombres = queryUtil.asignTableNameToColumns(refModel.getAllProperties(), refTable);
+        String localNombres = queryUtil.asignTableNameToColumns(localModel.getAllProperties(), this.tbName);
+        String pkfk = queryUtil.innerJoinConditional(localModel.getAllProperties(), refModel.getAllProperties(), this.tbName, refTable);
         String sql = "";
         if(condition == null || condition.isEmpty()) {
             sql = "select " + localNombres + ", " + refNombres + " from " + this.tbName + " inner join " + refTable + " on " + pkfk;
         } else {
-            String conditional = queryUtil.GetNormalConditional(condition, type);
+            String conditional = queryUtil.getNormalConditional(condition, type);
             sql = "select " + localNombres + ", " + refNombres + " from " + this.tbName + " inner join " + refTable + " on " + pkfk + " where " + conditional;
         }
         return sql;
@@ -190,13 +190,13 @@ public class QueryBuilder {
      * @param type: tipo de condicion para la sentencia sql
      * @return la sentencia sql para modificar
      */
-    public String CreateModifyRegisterQuery(ModelMethods model, String condicional, String type) {
+    public String createModifyRegisterQuery(ModelMethods model, String condicional, String type) {
         String sql = "", condition = "";
-        String cleanKeyValue = queryUtil.GetAsignModelValues(model.GetAllProperties());
+        String cleanKeyValue = queryUtil.getAsignModelValues(model.getAllProperties());
         if(condicional == null || condicional.isEmpty()) {
             sql = "update " + tbName + " set " +  cleanKeyValue;
         } else {
-            condition = queryUtil.GetNormalConditional(condicional, type);
+            condition = queryUtil.getNormalConditional(condicional, type);
             sql = "update " + tbName + " set " +  cleanKeyValue + " where " + condition;
         }
         return sql;
@@ -207,12 +207,12 @@ public class QueryBuilder {
     * @param type: tipo de condicion para la sentencia sql
     * @return la sentencia sql
     **/
-   public String CreateDeleteRegisterQuery(String options, String type) {
+   public String createDeleteRegisterQuery(String options, String type) {
        String sql = "", condicional = "";
        if(options == null || options.isEmpty()) {
            sql = "delete from " + tbName;
        } else {
-           condicional = queryUtil.GetNormalConditional(options, type);
+           condicional = queryUtil.getNormalConditional(options, type);
            sql = "delete from " + tbName + " where " + condicional;
        }
        return sql;

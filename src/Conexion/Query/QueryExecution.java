@@ -54,9 +54,9 @@ public class QueryExecution {
      * @return Resultado de la ejecución
      * @throws SQLException error al ejecutar
     */
-    public ResultSet ExecuteCountData(PreparedStatement pstm) throws SQLException {
+    public ResultSet executeCountData(PreparedStatement pstm) throws SQLException {
         String sql = "select id_pk from " + table;
-        pstm = this.cursor.prepareStatement(sql);
+        pstm = cursor.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
         return rst;
     }
@@ -66,9 +66,9 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error al ejecutar
      */
-    public ResultSet ExecuteShowTableData(Statement stm) throws SQLException {
+    public ResultSet executeShowTableData(Statement stm) throws SQLException {
         String sql = "show columns from " + this.table;
-        stm = this.cursor.createStatement();
+        stm = cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -78,9 +78,9 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error al ejecutar
     */
-    public ResultSet ExecuteReadAll(PreparedStatement pstm) throws SQLException {
+    public ResultSet executeReadAll(PreparedStatement pstm) throws SQLException {
         String sql = "select * from " + table;
-        pstm = this.cursor.prepareStatement(sql);
+        pstm = cursor.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
         return rst;
     }
@@ -92,10 +92,10 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteFindOne(PreparedStatement pstm, String options, String type) throws SQLException {
-        String sql = this.queryBuilder.CreateFindQuery(options, type);
-        String val = this.queryUtil.GetOptionValue(options);
-        pstm = this.cursor.prepareStatement(sql);
+    public ResultSet executeFindOne(PreparedStatement pstm, String options, String type) throws SQLException {
+        String sql = queryBuilder.createFindQuery(options, type);
+        String val = queryUtil.getOptionValue(options);
+        pstm = cursor.prepareStatement(sql);
         pstm.setString(1, val);
         ResultSet rst = pstm.executeQuery();
         return rst;
@@ -109,9 +109,9 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteFindByColumnName(Statement stm, String options, String type) throws SQLException {
-        stm = this.cursor.createStatement();
-        String sql = this.queryBuilder.CreateFindByColumnQuery(options, type);
+    public ResultSet executeFindByColumnName(Statement stm, String options, String type) throws SQLException {
+        stm = cursor.createStatement();
+        String sql = queryBuilder.createFindByColumnQuery(options, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -125,9 +125,9 @@ public class QueryExecution {
      * @throws SQLException: sql exception
      * @return result of the execution
      */
-    public ResultSet ExecuteFinIn(Statement stm, String returnOptions, String columns, String condition, String type)  throws SQLException {
-        stm = this.cursor.createStatement();
-        String sql = queryBuilder.CreateFindInQuery(returnOptions, columns, condition, type);
+    public ResultSet executeFinIn(Statement stm, String returnOptions, String columns, String condition, String type)  throws SQLException {
+        stm = cursor.createStatement();
+        String sql = queryBuilder.createFindInQuery(returnOptions, columns, condition, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -140,9 +140,9 @@ public class QueryExecution {
      * @throws SQLException: error de ejecución
      * @return result of the executio
      */
-    public ResultSet ExecuteFindMinMax(Statement stm, String columns, String condition, String type) throws SQLException {
-        stm = this.cursor.createStatement();
-        String sql = queryBuilder.CreateFindMinMaxQuery(columns, condition, type);
+    public ResultSet executeFindMinMax(Statement stm, String columns, String condition, String type) throws SQLException {
+        stm = cursor.createStatement();
+        String sql = queryBuilder.createFindMinMaxQuery(columns, condition, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -154,9 +154,9 @@ public class QueryExecution {
      * @param type: and or not
      * @throws SQLException: error de ejecución
      */
-    public ResultSet ExecuteFindPattern(Statement stm, String pattern, String options, String type) throws SQLException {
-        stm = this.cursor.createStatement();
-        String sql = queryBuilder.CreateFindPatternQuery(table, options.trim().split(","), type);
+    public ResultSet executeFindPattern(Statement stm, String pattern, String options, String type) throws SQLException {
+        stm = cursor.createStatement();
+        String sql = queryBuilder.createFindPatternQuery(table, options.trim().split(","), type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -171,9 +171,9 @@ public class QueryExecution {
      * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
     */
-    public ResultSet ExecuteGetValueOfColumnName(Statement stm, String options, String columns, String type) throws SQLException {
-        stm = this.cursor.createStatement();
-        String sql = this.queryBuilder.CreateFindColumnValueQuery(options, columns, type);
+    public ResultSet executeGetValueOfColumnName(Statement stm, String options, String columns, String type) throws SQLException {
+        stm = cursor.createStatement();
+        String sql = queryBuilder.createFindColumnValueQuery(options, columns, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -185,9 +185,9 @@ public class QueryExecution {
      * @return row count or '0' when nothing is returned
      * @throws SQLException error de la ejecución
     */
-    public int ExecuteInsertNewRegister(Statement stm, ModelMethods model) throws SQLException {
-        String sql = this.queryBuilder.CreateInsertRegisterQuery(model);
-        stm = this.cursor.createStatement();
+    public int executeInsertNewRegister(Statement stm, ModelMethods model) throws SQLException {
+        String sql = queryBuilder.createInsertRegisterQuery(model);
+        stm = cursor.createStatement();
         int rst = stm.executeUpdate(sql);
         return rst;
     }
@@ -201,9 +201,9 @@ public class QueryExecution {
      * @throws SQLException error al ejecutar la sentencia sql
      * @return el resultado de la ejecución
      */
-    public ResultSet ExecuteInnerJoin(Statement stm, ModelMethods localModel, ModelMethods refModel, String refTable, String condition, String type) throws SQLException {
-        String sql = this.queryBuilder.CreateInnerJoinQuery(localModel, refModel, refTable, condition, type);
-        stm = this.cursor.createStatement();
+    public ResultSet executeInnerJoin(Statement stm, ModelMethods localModel, ModelMethods refModel, String refTable, String condition, String type) throws SQLException {
+        String sql = queryBuilder.createInnerJoinQuery(localModel, refModel, refTable, condition, type);
+        stm = cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -217,9 +217,9 @@ public class QueryExecution {
      * @return the row count of the statement or '0' when return nothing 
      * @throws SQLException error de la ejecución
     */
-    public int ExecuteUpdateRegister(Statement stm, ModelMethods model, String conditions, String type) throws SQLException {
-        stm = this.cursor.createStatement();
-        String sql = this.queryBuilder.CreateModifyRegisterQuery(model, conditions, type);
+    public int executeUpdateRegister(Statement stm, ModelMethods model, String conditions, String type) throws SQLException {
+        stm = cursor.createStatement();
+        String sql = queryBuilder.createModifyRegisterQuery(model, conditions, type);
         int retorno = stm.executeUpdate(sql);
         return retorno;
     }
@@ -232,9 +232,9 @@ public class QueryExecution {
      * @return the row count or '0' when nothing is returned
      * @throws SQLException error al ejecutar
     */
-    public int ExecuteEliminarRegistro(Statement stm, String options, String type) throws SQLException {
-        stm = this.cursor.createStatement();
-        String sql = this.queryBuilder.CreateDeleteRegisterQuery(options, type);
+    public int executeEliminarRegistro(Statement stm, String options, String type) throws SQLException {
+        stm = cursor.createStatement();
+        String sql = queryBuilder.createDeleteRegisterQuery(options, type);
         int result = stm.executeUpdate(sql);
         return result;
     }

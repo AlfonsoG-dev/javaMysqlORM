@@ -34,7 +34,7 @@ public class Conector {
         Connection conn = null;
         try {
             Class.forName(mysql_driver);
-            conn = DriverManager.getConnection(this.miConfig.GetMysqlUrl(), this.miConfig.username(), this.miConfig.password());
+            conn = DriverManager.getConnection(miConfig.getMysqlUrl(), miConfig.username(), miConfig.password());
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -48,7 +48,7 @@ public class Conector {
         Connection conn = null;
         try {
             Class.forName(postgresql_driver);
-            conn = DriverManager.getConnection(this.miConfig.GetPostgresqlUrl(), this.miConfig.username(), this.miConfig.password());
+            conn = DriverManager.getConnection(miConfig.getPostgresqlUrl(), miConfig.username(), miConfig.password());
         } catch(ClassNotFoundException | SQLException e) {
             System.err.println(e.getMessage());
         }
