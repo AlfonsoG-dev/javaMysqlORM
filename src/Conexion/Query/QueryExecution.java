@@ -49,6 +49,30 @@ public class QueryExecution {
     //métodos
 
     /**
+     * execute an sql query usign only select statements
+     * <br> pre: </br> INSER, UPDATE, DELETE are not supported
+     * @param stm: execute the sql statement
+     * @param sql: row string with the sql statement
+     * @throws SQLException: error of the execution
+     * @return the result of the execution
+     */
+    public ResultSet executeMyQuery(Statement stm, String sql) throws SQLException {
+        ResultSet rst = stm.executeQuery(sql);
+        return rst;
+    }
+    /**
+     * execute an sql query to INSER, UPDATE or DELETE statement
+     * @param stm: execute the sql statement
+     * @param sql: row string with the sql statement
+     * @throws SQLException: error of the execution
+     * @return thw row count or '0' then nothing is returned
+     */
+    public int executeMyUpdateQuery(Statement stm, String sql) throws SQLException {
+        stm = cursor.createStatement();
+        int rst = stm.executeUpdate(sql);
+        return rst;
+    }
+    /**
      * ejecuta el contador de resultados
      * @param pstm: ejecutor de sentencias sql
      * @return Resultado de la ejecución

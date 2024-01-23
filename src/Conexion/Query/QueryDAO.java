@@ -56,7 +56,73 @@ public class QueryDAO<T> {
     public Connection getConnection() {
         return cursor;
     }
-
+    /**
+     * busca y retorna el valor de la sentencia
+     * @param sql: row query statement
+     * @return value of column name
+     */
+    public String anyQuery(String sql) {
+        String result ="";
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = queryExecution.executeMyQuery(stm, sql);
+            int len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
+            while(rst.next()) {
+                for(int i=1; i<= len; i++) {
+                    String columnName = rst.getMetaData().getColumnName(i);
+                    result += columnName + ": " + rst.getString(i) + ", ";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally{
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+                stm = null;
+            }
+        }
+        return result.substring(0, result.length()-2);
+    }
+    /**
+     * INSERT UPDATE DELETE statements
+     * @param sql: row query statement
+     * @return true if row count is > 0 othewise false
+     */
+    public boolean anyExecution(String sql) {
+        boolean result = false;
+        Statement stm = null;
+        try {
+            int rst = queryExecution.executeMyUpdateQuery(stm, sql);
+            if(rst > 0) {
+                result = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally{
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+                stm = null;
+            }
+        }
+        return result;
+    }
     /**
      * se utiliza para dar la cantidad de datos en la tabla
      * @return cantidad de datos
@@ -71,7 +137,7 @@ public class QueryDAO<T> {
                 count++;
             }
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             if(rst != null) {
                 try {
@@ -109,7 +175,7 @@ public class QueryDAO<T> {
                 resultados.add(modelBuilderMethods.createFromRST(rst, lenght));
             }
         } catch(SQLException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             if(rst != null) {
                 try {
@@ -149,7 +215,7 @@ public class QueryDAO<T> {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
             }
         } catch(SQLException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             if(rst != null) {
                 try {
@@ -188,7 +254,7 @@ public class QueryDAO<T> {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             if(rst != null) {
                 try {
@@ -235,7 +301,7 @@ public class QueryDAO<T> {
                 }
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             if(rst != null) {
                 try {
@@ -274,7 +340,7 @@ public class QueryDAO<T> {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             if(rst != null) {
                 try {
@@ -320,7 +386,7 @@ public class QueryDAO<T> {
                 }
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             if(rst != null) {
                 try {
@@ -367,7 +433,7 @@ public class QueryDAO<T> {
                 }
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } finally{
             if(rst != null) {
                 try {
@@ -422,7 +488,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se registra de lo contrario false
      */
-    public boolean insertNewRegister(ModelMethods model, String condition, String type) throws SQLException {
+    public boolean insertNewRegister(ModelMethods model, String condition, String type) {
         boolean registrado = false;
         Statement stm = null;
         try {
@@ -444,7 +510,7 @@ public class QueryDAO<T> {
             }
 
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } finally{
             if(stm != null) {
                 try {
@@ -466,7 +532,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se modifican los datos de lo contrario false
      **/
-    public boolean updateRegister(ModelMethods model, String conditions, String type) throws SQLException {
+    public boolean updateRegister(ModelMethods model, String conditions, String type) {
         boolean registrado = false;
         Statement stm = null;
         try {
@@ -488,7 +554,7 @@ public class QueryDAO<T> {
             }
 
         } catch( Exception e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             if(stm != null) {
                 try {
@@ -509,7 +575,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si elimina de lo contrario false
      * */
-    public boolean eliminarRegistro(String options, String type) throws SQLException {
+    public boolean eliminarRegistro(String options, String type) {
         boolean eliminar = false;
         Statement stm = null;
         try {
