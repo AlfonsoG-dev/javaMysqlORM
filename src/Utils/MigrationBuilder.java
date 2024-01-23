@@ -174,9 +174,10 @@ public class MigrationBuilder extends QueryBuilder {
             String[] columns = deleteColumns.split(", ");
             for(String k: columns) {
                 String[] datos = k.split(":");
-                sql += "drop column "  + datos[0] + ", ";
                 if(datos[0].contains("fk")) {
                     sql += createDeleteConstraintQuery(deleteColumns, includePKFK);
+                } else {
+                    sql += "drop column "  + datos[0] + ", ";
                 }
             }
         }
