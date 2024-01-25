@@ -129,23 +129,19 @@ public record QueryUtils() {
         String[] data = modelProperties.split("\n");
         String userData = "";
         if(includePKFK == false) {
-            for(int i = 0; i < data.length; i++) {
-                String columnType = data[i].split(":")[1].stripIndent();
-                String pointStrip = "";
-                if(columnType.contains(".")) {
-                    pointStrip = columnType.split("\\.")[0].stripIndent();
+            for(int i = 1; i < data.length; i++) {
+                String myType = data[i].split(":")[1].trim();
+                if(myType == null || myType.isEmpty()) {
+                    myType = "";
                 } else {
-                    if((i+1) < data.length) {
-                        String column = data[i+1].split(":")[1].stripIndent();
-                        pointStrip = column;
-                    }
+                    userData += "'" + myType + "'" + ",";
                 }
-                userData += "'" + pointStrip + "'" + ",";
             }
         }
         else {
             for(int i = 0; i < data.length; i++) {
-                userData += "'"+ data[i].split(":")[1].stripIndent() + "'" + ",";
+                String myType = data[i].split(":")[1].stripIndent();
+                userData += "'" + myType + "'" + ",";
             }
         }
         return cleanValues(userData, 1);

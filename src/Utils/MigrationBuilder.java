@@ -89,24 +89,33 @@ public class MigrationBuilder extends QueryBuilder {
         String sql = "";
         String addColumns = queryUtil.compareColumnName(modelProperties, rst).get("agregar");
         if(addColumns != "") {
-            String columns = queryUtil.getModelColumns(addColumns, true);
+            String columns = queryUtil.getModelColumns(addColumns, includePKFK);
             String[] cleanColumns = queryUtil.cleanValues(columns, 1).split(",");
-            String[] modelTypes = queryUtil.getModelType(modelProperties, false).split(",");
-            String[] modelColumns = queryUtil.getModelColumns(modelProperties, true).split(",");
+            String[] modelTypes = queryUtil.getModelType(modelProperties, includePKFK).split(",");
+            String[] modelColumns = queryUtil.getModelColumns(modelProperties, includePKFK).split(",");
             for(String k: cleanColumns) {
                 int indexType = queryUtil.searchColumnType(modelProperties, k);
                 String clearTypes = indexType < modelTypes.length ? modelTypes[indexType].replace("'", "") : "null";
                 String clearModelColumns  = indexType < modelColumns.length ? modelColumns[indexType-1] : "null";
+                if(clearTypes.contains(".")) {
+                    clearTypes = clearTypes.split("\\.")[0];
+                }
                 sql += "add column " + k + " " + clearTypes + " after " + clearModelColumns + ", ";
+                if(includePKFK == true) {
+                    sql += createAddConstraintQuery(addColumns, refModelProperties, refTable);
+                }
             }
+
         } 
-        if(addColumns != "" && includePKFK) {
-            sql += createAddConstraintQuery(addColumns, refModelProperties, refTable);
-        }
         String clearSql = "";
         String res = "";
         if(sql != "" && sql != null) {
-            clearSql = queryUtil.cleanValues(sql, 2);
+            if(includePKFK == true) {
+
+                clearSql = queryUtil.cleanValues(sql, 2);
+            } else {
+                clearSql = queryUtil.cleanValues(sql, 0);
+            }
             res = createAlterTableQuery(clearSql);
         }
         return res;
@@ -149,7 +158,7 @@ public class MigrationBuilder extends QueryBuilder {
             for(String t: types) {
                 String type = t.split(":")[0];
                 int index = Integer.parseInt(t.split(":")[1]);
-                sql += "modify column " + modelColumns[index-1] + " " + type + ", ";
+                sql += "modify column " + modelColumns[index] + " " + type + ", ";
             }
         }
         String clearSql = "";
@@ -175,7 +184,7 @@ public class MigrationBuilder extends QueryBuilder {
             for(String k: columns) {
                 String[] datos = k.split(":");
                 if(datos[0].contains("fk")) {
-                    sql += createDeleteConstraintQuery(deleteColumns, includePKFK);
+                    sql += createDeleteConstraintQuery(deleteColumns, includePKFK) + "drop column " + datos[0] + ", ";
                 } else {
                     sql += "drop column "  + datos[0] + ", ";
                 }
@@ -207,7 +216,7 @@ public class MigrationBuilder extends QueryBuilder {
                 sql += "add constraint " + k + " primary key(" + k + "), ";
             }
             if(k.contains("fk") == true) {
-                sql += "add constraint " + k + " foreign key(" + k +") references " + refTable + "(" + refpk + ") on delete cascade on update cascade, ";
+                sql +="add constraint " + k + " foreign key(" + k +") references " + refTable + "(" + refpk + ") on delete cascade on update cascade, ";
             }
         }
         String clearSql = "";
