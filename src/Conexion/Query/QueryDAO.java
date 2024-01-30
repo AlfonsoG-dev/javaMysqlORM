@@ -57,6 +57,16 @@ public class QueryDAO<T> {
         return cursor;
     }
     /**
+     * disconnect the cursor connection
+     */
+    public void disconnectConnection() {
+        try {
+            cursor.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
      * busca y retorna el valor de la sentencia
      * @param sql: row query statement
      * @return value of column name
