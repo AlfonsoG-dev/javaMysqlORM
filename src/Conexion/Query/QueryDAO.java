@@ -216,8 +216,8 @@ public class QueryDAO<T> {
      */
     public T findOne(String options, String type) {
         T buscado = null;
-        ResultSet rst = null;
         PreparedStatement pstm = null;
+        ResultSet rst = null;
         try {
             rst = queryExecution.executeFindOne(pstm, options, type);
             int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
@@ -486,6 +486,23 @@ public class QueryDAO<T> {
 
         } catch(Exception e) {
             System.err.println(e);
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                } 
+                stm = null;
+            }
         }
         String cleanResult = result.substring(0, result.length()-2);
         return cleanResult;
