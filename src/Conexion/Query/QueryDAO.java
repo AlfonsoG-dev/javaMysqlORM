@@ -208,7 +208,7 @@ public class QueryDAO<T> {
     }
 
     /**
-     * busca el registro por primary key
+     * search using {@link PreparedStatement} 
      * @param options: las obciones de busqueda
      * @param type: tipo de condición para la sentencia sql
      * @param model_builder_methods: opciones para utilizar los registros

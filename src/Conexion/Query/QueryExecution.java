@@ -120,7 +120,10 @@ public class QueryExecution {
         String sql = queryBuilder.createFindQuery(options, type);
         String val = queryUtil.getOptionValue(options);
         pstm = cursor.prepareStatement(sql);
-        pstm.setString(1, val);
+        String[] fields = val.split(",");
+        for(int i=0; i<fields.length; ++i) {
+            pstm.setString((i+1), fields[i]);
+        }
         ResultSet rst = pstm.executeQuery();
         return rst;
     }

@@ -168,7 +168,7 @@ public record QueryUtils() {
      * @return los valores limpios y combinados
      */
     public String getOptionValue(String options) {
-        String[] div = options.split(",");
+        String[] div = options.split(", ");
         String values = "";
         for(String val: div) {
             values += val.split(":")[1] +",";
