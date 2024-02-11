@@ -65,11 +65,27 @@ public class QueryExecution {
      * @param stm: execute the sql statement
      * @param sql: row string with the sql statement
      * @throws SQLException: error of the execution
-     * @return thw row count or '0' then nothing is returned
+     * @return the row count or '0' when nothing is returned
      */
     public int executeMyUpdateQuery(Statement stm, String sql) throws SQLException {
         stm = cursor.createStatement();
         int rst = stm.executeUpdate(sql);
+        return rst;
+    }
+    /**
+     * execute a sql query to create a view from selection.
+     * @param stm: execute the sql statement
+     * @param viewName: name of the view to create
+     * @param options: options for selection
+     * @param type: type logic for where clause
+     * @throws SQLException: error of the execution
+     * @return the row count or '0'  when nothing is returned
+     */
+    public int executeCreateView(Statement stm, String viewName, String options, String type) throws SQLException {
+        stm = cursor.createStatement();
+        String selectSQL = queryBuilder.createFindByColumnQuery(options, type);
+        String viewSQL = "create view " + viewName + " as " + selectSQL;
+        int rst = stm.executeUpdate(viewSQL);
         return rst;
     }
     /**
@@ -162,7 +178,7 @@ public class QueryExecution {
      * ejecuta la busqueda retornando min or max
      * @param stm: ejecutor de sentencias sql
      * @param columns: 'min: nombre, max: password'
-     * @param condition: condition for where clausule
+     * @param condition: condition for where clause
      * @param type: and or not
      * @throws SQLException: error de ejecución
      * @return result of the executio

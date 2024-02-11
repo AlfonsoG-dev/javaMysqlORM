@@ -132,7 +132,7 @@ public class QueryBuilder {
      * <br> pre: </br> utilizando columna tipo varchar el resultado es en orden alfabetico, de lo contrario 
      * se ordena numericamente
      * @param columns: 'min: nombre, max: password'
-     * @param condition: condition for where clausule
+     * @param condition: condition for where clause
      * @param type: and or not
      */
     public String createFindMinMaxQuery(String columns, String condition, String type) {

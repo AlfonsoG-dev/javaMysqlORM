@@ -16,9 +16,9 @@
 - [x] dynamic Migration base on Annotations fields declared inside the model.
 - [x] accepts table relationships using the class Model Annotations.
 - [x] gives 1 method to execute the given sql query for SELECT statements and another method for INSERT UPDATE DELETE statements.
+- [x] view statements.
 
 ## TODO's
-- [ ] view statements.
 - [ ] creation of table space.
 - [ ] add insert into select DAO operation.
 

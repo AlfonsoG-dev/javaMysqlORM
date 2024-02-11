@@ -46,9 +46,6 @@ public class QueryDAO<T> {
         queryUtil = new QueryUtils();
         modelBuilderMethods = builder;
     }
-
-    //métodos
-    // TODO: add create view to the operations
     /**
      * {@link Connection} cursor
      * @return {@link Connection}
@@ -132,6 +129,32 @@ public class QueryDAO<T> {
             }
         }
         return result;
+    }
+    /**
+     * create a view from selection
+     * <br> exam: </br> create view name_view as select operation from table;
+     */
+    public boolean createView(String viewName, String options, String type) {
+        boolean isCreated = false;
+        Statement stm = null;
+        try {
+            int rst = queryExecution.executeCreateView(stm, viewName, options, type);
+            if(rst > 0) {
+                isCreated = true;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        return isCreated;
     }
     /**
      * se utiliza para dar la cantidad de datos en la tabla
@@ -374,7 +397,7 @@ public class QueryDAO<T> {
     /**
      * get the min or max of each of the given columns 
      * @param columns: 'min: nombre, max: password'
-     * @param condition: condition for where clausule
+     * @param condition: condition for where clause
      * @param type: and or not
      * @return the min or max object data
      */
