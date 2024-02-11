@@ -49,6 +49,30 @@ public class QueryExecution {
     //métodos
 
     /**
+     * check if the view is created or not.
+     * <br> pre: </br> the view is aready created
+     * @param viewName: the name of the view to check the creation
+     * @throws SQLException: error while tring to check view creation
+     * @return 1 if is created, 0 if not and -1 if nothing happens
+     */
+    private int isViewCreated(String viewName) throws SQLException {
+        int res = -1;
+        ResultSet rst = cursor.getMetaData().getTables(
+                null,
+                null,
+                viewName,
+                new String[] { 
+                    "VIEW" 
+                }
+        );
+        if(rst.next()) {
+            res = 1;
+        } else {
+            res = 0;
+        }
+        return res;
+    }
+    /**
      * execute an sql query usign only select statements
      * <br> pre: </br> INSER, UPDATE, DELETE are not supported
      * @param stm: execute the sql statement
@@ -77,16 +101,17 @@ public class QueryExecution {
      * @param stm: execute the sql statement
      * @param viewName: name of the view to create
      * @param options: options for selection
+     * @param columns: the columns to select for the view
      * @param type: type logic for where clause
      * @throws SQLException: error of the execution
      * @return the row count or '0'  when nothing is returned
      */
-    public int executeCreateView(Statement stm, String viewName, String options, String type) throws SQLException {
+    public int executeCreateView(Statement stm, String viewName, String options, String columns, String type) throws SQLException {
         stm = cursor.createStatement();
-        String selectSQL = queryBuilder.createFindByColumnQuery(options, type);
+        String selectSQL = queryBuilder.createFindColumnValueQuery(options, columns, type);
         String viewSQL = "create view " + viewName + " as " + selectSQL;
-        int rst = stm.executeUpdate(viewSQL);
-        return rst;
+        stm.executeUpdate(viewSQL);
+        return isViewCreated(viewName);
     }
     /**
      * ejecuta el contador de resultados
@@ -138,7 +163,7 @@ public class QueryExecution {
         pstm = cursor.prepareStatement(sql);
         String[] fields = val.split(",");
         for(int i=0; i<fields.length; ++i) {
-            pstm.setString((i+1), fields[i]);
+            pstm.setString((i+1), fields[i].trim());
         }
         ResultSet rst = pstm.executeQuery();
         return rst;
