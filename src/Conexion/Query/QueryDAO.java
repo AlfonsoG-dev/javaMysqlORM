@@ -133,14 +133,21 @@ public class QueryDAO<T> {
     /**
      * create a view from selection
      * <br> exam: </br> create view name_view as select operation from table;
+     * @param viewName: name of the view to create
+     * @param options: options for selection
+     * @param columns: the columns to select for the view
+     * @param type: type logic for where clause
+     * @return true if its created, otherwise false
      */
-    public boolean createView(String viewName, String options, String type) {
+    public boolean createView(String viewName, String options, String columns, String type) {
         boolean isCreated = false;
         Statement stm = null;
         try {
-            int rst = queryExecution.executeCreateView(stm, viewName, options, type);
-            if(rst > 0) {
+            int rst = queryExecution.executeCreateView(stm, viewName, options, columns, type);
+            if(rst == 1) {
                 isCreated = true;
+            } else if(rst == -1) {
+                throw new Exception("nothing happen when trying to create a new view");
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -461,7 +468,7 @@ public class QueryDAO<T> {
                 len = columns.split(",").length;
             }
             while(rst.next()) {
-                for(int i=1; i<= len; i++) {
+                for(int i=1; i<= len; ++i) {
                     result += rst.getString(i).replaceAll("null", "") + ", ";
                 }
             }
