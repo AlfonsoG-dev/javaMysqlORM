@@ -1,8 +1,7 @@
-
-# Project in java with MYSQL;
+# Java MYSQL ORM 
 >- An ORM like app in java.
->- creates SQL sentences for MYSQL database using class object as models.
->>- i try to replicate an ORM functionality in java for MYSQL databases.
+>- creates SQL sentences for MYSQL databases using java classes as models.
+>>- i try to replicate an ORM functionality in java for MYSQL.
 
 # Dependencies
 
@@ -107,7 +106,7 @@ private int user_id_fk;
 
 # Compile And Execute
 >- if you are not using vscode and need to compile the project with the `javac` CLI tool.
->- I include a `java-exe.ps1` shell script for powersehll.
+>- I include a `java-exe.ps1` shell script for powershell.
 
 ## PowerShell script for compile and execute.
 
