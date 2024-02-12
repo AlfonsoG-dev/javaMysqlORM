@@ -11,16 +11,17 @@
 >- [mysql_query_examples](https://www.w3schools.com/mysql/)
 
 # Features
-- [x] dynamic query creation base on class object as models.
-- [x] normal CRUD operations and InnerJoin as well.
-- [x] dynamic Migration base on Annotations fields declared inside the model.
-- [x] accepts table relationships using the class Model Annotations.
-- [x] gives 1 method to execute the given sql query for SELECT statements and another method for INSERT UPDATE DELETE statements.
-- [x] view statements.
+- [x] dynamic query creation using class objects as table models.
+- [x] normal CRUD operations and `INNER JOIN` as well.
+- [x] dynamic Migration using Annotations fields of the table model.
+- [x] accepts table relationships using the table Model Annotations.
+- [x] method to execute INSERT, UPDATE, DELETE operations using SQL sentences as parameters.
+- [x] method to SELECT operations using SQL sentences as parameters.
+- [x] `CREATE VIEW ` statement.
+- [x] `INSERT INTO ... SELECT` statement.
 
 ## TODO's
 - [ ] creation of table space.
-- [ ] add insert into select DAO operation.
 
 -----
 
