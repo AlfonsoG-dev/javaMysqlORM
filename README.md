@@ -33,9 +33,13 @@
 
 [migration_usage](./src/Samples/Migration/MigrationSamples.java)
 
+# Connection use
+[connection_usage](./src/Samples/MainApp.java)
+
 ## Model Creation
 >- A Class can be a model if implements `ModelMethods` interface
 >>- Model Methods have 2 methods and each one have their own purpose.
+
 ```java
 /**
 * this method is to obtain the value of the model
@@ -74,6 +78,7 @@ public String InitModel() {
 ```
 >- in each one of the members of that model is necessary to declare an Annotation
 >>- the Annotation is to declara a constraint and type for the table column in the database.
+
 ```java
 /**
  * id del usuario
@@ -89,6 +94,7 @@ private String nombre;
 ```
 >- if the model contains an FK column you must declare the reference inside de Annotation and separate the constraint with `.` before the FK reference
 >>- because of the nature of the migration operation.
+
 ```java
 /**
 * foreign key de la cuenta al usuario
