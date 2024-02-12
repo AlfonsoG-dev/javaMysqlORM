@@ -27,14 +27,14 @@
 
 # Normal Use
 
-[normal_use_samples](./src/Samples/Normal/QuerySamples.java)
+[normal_samples](./src/Samples/Normal/QuerySamples.java)
 
 # Migration Use
 
-[migration_usage](./src/Samples/Migration/MigrationSamples.java)
+[migration_samples](./src/Samples/Migration/MigrationSamples.java)
 
 # Connection use
-[connection_usage](./src/Samples/MainApp.java)
+[connection_samples](./src/Samples/MainApp.java)
 
 ## Model Creation
 >- A Class can be a model if implements `ModelMethods` interface

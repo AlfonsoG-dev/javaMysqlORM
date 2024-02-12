@@ -45,7 +45,7 @@ public class MainApp {
     }
     private final static void setDatabaseState() {
         try {
-            DbConfig miConfig = InitDB("contrasenias");
+            DbConfig miConfig = InitDB("database_name");
             Connection cursor = new Conector(miConfig).conectarMySQL();
             // use the default models
             InitTable(
