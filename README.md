@@ -1,5 +1,5 @@
-# Project in java with MYSQL;
 
+# Project in java with MYSQL;
 >- An ORM like app in java.
 >- creates SQL sentences for MYSQL database using class object as models.
 >>- i try to replicate an ORM functionality in java for MYSQL databases.
@@ -26,59 +26,8 @@
 -----
 
 # Normal Use
-```java
-public static void main(String[] args) {
-    try {
-        // clase que posee la conexión a la base de datos
-        DbConfig miConfig = new DbConfig("consulta", "localhost", "3306", "test_user", "5x5W12");
 
-        // enable transaction usage when auto commit is false
-        Connection transactionCursor = new Conector(miConfig).conectarMySQL();
-        transactionCursor.setAutoCommit(false);
-
-        // Clase DAO para la Query según el tipo de dato generico asignado
-        QueryDAO<User> miUserDAO = new QueryDAO<User>("user", miConfig, transactionCursor);
-
-        // verificar si existen datos y seleccionar 1 para comprobar el nombre
-        System.out.println(miUserDAO.ReadAll(builder).get(1).getNombre());
-
-        // inner join of 2 tables
-        User referenceModel = new User("test", "test@gmail", "123", "test");
-        Cuenta localModel = new Cuenta("test", "test@test", loggedUser, "123");
-        String refModelTable = "user";
-
-        // QueryDAO for localModel table
-        QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", miConfig, transactionCursor);
-        String rest = cuentaDAO.InnerJoin(localModel, referenceModel, refModelTable);
-        System.out.println(rest);
-
-
-        // Clase que representa el tipo de dato para la clase DAO
-        User nuevo = new User("juan", "jl@gmail", "123", "user");
-
-        //clase Builder del Usuario 
-        UserBuilder builder = new UserBuilder();
-
-        //método para registrar datos de la tabla
-        nuevo.setCreate_at(); // asigna la fecha actual
-        miUserDAO.InsertNewRegister(nuevo, "nombre: " + nuevo.getNombre(), "and", builder);
-
-        // método para actualizar datos de la tabla
-        nuevo.setUpdate_at(); // asigna la fecha actual
-        miUserDAO.UpdateRegister(nuevo, "nombre: juan, password: 123", "or", builder);
-
-        // método para eliminar los datos de una tabla
-        miUserDAO.EliminarRegistro("nombre: juan", "and", builder);
-
-        // if want to cancel the database in this SavePoint
-        transactionCursor.rollback()
-        // else if whant to commit the changes
-        transactionCursor.commit();
-    } catch (Exception e) {
-        System.out.println(e);
-    }
-}
-```
+[normal_use_samples](./src/Samples/Normal/QuerySamples.java)
 
 # Migration Use
 

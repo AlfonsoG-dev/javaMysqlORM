@@ -205,7 +205,7 @@ public class QueryExecution {
      * @throws SQLException: sql exception
      * @return result of the execution
      */
-    public ResultSet executeFinIn(Statement stm, String returnOptions, String columns, String condition, String type)  throws SQLException {
+    public ResultSet executeFindIn(Statement stm, String returnOptions, String columns, String condition, String type)  throws SQLException {
         stm = cursor.createStatement();
         String sql = queryBuilder.createFindInQuery(returnOptions, columns, condition, type);
         ResultSet rst = stm.executeQuery(sql);

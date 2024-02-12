@@ -357,7 +357,7 @@ public class QueryDAO<T> {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeFinIn(stm, returnOptions, columns, condition, type);
+            rst = queryExecution.executeFindIn(stm, returnOptions, columns, condition, type);
             int len = 0;
             if(returnOptions == null || returnOptions.isEmpty()) {
                 len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
@@ -692,7 +692,7 @@ public class QueryDAO<T> {
      * @param model_builder_methods: opciones para utilizar los registros
      * @return true si elimina de lo contrario false
      * */
-    public boolean eliminarRegistro(String options, String type) {
+    public boolean deleteRegister(String options, String type) {
         boolean eliminar = false;
         Statement stm = null;
         try {
