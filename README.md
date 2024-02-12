@@ -19,9 +19,6 @@
 - [x] `CREATE VIEW ` statement.
 - [x] `INSERT INTO ... SELECT` statement.
 
-## TODO's
-- [ ] creation of table space.
-
 -----
 
 # Normal Use
@@ -33,6 +30,7 @@
 [migration_samples](./src/Samples/Migration/MigrationSamples.java)
 
 # Connection use
+
 [connection_samples](./src/Samples/MainApp.java)
 
 ## Model Creation
