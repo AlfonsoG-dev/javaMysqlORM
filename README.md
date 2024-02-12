@@ -31,45 +31,8 @@
 
 # Migration Use
 
-```java
-public static void main(String[] args) {
-    try {
+[migration_usage](./src/Samples/Migration/MigrationSamples.java)
 
-        //configuración de la conexión a la base de datos 
-        DbConfig miConfig = new DbConfig("consulta", "localhost", "3306", "test_user", "5x5W12");
-
-        //clase para realizar la migración con el tipo genérico dado
-        MigrationDAO<Cuenta> miCuentaDAO = new MigrationDAO<>("cuentas", miConfig);
-
-        //clase que representa el modelo con el que se realiza la migración
-        Cuenta mia = new Cuenta();
-
-        //crear la base de datos
-        miCuentaDAO.CreateDataBase("prueba_db");
-
-        //selecciona la nueva base de datos
-        miCuentaDAO.SelecDatabase("prueba_db");
-
-        //crea la tabla según el modelo
-        miCuentaDAO.CreateTable(mia);
-
-        // agrega columnas a la tabla
-        boolean includeFKPK = false | true;
-        miCuentaDAO.AddColumn(mia, ref_model, "ref_table", includeFKPK);
-
-        //elimina columnas de la tabla
-        miCuentaDAO.DeleteColumn(mia, includeFKPK);
-
-        //cambia el nombre de las columnas de la tabla
-        miCuentaDAO.RenameColumn(mia);
-
-        //cambia el tipo de dato de las columnas de la tabla
-        miCuentaDAO.ChangeType(mia, includeFKPK);
-    } catch (Exception e) {
-        e.prinStackTrace();
-    }
-}
-```
 ## Model Creation
 >- A Class can be a model if implements `ModelMethods` interface
 >>- Model Methods have 2 methods and each one have their own purpose.
@@ -131,6 +94,7 @@ private String nombre;
 * foreign key de la cuenta al usuario
 */
 @TableProperties(miConstraint = "not null. foreign key('name of the fk') references `name of the table`(name of the pk) on delete cascade on update cascade", miType = "int")
+private int user_id_fk;
 
 ```
 ---------
