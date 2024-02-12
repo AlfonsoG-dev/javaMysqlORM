@@ -272,6 +272,30 @@ public class QueryExecution {
         return rst;
     }
     /**
+     * executes the insert into select statement
+     * @param stm: statement object 
+     * @param sourceT: source table
+     * @param targetT: target table 
+     * @param options: options for where clause
+     * @param columns: columns to return
+     * @param type: logic operator for where clause
+     * @return the row count or 0 when nothing is returned
+     */
+    public int executeInsertIntoSelect(Statement stm, String sourceT, String targetT, String options, String columns, String type) throws SQLException {
+        stm = cursor.createStatement();
+        String sql = "";
+        String selectSQL = "";
+        if(columns == null || columns == "") {
+            selectSQL = new QueryBuilder(sourceT).createFindByColumnQuery(options, type);
+            sql = "insert into " + targetT + " " + selectSQL;
+        } else {
+            selectSQL = new QueryBuilder(sourceT).createFindColumnValueQuery(options, columns, type);
+            sql = "insert into " + targetT + " (" + columns + ")" + selectSQL;
+        }
+        int rst = stm.executeUpdate(sql);
+        return rst;
+    }
+    /**
      * ejecuta la consulta tipo inner join
      * @param tb_name: nombre de la tabla local
      * @param stm: ejecutor de sentencias sql

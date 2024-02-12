@@ -609,7 +609,38 @@ public class QueryDAO<T> {
         }
         return registrado;
     }
-
+    /**
+     * copy the columns from one table to another
+     * <br> pre: </br> you can copy all o some columns of the table
+     * @param sourceT: source table
+     * @param targetT: target table 
+     * @param options: options for where clause
+     * @param columns: columns to return
+     * @param type: logic operator for where clause
+     * @return true if the {@link sourceT} is copied to {@link targetT}, false otherwise
+     */
+    public boolean insertIntoSelect(String sourceT, String targetT, String options, String columns, String type) {
+        boolean isInserted = false;
+        Statement stm = null;
+        try {
+            int rst = queryExecution.executeInsertIntoSelect(stm, sourceT, targetT, options,  columns, type);
+            if(rst > 0) {
+                isInserted = true;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        return isInserted;
+    }
     /**
      * modificar 1 registro de la base de datos
      * @param nObject: usuario con los datos a modificar
