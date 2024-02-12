@@ -164,6 +164,35 @@ public class QueryDAO<T> {
         return isCreated;
     }
     /**
+     * delete views from database
+     * @param viewName: the view to delete
+     * @return true if deleted, false otherwise
+     */
+    public boolean deleteView(String viewName) {
+        boolean isDeleted = false;
+        Statement stm = null;
+        try {
+            int rst = queryExecution.executeDeleteView(stm, viewName);
+            if(rst == 0) {
+                isDeleted = true;
+            } else if(rst == -1) {
+                throw new Exception("nothing happen when trying to delete a view");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        return isDeleted;
+    }
+    /**
      * se utiliza para dar la cantidad de datos en la tabla
      * @return cantidad de datos
      */

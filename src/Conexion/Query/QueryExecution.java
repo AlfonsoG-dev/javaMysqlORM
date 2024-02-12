@@ -104,13 +104,25 @@ public class QueryExecution {
      * @param columns: the columns to select for the view
      * @param type: type logic for where clause
      * @throws SQLException: error of the execution
-     * @return the row count or '0'  when nothing is returned
+     * @return 1 if is created, 0 if is not created and -1 if nothing happens
      */
     public int executeCreateView(Statement stm, String viewName, String options, String columns, String type) throws SQLException {
         stm = cursor.createStatement();
         String selectSQL = queryBuilder.createFindColumnValueQuery(options, columns, type);
-        String viewSQL = "create view " + viewName + " as " + selectSQL;
+        String viewSQL = "create view if not exists " + viewName + " as " + selectSQL;
         stm.executeUpdate(viewSQL);
+        return isViewCreated(viewName);
+    }
+    /**
+     * execute a sql query to delete a view from database
+     * @param viewName: view name to delete
+     * @throws SQLException: error of the execution
+     * @return 0 if the view doesn't exists, 1 if exists and -1 if nothing happen
+     */
+    public int executeDeleteView(Statement stm, String viewName) throws SQLException {
+        stm = cursor.createStatement();
+        String sql = "drop view if exists " + viewName;
+        stm.executeUpdate(sql);
         return isViewCreated(viewName);
     }
     /**
