@@ -47,7 +47,7 @@ public class QueryDAO<T> {
         modelBuilderMethods = builder;
     }
     /**
-     * {@link Connection} cursor
+     * {@link Connection} cursor.
      * @return {@link Connection}
      */
     public Connection getConnection() {
@@ -64,7 +64,7 @@ public class QueryDAO<T> {
         }
     }
     /**
-     * busca y retorna el valor de la sentencia
+     * busca y retorna el valor de la sentencia.
      * @param sql: row query statement
      * @return value of column name
      */
@@ -104,7 +104,7 @@ public class QueryDAO<T> {
         return result.substring(0, result.length()-2);
     }
     /**
-     * INSERT UPDATE DELETE statements
+     * INSERT UPDATE DELETE statements.
      * @param sql: row query statement
      * @return true if row count is > 0 othewise false
      */
@@ -131,19 +131,19 @@ public class QueryDAO<T> {
         return result;
     }
     /**
-     * create a view from selection
-     * <br> exam: </br> create view name_view as select operation from table;
+     * create a view from selection.
+     * <br> sample: </br> create view name_view as select operation from table;
      * @param viewName: name of the view to create
-     * @param options: options for selection
+     * @param condition: condition for selection
      * @param columns: the columns to select for the view
      * @param type: type logic for where clause
      * @return true if its created, otherwise false
      */
-    public boolean createView(String viewName, String options, String columns, String type) {
+    public boolean createView(String viewName, String condition, String columns, String type) {
         boolean isCreated = false;
         Statement stm = null;
         try {
-            int rst = queryExecution.executeCreateView(stm, viewName, options, columns, type);
+            int rst = queryExecution.executeCreateView(stm, viewName, condition, columns, type);
             if(rst == 1) {
                 isCreated = true;
             } else if(rst == -1) {
@@ -164,7 +164,7 @@ public class QueryDAO<T> {
         return isCreated;
     }
     /**
-     * delete views from database
+     * delete views from database.
      * @param viewName: the view to delete
      * @return true if deleted, false otherwise
      */
@@ -193,7 +193,7 @@ public class QueryDAO<T> {
         return isDeleted;
     }
     /**
-     * se utiliza para dar la cantidad de datos en la tabla
+     * se utiliza para dar la cantidad de datos en la tabla.
      * @return cantidad de datos
      */
     public int countData() {
@@ -229,8 +229,7 @@ public class QueryDAO<T> {
         return count;
     }
     /**
-     * crea una lista de registros con los datos de la bd
-     * @param model_builder_methods: opciones para utilizar los registros
+     * crea una lista de registros con los datos de la bd.
      * @return lista de registros
      */
     public ArrayList<T> readAll() {
@@ -267,18 +266,17 @@ public class QueryDAO<T> {
     }
 
     /**
-     * search using {@link PreparedStatement} 
-     * @param options: las obciones de busqueda
-     * @param type: tipo de condición para la sentencia sql
-     * @param model_builder_methods: opciones para utilizar los registros
+     * search using {@link PreparedStatement}.
+     * @param condition: las obciones de busqueda
+     * @param type: and or not
      * @return el usuario buscado
      */
-    public T findOne(String options, String type) {
+    public T findOne(String condition, String type) {
         T buscado = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeFindOne(pstm, options, type);
+            rst = queryExecution.executeFindOne(pstm, condition, type);
             int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
@@ -306,18 +304,17 @@ public class QueryDAO<T> {
         return buscado;
     }
     /**
-     * busca el registro por cualquier nombre de columna
-     * @param options: las opciones de busqueda
+     * busca el registro por cualquier nombre de columna.
+     * @param condition: las opciones de busqueda
      * @param type: tipo de condicion para la setencia sql
-     * @param model_builder_methods: opciones para utilizar los registros
      * @return el registro buscado
      */
-    public T findByColumnName(String options, String type) {
+    public T findByColumnName(String condition, String type) {
         T buscado = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeFindByColumnName(stm, options, type);
+            rst = queryExecution.executeFindByColumnName(stm, condition, type);
             int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
@@ -348,21 +345,23 @@ public class QueryDAO<T> {
      * busca el registro entre una serie de valores o una sentencia sql tipo SELECT.
      * <br> pre: </br> select * from cuenta where user_id_fk in (select id_pk from user where nombre='admin'); 
      * select * from cuenta where id_pk in ('0', '2'); 
-     * @param columns: column to search
+     * @param returnColumns: columns to return in selection
+     * @param conditionalColumns: column to search
      * @param condition: condition for the search
+     * @param type: logic type for where clause
      * @return the object of the generic type
      */
-    public String findIn(String returnOptions, String columns, String condition, String type) {
+    public String findIn(String returnColumns, String conditionalColumns, String condition, String type) {
         String buscado = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeFindIn(stm, returnOptions, columns, condition, type);
+            rst = queryExecution.executeFindIn(stm, returnColumns, conditionalColumns, condition, type);
             int len = 0;
-            if(returnOptions == null || returnOptions.isEmpty()) {
+            if(returnColumns == null || returnColumns.isEmpty()) {
                 len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
-            } else if(returnOptions != null || !returnOptions.isEmpty()) {
-                len = returnOptions.split(",").length;
+            } else if(returnColumns != null || !returnColumns.isEmpty()) {
+                len = returnColumns.split(",").length;
             }
             while(rst.next()) {
                 for(int i=1; i<=len; ++i) {
@@ -392,18 +391,18 @@ public class QueryDAO<T> {
         return buscado.substring(0, buscado.length()-2);
     }
     /**
-     * busca los datos con regex o patrones
+     * busca los datos con regex o patrones.
      * @param pattern: regex o patron a buscar
-     * @param options: columnas a comparar con el patron
+     * @param condition: columnas a comparar con el patron
      * @param type: and or not
      * @return an object of the generic type
      */
-    public T findPattern(String pattern, String options, String type) {
+    public T findPattern(String pattern, String condition, String type) {
         T buscado = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeFindPattern(stm, pattern, options, type);
+            rst = queryExecution.executeFindPattern(stm, pattern, condition, type);
             int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
@@ -431,13 +430,13 @@ public class QueryDAO<T> {
         return buscado;
     }
     /**
-     * get the min or max of each of the given columns 
+     * get the min or max of each of the given columns.
      * @param columns: 'min: nombre, max: password'
      * @param condition: condition for where clause
      * @param type: and or not
      * @return the min or max object data
      */
-    public String getMinMax( String columns, String condition, String type) {
+    public String getMinMax(String columns, String condition, String type) {
         String buscado = null;
         Statement stm = null;
         ResultSet rst = null;
@@ -477,18 +476,18 @@ public class QueryDAO<T> {
         return buscado.substring(0, buscado.length()-2);
     }
     /**
-     * busca y retorna el valor de la columna o columnas
-     * @param options: column name
+     * busca y retorna el valor de la columna o columnas.
+     * @param condition: column name
      * @param column: las columnas a buscar el valor
      * @param type: tipo de condicion para la setencia sql
      * @return value of column name
      */
-    public String getValueOfColumnName(String options, String columns, String type) {
+    public String getValueOfColumnName(String condition, String columns, String type) {
         String result ="";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeGetValueOfColumnName(stm, options, columns, type);
+            rst = queryExecution.executeGetValueOfColumnName(stm, condition, columns, type);
             int len = 0;
             if(columns == null || columns.isEmpty() == true) {
                 len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
@@ -524,23 +523,25 @@ public class QueryDAO<T> {
         return result.substring(0, result.length()-2);
     }
     /**
-     * inner join of 2 tables
-     * @param source: table with the fk 
-     * @param reference: table with the pk == fk
-     * @param ref_table: table name of the reference model 
+     * inner join of 2 tables.
+     * @param primary: model with the fk field declaration
+     * @param foreign: model with the pk field for the relationship 
+     * @param foreignT: foreign table name
+     * @param condition: condition for where clause
+     * @param type: logic type for where clause
      * @return a string with the format -> source_name: source_password, reference_name: reference_password
      */
-    public String innerJoin(ModelMethods source, ModelMethods reference, String refTable, String condition, String type) {
+    public String innerJoin(ModelMethods primary, ModelMethods foreign, String foreignT, String condition, String type) {
         String result = "";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeInnerJoin(stm, source, reference, refTable, condition, type);
+            rst = queryExecution.executeInnerJoin(stm, primary, foreign, foreignT, condition, type);
             while(rst.next()) {
                 result += tbName + "->" + rst.getString(tbName + "_nombre") + ": " +
                     rst.getString(tbName + "_password") + ", " +
-                    refTable + "->" + rst.getString(refTable + "_nombre") + ": " + 
-                    rst.getString(refTable + "_password") + ", ";
+                    foreignT + "->" + rst.getString(foreignT + "_nombre") + ": " + 
+                    rst.getString(foreignT + "_password") + ", ";
             }
 
         } catch(Exception e) {
@@ -567,11 +568,10 @@ public class QueryDAO<T> {
         return cleanResult;
     }
     /**
-     * ingresar un registro de GenericObjects
-     * @param nObject: el objeto a registrar
+     * ingresar un registro de GenericObjects.
+     * @param model: model with the data to insert
      * @param condition: condición para buscar el registro
      * @param type: tipo de condicion para la setencia sql
-     * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se registra de lo contrario false
      */
     public boolean insertNewRegister(ModelMethods model, String condition, String type) {
@@ -610,20 +610,20 @@ public class QueryDAO<T> {
         return registrado;
     }
     /**
-     * copy the columns from one table to another
+     * copy the columns from one table to another.
      * <br> pre: </br> you can copy all o some columns of the table
      * @param sourceT: source table
      * @param targetT: target table 
-     * @param options: options for where clause
+     * @param condition: condition for where clause
      * @param columns: columns to return
      * @param type: logic operator for where clause
      * @return true if the {@link sourceT} is copied to {@link targetT}, false otherwise
      */
-    public boolean insertIntoSelect(String sourceT, String targetT, String options, String columns, String type) {
+    public boolean insertIntoSelect(String sourceT, String targetT, String condition, String columns, String type) {
         boolean isInserted = false;
         Statement stm = null;
         try {
-            int rst = queryExecution.executeInsertIntoSelect(stm, sourceT, targetT, options,  columns, type);
+            int rst = queryExecution.executeInsertIntoSelect(stm, sourceT, targetT, condition,  columns, type);
             if(rst > 0) {
                 isInserted = true;
             }
@@ -642,11 +642,10 @@ public class QueryDAO<T> {
         return isInserted;
     }
     /**
-     * modificar 1 registro de la base de datos
-     * @param nObject: usuario con los datos a modificar
+     * modificar 1 registro de la base de datos.
+     * @param model: model with the updated data
      * @param conditions: columna con su valor para el condicional
      * @param type: tipo de condicion para la setencia sql
-     * @param model_builder_methods: opciones para utilizar los registros
      * @return true si se modifican los datos de lo contrario false
      **/
     public boolean updateRegister(ModelMethods model, String conditions, String type) {
@@ -686,26 +685,25 @@ public class QueryDAO<T> {
         return registrado;
     }
     /**
-     * eliminar un registro por cualquier columna valida de la bd
-     * @param options: columna con el valor para el condicional
+     * eliminar un registro por cualquier columna valida de la bd.
+     * @param condition: columna con el valor para el condicional
      * @param type: tipo de condicion para la setencia sql
-     * @param model_builder_methods: opciones para utilizar los registros
      * @return true si elimina de lo contrario false
      * */
-    public boolean deleteRegister(String options, String type) {
+    public boolean deleteRegister(String condition, String type) {
         boolean eliminar = false;
         Statement stm = null;
         try {
-            if(options.isEmpty() == true || options == null) {
+            if(condition.isEmpty() == true || condition == null) {
                 throw new Exception("no deberia ser null ni vacio");
             }
             cursor.beginRequest();
-            T buscado = findByColumnName(options.split(",")[0], type);
+            T buscado = findByColumnName(condition.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
-                int rst = queryExecution.executeEliminarRegistro(stm, options, type);
+                int rst = queryExecution.executeEliminarRegistro(stm, condition, type);
                 if(rst > 0) {
-                    System.out.println(options);
+                    System.out.println(condition);
                     eliminar = true;
                 }
             } else {
