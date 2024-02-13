@@ -45,9 +45,6 @@ public class QueryExecution {
         queryUtil = new QueryUtils();
         cursor = miConector;
     }
-
-    //métodos
-
     /**
      * check if the view is created or not.
      * <br> pre: </br> the view is aready created
@@ -100,15 +97,15 @@ public class QueryExecution {
      * execute a sql query to create a view from selection.
      * @param stm: execute the sql statement
      * @param viewName: name of the view to create
-     * @param options: options for selection
+     * @param condition: condition for selection
      * @param columns: the columns to select for the view
      * @param type: type logic for where clause
      * @throws SQLException: error of the execution
      * @return 1 if is created, 0 if is not created and -1 if nothing happens
      */
-    public int executeCreateView(Statement stm, String viewName, String options, String columns, String type) throws SQLException {
+    public int executeCreateView(Statement stm, String viewName, String condition, String columns, String type) throws SQLException {
         stm = cursor.createStatement();
-        String selectSQL = queryBuilder.createFindColumnValueQuery(options, columns, type);
+        String selectSQL = queryBuilder.createFindColumnValueQuery(condition, columns, type);
         String viewSQL = "create view if not exists " + viewName + " as " + selectSQL;
         stm.executeUpdate(viewSQL);
         return isViewCreated(viewName);
@@ -128,8 +125,8 @@ public class QueryExecution {
     /**
      * ejecuta el contador de resultados
      * @param pstm: ejecutor de sentencias sql
-     * @return Resultado de la ejecución
      * @throws SQLException error al ejecutar
+     * @return {@link ResultSet} de la ejecución
     */
     public ResultSet executeCountData(PreparedStatement pstm) throws SQLException {
         String sql = "select id_pk from " + table;
@@ -140,8 +137,8 @@ public class QueryExecution {
     /**
      * show table data
      * @param stm: ejecutor de la sentencias sql
-     * @return resultado de la ejecución
      * @throws SQLException error al ejecutar
+     * @return {@link ResultSet} de la ejecución
      */
     public ResultSet executeShowTableData(Statement stm) throws SQLException {
         String sql = "show columns from " + this.table;
@@ -152,8 +149,8 @@ public class QueryExecution {
     /**
      * ejecuta la lectura de datos
      * @param pstm: ejecutor de sentencias sql
-     * @return resultado de la ejecución
      * @throws SQLException error al ejecutar
+     * @return {@link ResultSet} de la ejecución
     */
     public ResultSet executeReadAll(PreparedStatement pstm) throws SQLException {
         String sql = "select * from " + table;
@@ -163,15 +160,15 @@ public class QueryExecution {
     }
     /**
      * ejecuta la busqueda de 1 resultado por id
-     * @param options: id del registro buscado
+     * @param condition: id del registro buscado
      * @param type: tipo de condicion para la setencia sql
      * @param pstm: ejecutor de sentencia sql
-     * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
+     * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executeFindOne(PreparedStatement pstm, String options, String type) throws SQLException {
-        String sql = queryBuilder.createFindQuery(options, type);
-        String val = queryUtil.getOptionValue(options);
+    public ResultSet executeFindOne(PreparedStatement pstm, String condition, String type) throws SQLException {
+        String sql = queryBuilder.createFindQuery(condition, type);
+        String val = queryUtil.getOptionValue(condition);
         pstm = cursor.prepareStatement(sql);
         String[] fields = val.split(",");
         for(int i=0; i<fields.length; ++i) {
@@ -183,31 +180,31 @@ public class QueryExecution {
     /**
      * ejecuta la busqueda por nombre de columna
      * puede recibir 1 o varias columnas con el valor
-     * @param options: nombre y valor de columna: "nombre: test, email: test@test"
+     * @param condition: nombre y valor de columna: "nombre: test, email: test@test"
      * @param type: tipo de condicion para la setencia sql
      * @param stm: ejecutor de sentencia sql
-     * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
+     * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executeFindByColumnName(Statement stm, String options, String type) throws SQLException {
+    public ResultSet executeFindByColumnName(Statement stm, String condition, String type) throws SQLException {
         stm = cursor.createStatement();
-        String sql = queryBuilder.createFindByColumnQuery(options, type);
+        String sql = queryBuilder.createFindByColumnQuery(condition, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
     /**
      * ejecuta la busqueda dentro de una serie de datos o una sentencia sql tipo SELECT.
      * @param stm: ejecutor de sentencias sql
-     * @param returnOptions: columns to return
-     * @param columns: columns for the conditional
+     * @param returnColumns: columns to return
+     * @param conditionalColumns: columns for the conditional
      * @param condition: conditional
      * @param type: and or not
      * @throws SQLException: sql exception
-     * @return result of the execution
+     * @return {@link ResultSet} of the execution
      */
-    public ResultSet executeFindIn(Statement stm, String returnOptions, String columns, String condition, String type)  throws SQLException {
+    public ResultSet executeFindIn(Statement stm, String returnColumns, String conditionalColumns, String condition, String type)  throws SQLException {
         stm = cursor.createStatement();
-        String sql = queryBuilder.createFindInQuery(returnOptions, columns, condition, type);
+        String sql = queryBuilder.createFindInQuery(returnColumns, conditionalColumns, condition, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -218,7 +215,7 @@ public class QueryExecution {
      * @param condition: condition for where clause
      * @param type: and or not
      * @throws SQLException: error de ejecución
-     * @return result of the executio
+     * @return {@link ResultSet} of the execution
      */
     public ResultSet executeFindMinMax(Statement stm, String columns, String condition, String type) throws SQLException {
         stm = cursor.createStatement();
@@ -230,13 +227,14 @@ public class QueryExecution {
      * busca los datos utilizando regex o patrones
      * @param stm: ejecutor de sentencias sql
      * @param pattern: regex o patron a buscar
-     * @param options: columnas a comparar con el patron
+     * @param condition: columnas a comparar con el patron
      * @param type: and or not
      * @throws SQLException: error de ejecución
+     * @return the {@link ResultSet} of the execution
      */
-    public ResultSet executeFindPattern(Statement stm, String pattern, String options, String type) throws SQLException {
+    public ResultSet executeFindPattern(Statement stm, String pattern, String condition, String type) throws SQLException {
         stm = cursor.createStatement();
-        String sql = queryBuilder.createFindPatternQuery(table, options.trim().split(","), type);
+        String sql = queryBuilder.createFindPatternQuery(table, condition.trim().split(","), type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -244,16 +242,16 @@ public class QueryExecution {
      * ejecuta la busqueda por columna y valor y retorna el valor de las columnas seleccionadas
      * puede recibir 1 o varias columnas con el valor
      * puede retornar 1 o varios valores de la columna seleccionada
-     * @param options: nombre y valor de la columna: "nombre: test, email: test@test"
+     * @param condition: nombre y valor de la columna: "nombre: test, email: test@test"
      * @param column: columna a conocer el valor: "id, rol"
      * @param type: tipo de condicion para la setencia sql
      * @param stm: ejecutor de sentencia sql
-     * @return resultado de la ejecución
      * @throws SQLException error de la ejecución
+     * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executeGetValueOfColumnName(Statement stm, String options, String columns, String type) throws SQLException {
+    public ResultSet executeGetValueOfColumnName(Statement stm, String condition, String columns, String type) throws SQLException {
         stm = cursor.createStatement();
-        String sql = queryBuilder.createFindColumnValueQuery(options, columns, type);
+        String sql = queryBuilder.createFindColumnValueQuery(condition, columns, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -261,9 +259,9 @@ public class QueryExecution {
      * ejecuta el registro de un nuevo elemento 
      * solo puede registrar 1 elemento a la vez
      * @param stm: ejecutor de sentencia sql
-     * @param nObject: elemento a registrar
-     * @return row count or '0' when nothing is returned
+     * @param model: elemento a registrar
      * @throws SQLException error de la ejecución
+     * @return row count or '0' when nothing is returned
     */
     public int executeInsertNewRegister(Statement stm, ModelMethods model) throws SQLException {
         String sql = queryBuilder.createInsertRegisterQuery(model);
@@ -276,20 +274,21 @@ public class QueryExecution {
      * @param stm: statement object 
      * @param sourceT: source table
      * @param targetT: target table 
-     * @param options: options for where clause
+     * @param condition: condition for where clause
      * @param columns: columns to return
      * @param type: logic operator for where clause
+     * @throws SQLException: error while trying to execute
      * @return the row count or 0 when nothing is returned
      */
-    public int executeInsertIntoSelect(Statement stm, String sourceT, String targetT, String options, String columns, String type) throws SQLException {
+    public int executeInsertIntoSelect(Statement stm, String sourceT, String targetT, String condition, String columns, String type) throws SQLException {
         stm = cursor.createStatement();
         String sql = "";
         String selectSQL = "";
         if(columns == null || columns == "") {
-            selectSQL = new QueryBuilder(sourceT).createFindByColumnQuery(options, type);
+            selectSQL = new QueryBuilder(sourceT).createFindByColumnQuery(condition, type);
             sql = "insert into " + targetT + " " + selectSQL;
         } else {
-            selectSQL = new QueryBuilder(sourceT).createFindColumnValueQuery(options, columns, type);
+            selectSQL = new QueryBuilder(sourceT).createFindColumnValueQuery(condition, columns, type);
             sql = "insert into " + targetT + " (" + columns + ")" + selectSQL;
         }
         int rst = stm.executeUpdate(sql);
@@ -297,16 +296,17 @@ public class QueryExecution {
     }
     /**
      * ejecuta la consulta tipo inner join
-     * @param tb_name: nombre de la tabla local
      * @param stm: ejecutor de sentencias sql
-     * @param refObject: modelo de referencia
-     * @param localObject: modelo local
-     * @param ref_table: table name of the ref_model
+     * @param primary: model with the declaration of fk
+     * @param foreign: foreign model of the relationship
+     * @param foreignT: foreign model table name
+     * @param condition: where condition clause
+     * @param type: logic type for where clause
      * @throws SQLException error al ejecutar la sentencia sql
-     * @return el resultado de la ejecución
+     * @return el {@link ResultSet} de la ejecución
      */
-    public ResultSet executeInnerJoin(Statement stm, ModelMethods localModel, ModelMethods refModel, String refTable, String condition, String type) throws SQLException {
-        String sql = queryBuilder.createInnerJoinQuery(localModel, refModel, refTable, condition, type);
+    public ResultSet executeInnerJoin(Statement stm, ModelMethods primary, ModelMethods foreign, String foreignT, String condition, String type) throws SQLException {
+        String sql = queryBuilder.createInnerJoinQuery(primary, foreign, foreignT, condition, type);
         stm = cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
         return rst;
@@ -315,11 +315,11 @@ public class QueryExecution {
      * ejecuta la modificación de 1 registro
      * puede modificar cualquier valor valido del registro
      * @param stm: ejecutor de la sentencia sql
-     * @param nObject: elemento a modificar
+     * @param model: model with the updated data
      * @param conditions: condiciones de query; "nombre: test, email: test"
      * @param type: tipo de condicion para la setencia sql
-     * @return the row count of the statement or '0' when return nothing 
      * @throws SQLException error de la ejecución
+     * @return the row count of the statement or '0' when return nothing 
     */
     public int executeUpdateRegister(Statement stm, ModelMethods model, String conditions, String type) throws SQLException {
         stm = cursor.createStatement();
@@ -329,16 +329,16 @@ public class QueryExecution {
     }
     /**
      * ejecuta la eliminación de un registro
-     * puede eliminar varios registros según las options
+     * puede eliminar varios registros según las condition
      * @param stm: ejecutor de la sentencia sql
-     * @param options: opciones de condición: "nombre: test, email: test@test"
+     * @param condition: opciones de condición: "nombre: test, email: test@test"
      * @param type: tipo de condicion para la setencia sql
-     * @return the row count or '0' when nothing is returned
      * @throws SQLException error al ejecutar
+     * @return the row count or '0' when nothing is returned
     */
-    public int executeEliminarRegistro(Statement stm, String options, String type) throws SQLException {
+    public int executeEliminarRegistro(Statement stm, String condition, String type) throws SQLException {
         stm = cursor.createStatement();
-        String sql = queryBuilder.createDeleteRegisterQuery(options, type);
+        String sql = queryBuilder.createDeleteRegisterQuery(condition, type);
         int result = stm.executeUpdate(sql);
         return result;
     }
