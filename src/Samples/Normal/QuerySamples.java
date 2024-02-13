@@ -41,13 +41,13 @@ public class QuerySamples<T> {
     public void sampleCreateView()  {
         String
             viewName = "my_view_name",
-            options  = "nombre: test, rol: admin",
+            condition  = "nombre: test, rol: admin",
             columns  = "nombre, email",
             type     = "or";
 
         boolean isCreated = myDAO.createView(
                 viewName,
-                options,
+                condition,
                 columns,
                 type
         );
@@ -80,16 +80,16 @@ public class QuerySamples<T> {
     }
 
     public void sampleFindOne() {
-        String options = "nombre: test", type = "and";
-        T myObject = myDAO.findOne(options, type);
+        String condition = "nombre: test", type = "and";
+        T myObject = myDAO.findOne(condition, type);
         if(myObject != null) {
             System.out.println(myObject.getClass().getName());
         }
     }
 
     public void sampleFindByColumnName() {
-        String options = "nombre: test", type = "and";
-        T myObject = myDAO.findByColumnName(options, type);
+        String condition = "nombre: test", type = "and";
+        T myObject = myDAO.findByColumnName(condition, type);
         if(myObject != null) {
             System.out.println(myObject.getClass().getName());
         }
@@ -97,13 +97,13 @@ public class QuerySamples<T> {
 
     public void sampleFindIn() {
         String
-            returnOptions = "nombre, email, rol",
-            columns       = "nombre",
-            condition     = "test, admin",
-            type          = "and";
+            returnColumns      = "nombre, email, rol",
+            conditionalColumns = "nombre",
+            condition          = "test, admin",
+            type               = "and";
         String result = myDAO.findIn(
-                returnOptions,
-                columns,
+                returnColumns,
+                conditionalColumns,
                 condition,
                 type
         );
@@ -112,11 +112,11 @@ public class QuerySamples<T> {
     public void sampleFindPattern() {
         String 
             pattern = "@gmail.com%",
-            options = "email, nombre",
+            condition = "email, nombre",
             type    = "or";
         T myObject = myDAO.findPattern(
                 pattern,
-                options,
+                condition,
                 type
         );
         if(myObject != null) {
@@ -139,25 +139,25 @@ public class QuerySamples<T> {
 
     public void sampleGetValueOfColumn() {
         String
-            options = "nombre: admin, rol: admin",
+            condition = "nombre: admin, rol: admin",
             columns = "nombre, email, rol, create_at",
             type    = "or";
         String result = myDAO.getValueOfColumnName(
-                options,
+                condition,
                 columns,
                 type
         );
         System.out.println(result);
     }
-    public void sampleInnerJoin(ModelMethods sourceModel, ModelMethods targetModel) {
+    public void sampleInnerJoin(ModelMethods primary, ModelMethods foreign) {
         String
-            targetTable  = "target_table_name",
+            foreignT     = "foreign_table_name",
             condition    = "nombre: test",
             type         = "or";
         String result = myDAO.innerJoin(
-                sourceModel,
-                targetModel,
-                targetTable,
+                primary,
+                foreign,
+                foreignT,
                 condition,
                 type
         );
@@ -180,15 +180,15 @@ public class QuerySamples<T> {
 
     public void sampleInsertIntoSelection() {
         String 
-            sourceTable = "source_table_name",
-            targetTable = "target_table_name",
-            options     = "nombre: admin, rol: admin",
-            columns     = "nombre, email, rol",
-            type        = "or";
+            sourceTable  = "source_table_name",
+            targetTable  = "target_table_name",
+            condition    = "nombre: admin, rol: admin",
+            columns      = "nombre, email, rol",
+            type         = "or";
         boolean isInserted = myDAO.insertIntoSelect(
                 sourceTable,
                 targetTable,
-                options,
+                condition,
                 columns,
                 type
         );
@@ -213,9 +213,9 @@ public class QuerySamples<T> {
 
     public void sampleDeleteRegister() {
         String
-            options = "nombre: test, rol: admin",
-            type    = "or";
-        boolean isDeleted = myDAO.deleteRegister(options, type);
+            condition = "nombre: test, rol: admin",
+            type      = "or";
+        boolean isDeleted = myDAO.deleteRegister(condition, type);
         if(isDeleted) {
             System.out.println("deleted");
         }

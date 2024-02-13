@@ -11,15 +11,15 @@ import java.util.HashMap;
 public record QueryUtils() {
     /**
      * reduce el string por un valor especifico
-     * @param options: los valores a limpiar
+     * @param condition: los valores a limpiar
      * @param val: valor especifico
      * @return los valores limpios
     */
-    public String cleanValues(String options, int val) {
-        if(options.length() > 0) {
-            return options.substring(0, options.length()-val);
+    public String cleanValues(String condition, int val) {
+        if(condition.length() > 0) {
+            return condition.substring(0, condition.length()-val);
         } else {
-            return options;
+            return condition;
         }
     }
     /**
@@ -43,7 +43,8 @@ public record QueryUtils() {
     }
     /**
      * obtener las columnas de los datos del modelo
-     * @param nObject: objeto con los datos del modelo
+     * @param modelProperties: properties of model
+     * @param includePKFK: true or false to include PK or FK
      * @return las columnas del modelo
      */
     public String getModelColumns(String modelProperties, boolean includePKFK) {
@@ -58,23 +59,24 @@ public record QueryUtils() {
             }
         }
         String[] columns = columName.split(",");
-        String cleanColumName = "";
+        String cColumName = "";
         if(includePKFK == false) {
             for(int i = 1; i < columns.length; i++) {
-                cleanColumName += columns[i].stripIndent() + ",";
+                cColumName += columns[i].stripIndent() + ",";
             }
         }
         else {
             for(int i = 0; i < columns.length; i++) {
-                cleanColumName += columns[i].stripIndent() + ",";
+                cColumName += columns[i].stripIndent() + ",";
             }
         }
-        String cleanvalues = cleanValues(cleanColumName, 2);
-        return cleanvalues;
+        String cValues = cleanValues(cColumName, 2);
+        return cValues;
     }
     /**
      * obtener las columnas de la tabla
      * @param rst: resultado de la consulta a la bd
+     * @throws SQLException: error while trying to execute
      * @return la lista de columnas de la tabla
      */
     public HashMap<String, ArrayList<String>> getTableData(ResultSet rst) throws SQLException {
@@ -122,7 +124,8 @@ public record QueryUtils() {
     }
     /**
      * obtener el tipo por cada columna del modelo
-     * @param nObject: objeto con los datos del modelo
+     * @param modelProperties: properties of model
+     * @param includePKFK: include pk or fk
      * @return los tipos de dato por columna
      */
     public String getModelType(String modelProperties, boolean includePKFK) {
@@ -148,8 +151,8 @@ public record QueryUtils() {
     }
     /**
      * buscar el typo de dato de una columna
+     * @param modelProperties: propiedades del modelo
      * @param column: columna a buscar el tipo de dato
-     * @param model_properties: propiedades del modelo
      * @return el indice o index del typo de dato
      */
     public int searchColumnType(String modelProperties, String column) {
@@ -163,26 +166,26 @@ public record QueryUtils() {
         return res;
     }
     /**
-     * combina las options & valores en 1 solo String
-     * @param options: los valores a limpiar
+     * combina las condition & valores en 1 solo String
+     * @param condition: los valores a limpiar
      * @return los valores limpios y combinados
      */
-    public String getOptionValue(String options) {
-        String[] div = options.split(", ");
+    public String getOptionValue(String condition) {
+        String[] div = condition.split(", ");
         String values = "";
         for(String val: div) {
             values += val.split(":")[1] +",";
         }
-        String cleanValues = cleanValues(values, 1);
-        return cleanValues;
+        String cValues = cleanValues(values, 1);
+        return cValues;
     }
     /**
-     * combine min and max operators for each column after ':' in options
+     * combine min and max operators for each column after ':' in condition
      * @param columns: 'min: nombre, max: password'
      * @return min(column) as min_column, max(column) as max_column
      */
     public String getMinMaxSelection(String columns) {
-        String build = "", cleanValue = "";
+        String build = "", cValue = "";
         String[] values = columns.split(",");
         for(String v: values) {
             String minMax = v.split(":")[0].trim();
@@ -193,19 +196,19 @@ public record QueryUtils() {
                 build += "max(" + value +") as max_" + value + ", ";
             }
         }
-        cleanValue = build.substring(0, build.length()-2);
-        return cleanValue;
+        cValue = cleanValues(build, 2);
+        return cValue;
     }
     /**
      * combina la llave con el valor para el condicional sql
      * <br> pre: </br> if type is not use and for the next condition
-     * @param options:  las columnas a asignadas  el valor
+     * @param condition:  las columnas a asignadas  el valor
      * @param type: logic operator type: and, or, not
      * @return las columnas asignadas el valor
      */
-    public String getPrepareConditional(String options, String type) {
+    public String getPrepareConditional(String condition, String type) {
         String conditionalValue = "";
-        String[] div = options.split(",");
+        String[] div = condition.split(",");
         for(String val: div) {
             if(type.toLowerCase().equals("not")) {
                 conditionalValue += "not " + val.split(":")[0] + "=" + "?" + " and";
@@ -213,24 +216,24 @@ public record QueryUtils() {
                 conditionalValue += val.split(":")[0] + "=" + "?" + " " + type;
             }
         }
-        String cleanValues = "";
+        String cValues = "";
         if(type.equals("and")) {
-            cleanValues = cleanValues(conditionalValue, 4);
+            cValues = cleanValues(conditionalValue, 4);
         } else if(type.equals("not")) {
-            cleanValues = cleanValues(conditionalValue, 4);
+            cValues = cleanValues(conditionalValue, 4);
         } else if(type.equals("or")) {
-            cleanValues = cleanValues(conditionalValue, 3);
+            cValues = cleanValues(conditionalValue, 3);
         }
-        return cleanValues;
+        return cValues;
     }
     /**
      * combina la llave con el valor para el condicional sql
-     * @param options: las columnas para asignar el valor
+     * @param condition: las columnas para asignar el valor
      * @return las columnas asignadas el valor
      */
-    public String getNormalConditional(String options, String type) {
+    public String getNormalConditional(String condition, String type) {
         String conditionalValue = "";
-        String[] div = options.split(",");
+        String[] div = condition.split(",");
         for(String val: div) {
             if(type.toLowerCase().equals("not")) {
                 conditionalValue += "not " + val.split(":")[0] +
@@ -244,15 +247,15 @@ public record QueryUtils() {
                     "'" + " " + type;
             }
         }
-        String cleanValues = "";
+        String cValues = "";
         if(type.equals("and")) {
-            cleanValues = cleanValues(conditionalValue, 4);
+            cValues = cleanValues(conditionalValue, 4);
         } else if(type.equals("not")) {
-            cleanValues = cleanValues(conditionalValue, 4);
+            cValues = cleanValues(conditionalValue, 4);
         } else if(type.equals("or")) {
-            cleanValues = cleanValues(conditionalValue, 3);
+            cValues = cleanValues(conditionalValue, 3);
         }
-        return cleanValues;
+        return cValues;
     }
     /**
      * combina la llave con el valor para el condicional sql tipo in
@@ -262,7 +265,7 @@ public record QueryUtils() {
      * @return el condicional combinado tipo in
      */
     public String getInConditional(String columns, String condition, String type) {
-        String inOptions = "", res = "", cleanValues = "";
+        String inCondition = "", res = "", cValues = "";
         String[] myColumns = columns.split(",");
         if(condition.toLowerCase().startsWith("select")) {
             for(String c: myColumns) {
@@ -274,27 +277,27 @@ public record QueryUtils() {
             }
         } else {
             String[] partition = condition.split(",");
-            inOptions = "(";
+            inCondition = "(";
             for(String p: partition) {
-                inOptions += "'" + p.trim() + "', ";
+                inCondition += "'" + p.trim() + "', ";
             }
-            String cOPtions = cleanValues(inOptions, 3);
+            String cCondition = cleanValues(inCondition, 3);
             for(String c: myColumns) {
                 if(type.toLowerCase().equals("not")) {
-                    res += c + " not in " + cOPtions + "') " + "and";
+                    res += c + " not in " + cCondition + "') " + "and";
                 } else {
-                    res += c + " in " + cOPtions + "') " + type;
+                    res += c + " in " + cCondition + "') " + type;
                 }
             }
         }
         if(type.equals("and")) {
-            cleanValues = cleanValues(res, 4);
+            cValues = cleanValues(res, 4);
         } else if(type.equals("not")) {
-            cleanValues = cleanValues(res, 4);
+            cValues = cleanValues(res, 4);
         } else if(type.equals("or")) {
-            cleanValues = cleanValues(res, 3);
+            cValues = cleanValues(res, 3);
         }
-        return cleanValues;
+        return cValues;
     }
     /**
      * asigna los valores a las columnas del modelo separados por ","
@@ -309,8 +312,8 @@ public record QueryUtils() {
             String value = data[i].split(":")[1];
             keyValue += key.stripIndent() +"="+ "'"+value.stripIndent()+"'"+ ", ";
         }
-        String cleanValues = cleanValues(keyValue, 2);
-        return cleanValues;
+        String cValues = cleanValues(keyValue, 2);
+        return cValues;
     }
     /**
      * asignar el nombre de la tabla a las columnas del modelo
@@ -327,34 +330,34 @@ public record QueryUtils() {
                 build += tbName + "." + key + " as " + tbName +"_"+ key +", ";
             }
         }
-        String cleanValues = cleanValues(build, 2);
-        return cleanValues;
+        String cValues = cleanValues(build, 2);
+        return cValues;
     }
     /**
      * genera el condicional de la búsqueda por patrón
      * @param pattern: patrón a buscar
-     * @param options: columnas cuyo dato tiene el patrón
+     * @param condition: columnas cuyo dato tiene el patrón
      * @param type: tipo de condicional para la sentencia sql
      * @return la condición del patrón
      */
-    public String getPatternCondition(String pattern, String[] options, String type) {
+    public String getPatternCondition(String pattern, String[] condition, String type) {
         String res = "";
-        for(String k: options) {
+        for(String k: condition) {
             if(type.toLowerCase().equals("not")) {
                 res += k + " not like " + "'" + pattern + "'" + " and";
             } else {
                 res += k + " like " + "'" + pattern + "'" + " " + type;
             }
         }
-        String cleanValues = "";
+        String cValues = "";
         if(type.equals("and")) {
-            cleanValues = cleanValues(res, 4);
+            cValues = cleanValues(res, 4);
         } else if(type.equals("not")) {
-            cleanValues = cleanValues(res, 4);
+            cValues = cleanValues(res, 4);
         } else if(type.equals("or")) {
-            cleanValues = cleanValues(res, 3);
+            cValues = cleanValues(res, 3);
         }
-        return cleanValues;
+        return cValues;
     }
     /**
      * genera el condicional para innerjoin utilizando la fk del modelo de referencia y la pk del modelo primario
