@@ -90,20 +90,31 @@ public class QueryBuilder {
      * @param condition: type of condition in ('', '')
      * @return la sentencia sql para buscar dentro de una lista de datos
      */
-    public String createFindInQuery(String returnColumns, String conditionalColumns, String condition, String type) {
+    public String createFindInQuery(String returnColumns, String conditionalColumns, String condition,
+            String type) {
         String sql = "", inCondition = "";
         if(returnColumns == null) {
-            if(condition == null || condition.isEmpty() && (conditionalColumns == null || conditionalColumns.isEmpty())) {
+            if(condition == null || condition.isEmpty() && (conditionalColumns == null ||
+                        conditionalColumns.isEmpty())) {
                 sql = "select * from " + tbName;
             } else {
-                inCondition = queryUtil.getInConditional(conditionalColumns, condition, type);
+                inCondition = queryUtil.getInConditional(
+                        conditionalColumns,
+                        condition,
+                        type
+                );
                 sql = "select * from " + tbName + " where " + inCondition;
             }
         } else if(returnColumns != null && !returnColumns.isEmpty()) {
-            if(condition == null || condition.isEmpty() && (conditionalColumns == null || conditionalColumns.isEmpty())) {
+            if(condition == null || condition.isEmpty() && (conditionalColumns == null ||
+                        conditionalColumns.isEmpty())) {
                 sql = "select " + returnColumns + " from " + tbName;
             } else {
-                inCondition = queryUtil.getInConditional(conditionalColumns, condition, type);
+                inCondition = queryUtil.getInConditional(
+                        conditionalColumns,
+                        condition,
+                        type
+                );
                 sql = "select " + returnColumns + " from " + tbName + " where " + inCondition;
             }
         }
@@ -121,7 +132,11 @@ public class QueryBuilder {
         if(pattern == null || conditions == null) {
             sql = "select * from "  + this.tbName;
         } else {
-            patternCondition = queryUtil.getPatternCondition(pattern, conditions, type);
+            patternCondition = queryUtil.getPatternCondition(
+                    pattern,
+                    conditions,
+                    type
+            );
             sql = "select * from "  + this.tbName + " where " + patternCondition;
         }
         return sql;
@@ -173,16 +188,38 @@ public class QueryBuilder {
      * @param type: logic type for where clause
      * @return la sentencia sql para inner join
      */
-    public String createInnerJoinQuery(ModelMethods primary, ModelMethods foreign, String foreignT, String condition, String type) {
-        String refNombres = queryUtil.asignTableNameToColumns(foreign.getAllProperties(), foreignT);
-        String localNombres = queryUtil.asignTableNameToColumns(primary.getAllProperties(), this.tbName);
-        String pkfk = queryUtil.innerJoinConditional(primary.getAllProperties(), foreign.getAllProperties(), this.tbName, foreignT);
+    public String createInnerJoinQuery(ModelMethods primary, ModelMethods foreign, String foreignT,
+            String condition, String type) {
+        String refNombres = queryUtil.asignTableNameToColumns(
+                foreign.getAllProperties(),
+                foreignT
+        );
+        String localNombres = queryUtil.asignTableNameToColumns(
+                primary.getAllProperties(),
+                this.tbName
+        );
+        String pkfk = queryUtil.innerJoinConditional(
+                primary.getAllProperties(),
+                foreign.getAllProperties(),
+                this.tbName,
+                foreignT
+        );
         String sql = "";
         if(condition == null || condition.isEmpty()) {
-            sql = "select " + localNombres + ", " + refNombres + " from " + this.tbName + " inner join " + foreignT + " on " + pkfk;
+            sql =
+                "select " + localNombres + ", " +
+                refNombres + " from " + this.tbName +
+                " inner join " + foreignT + " on " + pkfk;
         } else {
-            String conditional = queryUtil.getNormalConditional(condition, type);
-            sql = "select " + localNombres + ", " + refNombres + " from " + this.tbName + " inner join " + foreignT + " on " + pkfk + " where " + conditional;
+            String conditional = queryUtil.getNormalConditional(
+                    condition,
+                    type
+            );
+            sql =
+                "select " + localNombres + ", " +
+                refNombres + " from " + this.tbName +
+                " inner join " + foreignT + " on " +
+                pkfk + " where " + conditional;
         }
         return sql;
     }

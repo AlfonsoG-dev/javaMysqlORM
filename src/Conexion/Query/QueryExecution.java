@@ -103,10 +103,15 @@ public class QueryExecution {
      * @throws SQLException: error of the execution
      * @return 1 if is created, 0 if is not created and -1 if nothing happens
      */
-    public int executeCreateView(Statement stm, String viewName, String condition, String columns, String type) throws SQLException {
+    public int executeCreateView(Statement stm, String viewName, String condition, String columns,
+            String type) throws SQLException {
         stm = cursor.createStatement();
-        String selectSQL = queryBuilder.createFindColumnValueQuery(condition, columns, type);
-        String viewSQL = "create view if not exists " + viewName + " as " + selectSQL;
+        String selectSQL = queryBuilder.createFindColumnValueQuery(
+                condition,
+                columns,
+                type
+        );
+        String viewSQL = "create view " + viewName + " as " + selectSQL;
         stm.executeUpdate(viewSQL);
         return isViewCreated(viewName);
     }
@@ -166,7 +171,8 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
      * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executeFindOne(PreparedStatement pstm, String condition, String type) throws SQLException {
+    public ResultSet executeFindOne(PreparedStatement pstm, String condition,
+            String type) throws SQLException {
         String sql = queryBuilder.createFindQuery(condition, type);
         String val = queryUtil.getOptionValue(condition);
         pstm = cursor.prepareStatement(sql);
@@ -186,7 +192,8 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
      * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executeFindByColumnName(Statement stm, String condition, String type) throws SQLException {
+    public ResultSet executeFindByColumnName(Statement stm, String condition,
+            String type) throws SQLException {
         stm = cursor.createStatement();
         String sql = queryBuilder.createFindByColumnQuery(condition, type);
         ResultSet rst = stm.executeQuery(sql);
@@ -202,9 +209,15 @@ public class QueryExecution {
      * @throws SQLException: sql exception
      * @return {@link ResultSet} of the execution
      */
-    public ResultSet executeFindIn(Statement stm, String returnColumns, String conditionalColumns, String condition, String type)  throws SQLException {
+    public ResultSet executeFindIn(Statement stm, String returnColumns, String conditionalColumns,
+            String condition, String type)  throws SQLException {
         stm = cursor.createStatement();
-        String sql = queryBuilder.createFindInQuery(returnColumns, conditionalColumns, condition, type);
+        String sql = queryBuilder.createFindInQuery(
+                returnColumns,
+                conditionalColumns,
+                condition,
+                type
+        );
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -217,9 +230,14 @@ public class QueryExecution {
      * @throws SQLException: error de ejecución
      * @return {@link ResultSet} of the execution
      */
-    public ResultSet executeFindMinMax(Statement stm, String columns, String condition, String type) throws SQLException {
+    public ResultSet executeFindMinMax(Statement stm, String columns, String condition,
+            String type) throws SQLException {
         stm = cursor.createStatement();
-        String sql = queryBuilder.createFindMinMaxQuery(columns, condition, type);
+        String sql = queryBuilder.createFindMinMaxQuery(
+                columns,
+                condition,
+                type
+        );
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -232,9 +250,14 @@ public class QueryExecution {
      * @throws SQLException: error de ejecución
      * @return the {@link ResultSet} of the execution
      */
-    public ResultSet executeFindPattern(Statement stm, String pattern, String condition, String type) throws SQLException {
+    public ResultSet executeFindPattern(Statement stm, String pattern, String condition,
+            String type) throws SQLException {
         stm = cursor.createStatement();
-        String sql = queryBuilder.createFindPatternQuery(table, condition.trim().split(","), type);
+        String sql = queryBuilder.createFindPatternQuery(
+                table,
+                condition.trim().split(","),
+                type
+        );
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -249,9 +272,14 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
      * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executeGetValueOfColumnName(Statement stm, String condition, String columns, String type) throws SQLException {
+    public ResultSet executeGetValueOfColumnName(Statement stm, String condition, String columns,
+            String type) throws SQLException {
         stm = cursor.createStatement();
-        String sql = queryBuilder.createFindColumnValueQuery(condition, columns, type);
+        String sql = queryBuilder.createFindColumnValueQuery(
+                condition,
+                columns,
+                type
+        );
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -280,7 +308,8 @@ public class QueryExecution {
      * @throws SQLException: error while trying to execute
      * @return the row count or 0 when nothing is returned
      */
-    public int executeInsertIntoSelect(Statement stm, String sourceT, String targetT, String condition, String columns, String type) throws SQLException {
+    public int executeInsertIntoSelect(Statement stm, String sourceT, String targetT, String condition, 
+            String columns, String type) throws SQLException {
         stm = cursor.createStatement();
         String sql = "";
         String selectSQL = "";
@@ -305,8 +334,15 @@ public class QueryExecution {
      * @throws SQLException error al ejecutar la sentencia sql
      * @return el {@link ResultSet} de la ejecución
      */
-    public ResultSet executeInnerJoin(Statement stm, ModelMethods primary, ModelMethods foreign, String foreignT, String condition, String type) throws SQLException {
-        String sql = queryBuilder.createInnerJoinQuery(primary, foreign, foreignT, condition, type);
+    public ResultSet executeInnerJoin(Statement stm, ModelMethods primary, ModelMethods foreign,
+            String foreignT, String condition, String type) throws SQLException {
+        String sql = queryBuilder.createInnerJoinQuery(
+                primary,
+                foreign,
+                foreignT,
+                condition,
+                type
+        );
         stm = cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
         return rst;
@@ -321,9 +357,14 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
      * @return the row count of the statement or '0' when return nothing 
     */
-    public int executeUpdateRegister(Statement stm, ModelMethods model, String conditions, String type) throws SQLException {
+    public int executeUpdateRegister(Statement stm, ModelMethods model, String conditions, String type)
+            throws SQLException {
         stm = cursor.createStatement();
-        String sql = queryBuilder.createModifyRegisterQuery(model, conditions, type);
+        String sql = queryBuilder.createModifyRegisterQuery(
+                model,
+                conditions,
+                type
+        );
         int retorno = stm.executeUpdate(sql);
         return retorno;
     }
@@ -336,7 +377,8 @@ public class QueryExecution {
      * @throws SQLException error al ejecutar
      * @return the row count or '0' when nothing is returned
     */
-    public int executeEliminarRegistro(Statement stm, String condition, String type) throws SQLException {
+    public int executeEliminarRegistro(Statement stm, String condition, String type)
+            throws SQLException {
         stm = cursor.createStatement();
         String sql = queryBuilder.createDeleteRegisterQuery(condition, type);
         int result = stm.executeUpdate(sql);

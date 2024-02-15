@@ -143,7 +143,13 @@ public class QueryDAO<T> {
         boolean isCreated = false;
         Statement stm = null;
         try {
-            int rst = queryExecution.executeCreateView(stm, viewName, condition, columns, type);
+            int rst = queryExecution.executeCreateView(
+                    stm,
+                    viewName,
+                    condition,
+                    columns,
+                    type
+            );
             if(rst == 1) {
                 isCreated = true;
             } else if(rst == -1) {
@@ -356,7 +362,13 @@ public class QueryDAO<T> {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeFindIn(stm, returnColumns, conditionalColumns, condition, type);
+            rst = queryExecution.executeFindIn(
+                    stm,
+                    returnColumns,
+                    conditionalColumns,
+                    condition,
+                    type
+            );
             int len = 0;
             if(returnColumns == null || returnColumns.isEmpty()) {
                 len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
@@ -531,12 +543,20 @@ public class QueryDAO<T> {
      * @param type: logic type for where clause
      * @return a string with the format -> source_name: source_password, reference_name: reference_password
      */
-    public String innerJoin(ModelMethods primary, ModelMethods foreign, String foreignT, String condition, String type) {
+    public String innerJoin(ModelMethods primary, ModelMethods foreign, String foreignT, String condition, 
+            String type) {
         String result = "";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeInnerJoin(stm, primary, foreign, foreignT, condition, type);
+            rst = queryExecution.executeInnerJoin(
+                    stm,
+                    primary,
+                    foreign,
+                    foreignT,
+                    condition,
+                    type
+            );
             while(rst.next()) {
                 result += tbName + "->" + rst.getString(tbName + "_nombre") + ": " +
                     rst.getString(tbName + "_password") + ", " +
@@ -619,11 +639,19 @@ public class QueryDAO<T> {
      * @param type: logic operator for where clause
      * @return true if the {@link sourceT} is copied to {@link targetT}, false otherwise
      */
-    public boolean insertIntoSelect(String sourceT, String targetT, String condition, String columns, String type) {
+    public boolean insertIntoSelect(String sourceT, String targetT, String condition, String columns, 
+            String type) {
         boolean isInserted = false;
         Statement stm = null;
         try {
-            int rst = queryExecution.executeInsertIntoSelect(stm, sourceT, targetT, condition,  columns, type);
+            int rst = queryExecution.executeInsertIntoSelect(
+                    stm,
+                    sourceT,
+                    targetT,
+                    condition,
+                    columns,
+                    type
+            );
             if(rst > 0) {
                 isInserted = true;
             }
@@ -659,7 +687,12 @@ public class QueryDAO<T> {
             T buscado = findByColumnName(conditions.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
-                int result = queryExecution.executeUpdateRegister(stm, model, conditions, type);
+                int result = queryExecution.executeUpdateRegister(
+                        stm,
+                        model,
+                        conditions,
+                        type
+                );
                 if(result > 0) {
                     System.out.println(model.getAllProperties());
                     registrado = true;
@@ -701,7 +734,11 @@ public class QueryDAO<T> {
             T buscado = findByColumnName(condition.split(",")[0], type);
             if(buscado != null) {
                 cursor.endRequest();
-                int rst = queryExecution.executeEliminarRegistro(stm, condition, type);
+                int rst = queryExecution.executeEliminarRegistro(
+                        stm,
+                        condition,
+                        type
+                );
                 if(rst > 0) {
                     System.out.println(condition);
                     eliminar = true;
