@@ -32,7 +32,7 @@ public class MigrationBuilder extends QueryBuilder {
      * @return la sentencia sql para crear la base de datos
      */
     public String createDataBaseQuery(String dbName) {
-        String sql = "create database if not exists " + dbName;
+        String sql = "CREATE DATABASE IF NOT EXISTS " + dbName;
         return sql;
     }
     /**
@@ -41,18 +41,25 @@ public class MigrationBuilder extends QueryBuilder {
      * @return la sentencia sql para cambiar de base de datos
      */
     public String createSelectDatabase(String dbName) {
-        String sql = "use " + dbName;
+        String sql = "USE " + dbName;
         return sql;
     }
     /**
      * crear la tabla de datos si no existe
      * @param model: modelo con los datos de las columnas y typo de dato para la tabla
+     * @param type: temporary or normal
      * @return la sentencia sql para crear la tabla de datos
      */
-    public String createTableQuery(ModelMethods model) {
-        String[] columns = queryUtil.getModelColumns(model.initModel(), true).split(",");
-        String[] types = queryUtil.getModelType(model.initModel(), true).split(",");
-        String typeColumn = "";
+    public String createTableQuery(ModelMethods model, String type) {
+        String typeColumn = "", modelInit = model.initModel();
+        String[] columns = queryUtil.getModelColumns(
+                modelInit,
+                true
+        ).split(",");
+        String[] types = queryUtil.getModelType(
+                modelInit,
+                true
+        ).split(",");
         for(String t: types) {
             if(t.contains(".")) {
                 typeColumn = t.replace(".", ",");
@@ -67,7 +74,14 @@ public class MigrationBuilder extends QueryBuilder {
             values += columns[i] + " " + clearTypes +", ";
         }
         String clearValues = queryUtil.cleanValues(values, 2)+ ")";
-        String sql = "create table if not exists " + tableName + clearValues;
+        String sql = "";
+        // n = normal
+        // t = temporary
+        if(type.equals("n")) {
+            sql = "CREATE TABLE IF NOT EXISTS " + tableName + clearValues;
+        } else if(type.equals("t")) {
+            sql = "CREATE TEMPORARY TABLE " + tableName + clearValues;
+        }
         return sql;
     }
     /**
@@ -76,7 +90,7 @@ public class MigrationBuilder extends QueryBuilder {
      * @return sentencia para alterar la tabla
      */
     private String createAlterTableQuery(String alterOperations) {
-        return "alter table " + this.tableName + " " + alterOperations;
+        return "ALTER TABLE " + this.tableName + " " + alterOperations;
     }
     /**
      * crea la sentencia sql para agregar una columna a la tabla
@@ -95,14 +109,20 @@ public class MigrationBuilder extends QueryBuilder {
             String[] modelColumns = queryUtil.getModelColumns(modelProperties, includePKFK).split(",");
             for(String k: cleanColumns) {
                 int indexType = queryUtil.searchColumnType(modelProperties, k);
-                String clearTypes = indexType < modelTypes.length ? modelTypes[indexType].replace("'", "") : "null";
-                String clearModelColumns  = indexType < modelColumns.length ? modelColumns[indexType-1] : "null";
+                String clearTypes = indexType < modelTypes.length ?
+                    modelTypes[indexType].replace("'", "") : "null";
+                String clearModelColumns  = indexType < modelColumns.length ?
+                    modelColumns[indexType-1] : "null";
                 if(clearTypes.contains(".")) {
                     clearTypes = clearTypes.split("\\.")[0];
                 }
-                sql += "add column " + k + " " + clearTypes + " after " + clearModelColumns + ", ";
+                sql += "ADD COLUMN " + k + " " + clearTypes + " AFTER " + clearModelColumns + ", ";
                 if(includePKFK == true) {
-                    sql += createAddConstraintQuery(addColumns, refModelProperties, refTable);
+                    sql += createAddConstraintQuery(
+                            addColumns,
+                            refModelProperties,
+                            refTable
+                    );
                 }
             }
 
@@ -134,7 +154,7 @@ public class MigrationBuilder extends QueryBuilder {
             String[] keys = renameColumns.split(", ");
             for(String co: keys) {
                 String[] values = co.split(":");
-                sql += "rename column " + values[1] + " to " + values[0] +  ", ";
+                sql += "RENAME COLUMN " + values[1] + " TO " + values[0] +  ", ";
             }
         }
         String clearSql = "";
@@ -158,7 +178,7 @@ public class MigrationBuilder extends QueryBuilder {
             for(String t: types) {
                 String type = t.split(":")[0];
                 int index = Integer.parseInt(t.split(":")[1]);
-                sql += "modify column " + modelColumns[index] + " " + type + ", ";
+                sql += "MODIFY COLUMN " + modelColumns[index] + " " + type + ", ";
             }
         }
         String clearSql = "";
@@ -184,9 +204,11 @@ public class MigrationBuilder extends QueryBuilder {
             for(String k: columns) {
                 String[] datos = k.split(":");
                 if(datos[0].contains("fk")) {
-                    sql += createDeleteConstraintQuery(deleteColumns, includePKFK) + "drop column " + datos[0] + ", ";
+                    sql += createDeleteConstraintQuery(
+                            deleteColumns,
+                            includePKFK) + "DROP COLUMN " + datos[0] + ", ";
                 } else {
-                    sql += "drop column "  + datos[0] + ", ";
+                    sql += "DROP COLUMN "  + datos[0] + ", ";
                 }
             }
         }
@@ -213,10 +235,10 @@ public class MigrationBuilder extends QueryBuilder {
         String refpk = queryUtil.getPkFk(refModelProperties).get("pk");
         for(String k: columns) {
             if(k.contains("pk") == true) {
-                sql += "add constraint " + k + " primary key(" + k + "), ";
+                sql += "ADD CONSTRAINT " + k + " PRIMARY KEY(" + k + "), ";
             }
             if(k.contains("fk") == true) {
-                sql +="add constraint " + k + " foreign key(" + k +") references " + refTable + "(" + refpk + ") on delete cascade on update cascade, ";
+                sql +="ADD CONSTRAINT " + k + " FOREIGN KEY(" + k +") REFERENCES " + refTable + "(" + refpk + ") ON DELETE CASCADE ON UPDATE CASCADE, ";
             }
         }
         String clearSql = "";
@@ -240,10 +262,10 @@ public class MigrationBuilder extends QueryBuilder {
              String k1 = deleteColumns.split(", ")[0];
              String[] k2 = k1.split(":");
              if(k2[0].contains("pk")) {
-                 sql += "drop primary key , ";
+                 sql += "DROP PRIMARY KEY , ";
              }
              if(k2[0].contains("fk")) {
-                 sql += "drop foreign key " + k2[0] + ", ";
+                 sql += "DROP FOREIGN KEY " + k2[0] + ", ";
 
              }
          }
