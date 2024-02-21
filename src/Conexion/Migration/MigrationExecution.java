@@ -66,7 +66,20 @@ public class MigrationExecution {
      * @return resultado de la ejecución de la sentencia sql
      */
     public Statement executeCreateTable(ModelMethods model, Statement stm) throws SQLException {
-        String sql = migrationBuilder.createTableQuery(model);
+        String sql = migrationBuilder.createTableQuery(model, "n");
+        stm = cursor.createStatement();
+        stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+        return stm;
+    }
+    /**
+     * create a temporary table from model
+     * @param model: model to use for table creation
+     * @param stm: query execution object
+     * @throws SQLException: execution exception
+     * @return executor of this query
+     */
+    public Statement executeCreateTemporaryTable(ModelMethods model, Statement stm) throws SQLException {
+        String sql = migrationBuilder.createTableQuery(model, "t");
         stm = cursor.createStatement();
         stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
         return stm;
