@@ -20,11 +20,16 @@ public class MigrationDAO {
      */
     private Connection cursor;
     /**
+     * table name
+     */
+    private String tableName;
+    /**
      * constructor
      */
     public MigrationDAO(String nTableName, Connection miCursor) {
         cursor = miCursor;
-        migrationExecution = new MigrationExecution(nTableName, cursor);
+        tableName = nTableName;
+        migrationExecution = new MigrationExecution(tableName, cursor);
     }
     /**
      * crea la base de datos
@@ -138,6 +143,46 @@ public class MigrationDAO {
             }
         }
         return resultado;
+    }
+    /**
+     * create a temporary table in this session.
+     * <br> pre: </br> the temporary table name is the same as the instance creation,
+     * new MigrationBuilder("user", cursor): user is the table name,
+     * temporary table name: t_user.
+     * @param temporaryName: temporary table name
+     * @return true if its created, false otherwise
+     */
+    public boolean createTemporaryTable(ModelMethods model) {
+        boolean isCreated = false;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = migrationExecution.executeCreateTemporaryTable(model, stm).getGeneratedKeys();
+            if(showTableData() == true && rst.getMetaData().getColumnCount() > 0) {
+                System.out.println(String.format("temporary table { %s } has been created", tableName));
+                isCreated = true;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        return isCreated;
     }
     /**
      * muestra los datos de la tabla

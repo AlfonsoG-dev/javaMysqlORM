@@ -80,7 +80,7 @@ public class MigrationBuilder extends QueryBuilder {
         if(type.equals("n")) {
             sql = "CREATE TABLE IF NOT EXISTS " + tableName + clearValues;
         } else if(type.equals("t")) {
-            sql = "CREATE TEMPORARY TABLE " + tableName + clearValues;
+            sql = "CREATE TEMPORARY TABLE " + "t_" + tableName + clearValues;
         }
         return sql;
     }
