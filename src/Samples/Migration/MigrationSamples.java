@@ -25,6 +25,11 @@ public class MigrationSamples {
         myDAO.createTable(newModel);
     }
 
+    public void sampleCreateTemporaryTable(ModelMethods model) {
+        // the method prints a message when temporary table is created.
+        // it uses the same name as the normal table only adding "t_" at the start.
+        myDAO.createTemporaryTable(model);
+    }
     public void sampleShowTableData() {
         boolean exists = myDAO.showTableData();
         if(exists) {

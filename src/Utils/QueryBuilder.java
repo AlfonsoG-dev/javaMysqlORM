@@ -32,10 +32,10 @@ public class QueryBuilder {
     public String createFindQuery(String condition, String type) {
         String sql = "", cleanValues = "";
         if(condition == null || condition.isEmpty()) {
-            sql = "select *" + " from "+ tbName;
+            sql = "SELECT *" + " FROM "+ tbName;
         } else {
             cleanValues = queryUtil.getPrepareConditional(condition, type);
-            sql = "select *" + " from "+ tbName+ " where " + cleanValues;
+            sql = "SELECT *" + " FROM "+ tbName+ " WHERE " + cleanValues;
         }
         return sql;
     }
@@ -48,10 +48,10 @@ public class QueryBuilder {
     public String createFindByColumnQuery(String condition, String type) {
         String sql = "", cleanValues = "";
         if(condition == null || condition.isEmpty()) {
-            sql = "select *" +" from " + tbName;
+            sql = "SELECT *" +" FROM " + tbName;
         } else {
             cleanValues = queryUtil.getNormalConditional(condition, type);
-            sql = "select *" +" from " + tbName + " where " + cleanValues.stripIndent();
+            sql = "SELECT *" +" FROM " + tbName + " WHERE " + cleanValues.stripIndent();
         }
         return sql;
     }
@@ -67,18 +67,18 @@ public class QueryBuilder {
         String cleanValues = "";
         if(columns == null || columns.isEmpty() == true) {
             if(condition == null || condition.isEmpty()) {
-                sql =  "select *" +" from " + tbName;
+                sql =  "SELECT *" +" FROM " + tbName;
             } else {
                 cleanValues = queryUtil.getNormalConditional(condition, type);
-                sql =  "select *" +" from " + tbName + " where " + cleanValues.stripIndent();
+                sql =  "SELECT *" +" FROM " + tbName + " where " + cleanValues.stripIndent();
             }
         }
         else if(columns != null || columns.isEmpty() == false) {
             if(condition == null || condition.isEmpty()) {
-                sql =  "select "+ columns +" from " + tbName;
+                sql =  "SELECT "+ columns +" FROM " + tbName;
             } else {
                 cleanValues = queryUtil.getNormalConditional(condition, type);
-                sql =  "select "+ columns +" from " + tbName + " where " + cleanValues.stripIndent();
+                sql =  "SELECT "+ columns +" FROM " + tbName + " WHERE " + cleanValues.stripIndent();
             }
         }
         return sql;
@@ -96,26 +96,26 @@ public class QueryBuilder {
         if(returnColumns == null) {
             if(condition == null || condition.isEmpty() && (conditionalColumns == null ||
                         conditionalColumns.isEmpty())) {
-                sql = "select * from " + tbName;
+                sql = "SELECT * FROM " + tbName;
             } else {
                 inCondition = queryUtil.getInConditional(
                         conditionalColumns,
                         condition,
                         type
                 );
-                sql = "select * from " + tbName + " where " + inCondition;
+                sql = "SELECT * FROM " + tbName + " WHERE " + inCondition;
             }
         } else if(returnColumns != null && !returnColumns.isEmpty()) {
             if(condition == null || condition.isEmpty() && (conditionalColumns == null ||
                         conditionalColumns.isEmpty())) {
-                sql = "select " + returnColumns + " from " + tbName;
+                sql = "SELECT " + returnColumns + " FROM " + tbName;
             } else {
                 inCondition = queryUtil.getInConditional(
                         conditionalColumns,
                         condition,
                         type
                 );
-                sql = "select " + returnColumns + " from " + tbName + " where " + inCondition;
+                sql = "SELECT " + returnColumns + " FROM " + tbName + " WHERE " + inCondition;
             }
         }
         return sql;
@@ -130,14 +130,14 @@ public class QueryBuilder {
     public String createFindPatternQuery(String pattern, String[] conditions, String type) {
         String sql = "", patternCondition = "";
         if(pattern == null || conditions == null) {
-            sql = "select * from "  + this.tbName;
+            sql = "SELECT * FROM "  + this.tbName;
         } else {
             patternCondition = queryUtil.getPatternCondition(
                     pattern,
                     conditions,
                     type
             );
-            sql = "select * from "  + this.tbName + " where " + patternCondition;
+            sql = "SELECT * FROM "  + this.tbName + " WHERE " + patternCondition;
         }
         return sql;
     }
@@ -154,10 +154,10 @@ public class QueryBuilder {
         String sql = "", getCondition = "";
         String minMaxSelection = queryUtil.getMinMaxSelection(columns);
         if(condition == null || condition.isEmpty()) {
-            sql = "select " + minMaxSelection + " from " + tbName;
+            sql = "SELECT " + minMaxSelection + " FROM " + tbName;
         } else {
             getCondition = queryUtil.getNormalConditional(condition, type);
-            sql = "select " + minMaxSelection + " from " + tbName + " where " + getCondition;
+            sql = "SELECT " + minMaxSelection + " FROM " + tbName + " WHERE " + getCondition;
         }
         return sql;
     }
@@ -176,7 +176,7 @@ public class QueryBuilder {
         }
         cleanData = miData.substring(0, miData.length()-1);
         String column = queryUtil.getModelColumns(model.getAllProperties(), false);
-        String sql = "insert into " + tbName + " (" + column +") values (" + cleanData + ")";
+        String sql = "INSERT INTO " + tbName + " (" + column +") VALUES (" + cleanData + ")";
         return sql;
     }
     /**
@@ -207,19 +207,19 @@ public class QueryBuilder {
         String sql = "";
         if(condition == null || condition.isEmpty()) {
             sql =
-                "select " + localNombres + ", " +
-                refNombres + " from " + this.tbName +
-                " inner join " + foreignT + " on " + pkfk;
+                "SELECT " + localNombres + ", " +
+                refNombres + " FROM " + this.tbName +
+                " INNER JOIN " + foreignT + " ON " + pkfk;
         } else {
             String conditional = queryUtil.getNormalConditional(
                     condition,
                     type
             );
             sql =
-                "select " + localNombres + ", " +
-                refNombres + " from " + this.tbName +
-                " inner join " + foreignT + " on " +
-                pkfk + " where " + conditional;
+                "SELECT " + localNombres + ", " +
+                refNombres + " FROM " + this.tbName +
+                " INNER JOIN " + foreignT + " ON " +
+                pkfk + " WHERE " + conditional;
         }
         return sql;
     }
@@ -234,10 +234,10 @@ public class QueryBuilder {
         String sql = "", condition = "";
         String cleanKeyValue = queryUtil.getAsignModelValues(model.getAllProperties());
         if(condicional == null || condicional.isEmpty()) {
-            sql = "update " + tbName + " set " +  cleanKeyValue;
+            sql = "UPDATE " + tbName + " SET " +  cleanKeyValue;
         } else {
             condition = queryUtil.getNormalConditional(condicional, type);
-            sql = "update " + tbName + " set " +  cleanKeyValue + " where " + condition;
+            sql = "UPDATE " + tbName + " SET " +  cleanKeyValue + " WHERE " + condition;
         }
         return sql;
    }
@@ -250,10 +250,10 @@ public class QueryBuilder {
    public String createDeleteRegisterQuery(String condition, String type) {
        String sql = "", condicional = "";
        if(condition == null || condition.isEmpty()) {
-           sql = "delete from " + tbName;
+           sql = "DELETE FROM " + tbName;
        } else {
            condicional = queryUtil.getNormalConditional(condition, type);
-           sql = "delete from " + tbName + " where " + condicional;
+           sql = "DELETE FROM " + tbName + " WHERE " + condicional;
        }
        return sql;
    }

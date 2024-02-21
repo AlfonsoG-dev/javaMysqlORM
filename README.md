@@ -14,6 +14,7 @@
 
 # Features
 - [x] dynamic query creation using class objects as table models.
+- [x] temporary tables using class objects as table models.
 - [x] normal CRUD operations and `INNER JOIN` as well.
 - [x] dynamic Migration using Annotations fields of the table model.
 - [x] accepts table relationships using the table Model Annotations.
