@@ -17,7 +17,7 @@ public class CuentaBuilder implements ModelBuilderMethods<Cuenta>{
     public String[] resultDataValidator(ResultSet rst, int capacity) throws SQLException {
         String[] data = new String[capacity + 1];
         for(int i = 1; i < data.length; i++) {
-            data[i] = rst.getString(i);
+            data[i]   = rst.getString(i);
         }
         //System.out.println(data.length);
         assert data.length == 1 : "deberia ser mayor a 1";
@@ -32,8 +32,16 @@ public class CuentaBuilder implements ModelBuilderMethods<Cuenta>{
      */
     @Override
     public Cuenta createFromRST(ResultSet rst, int capacity) throws SQLException {
-        String[] data = resultDataValidator(rst, capacity);
-        Cuenta nCuenta = new Cuenta(Integer.parseInt(data[1]), data[2], data[3], Integer.parseInt(data[4]), data[5], data[6], data[7]);
+        String[] data  = resultDataValidator(rst, capacity);
+        Cuenta nCuenta = new Cuenta(
+                Integer.parseInt(data[1]),
+                data[2],
+                data[3],
+                Integer.parseInt(data[4]),
+                data[5],
+                data[6],
+                data[7]
+        );
         return nCuenta;
     }
     /**
@@ -44,7 +52,15 @@ public class CuentaBuilder implements ModelBuilderMethods<Cuenta>{
     @Override
     public Cuenta createFromSTR(String datos) {
         String[] validate = datos.split(",");
-        Cuenta nCuenta = new Cuenta(Integer.parseInt(validate[0]), validate[1], validate[2], Integer.parseInt(validate[3]), validate[4], validate[5], validate[6]);
+        Cuenta nCuenta    = new Cuenta(
+                Integer.parseInt(validate[0]),
+                validate[1],
+                validate[2],
+                Integer.parseInt(validate[3]),
+                validate[4],
+                validate[5],
+                validate[6]
+        );
         return nCuenta;
     }
 }
