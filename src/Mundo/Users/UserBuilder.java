@@ -32,7 +32,15 @@ public class UserBuilder implements ModelBuilderMethods<User>{
     @Override
     public User createFromRST(ResultSet rst, int capacity) throws SQLException {
         String[] data = resultDataValidator(rst, capacity);
-        User nUser = new User(Integer.parseInt(data[1]), data[2], data[3], data[4], data[5], data[6], data[7]);
+        User nUser    = new User(
+                Integer.parseInt(data[1]),
+                data[2],
+                data[3],
+                data[4],
+                data[5],
+                data[6],
+                data[7]
+        );
         return nUser;
     }
     /**
@@ -43,7 +51,15 @@ public class UserBuilder implements ModelBuilderMethods<User>{
     @Override
     public User createFromSTR(String datos) {
         String[] validate = datos.split(",");
-        User nUser = new User(Integer.parseInt(validate[0]), validate[1], validate[2], validate[3], validate[4], validate[5], validate[6]);
+        User nUser        = new User(
+                Integer.parseInt(validate[0]),
+                validate[1],
+                validate[2],
+                validate[3],
+                validate[4],
+                validate[5],
+                validate[6]
+        );
         return nUser;
     }
 }
