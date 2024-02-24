@@ -28,9 +28,9 @@ public record QueryUtils() {
      * @return cantidad de columnas en la sentencia sql
      */
     public int getMetadataNumColumns(String metadata) {
-        String values = metadata.split(":")[1];
+        String values    = metadata.split(":")[1];
         String[] columns = values.split("=");
-        int count = 0;
+        int count        = 0;
         for(int i = 0; i < columns.length; i++) {
             String[] name = columns[i].split(",");
             for(int j = 0; j < name.length; j++) {
@@ -49,7 +49,9 @@ public record QueryUtils() {
      */
     public String getModelColumns(String modelProperties, boolean includePKFK) {
         String[] data = modelProperties.split("\n");
-        String columName = "";
+        String 
+            columName = "",
+            cColumName = "";
         for(int i = 0; i < data.length; i++) {
             String myColumn = data[i].split(":")[0].stripIndent();
             if(myColumn == null || myColumn.isEmpty()) {
@@ -59,7 +61,6 @@ public record QueryUtils() {
             }
         }
         String[] columns = columName.split(",");
-        String cColumName = "";
         if(includePKFK == false) {
             for(int i = 1; i < columns.length; i++) {
                 cColumName += columns[i].stripIndent() + ",";
@@ -80,17 +81,19 @@ public record QueryUtils() {
      */
     public HashMap<String, ArrayList<String>> getTableData(ResultSet rst) throws SQLException {
         HashMap<String, ArrayList<String>> datosTable = new HashMap<>();
-        ArrayList<String> columns = new ArrayList<>();
-        ArrayList<String> types = new ArrayList<>();
+        ArrayList<String>
+            columns = new ArrayList<>(),
+            types   = new ArrayList<>();
         while(rst.next()) {
             String[] data = rst.getString(1).split("\n");
             for(String k: data) {
                 columns.add(k);
             }
-            String[] mTypes = rst.getString(2).split("\n");
-            String[] nullColumn = rst.getString(3).split("\n");
-            String[] keyColumn = rst.getString(4).split("\n");
-            String[] extraValue = rst.getString(6).split("\n");
+            String[] 
+                mTypes     = rst.getString(2).split("\n"),
+                nullColumn = rst.getString(3).split("\n"),
+                keyColumn  = rst.getString(4).split("\n"),
+                extraValue = rst.getString(6).split("\n");
             for(int k = 0; k < mTypes.length; ++k) {
                 String type = "";
                 if(mTypes[k] != null) {
@@ -128,7 +131,7 @@ public record QueryUtils() {
      * @return los tipos de dato por columna
      */
     public String getModelType(String modelProperties, boolean includePKFK) {
-        String[] data = modelProperties.split("\n");
+        String[] data   = modelProperties.split("\n");
         String userData = "";
         if(includePKFK == false) {
             for(int i = 1; i < data.length; i++) {
@@ -186,8 +189,9 @@ public record QueryUtils() {
         String build = "";
         String[] values = columns.split(",");
         for(String v: values) {
-            String minMax = v.split(":")[0].trim();
-            String value = v.split(":")[1].trim();
+            String 
+                minMax = v.split(":")[0].trim(),
+                value  = v.split(":")[1].trim();
             if(minMax.equals("min")) {
                 build += "min(" + value +") as min_" + value + ", ";
             } else if(minMax.equals("max")) {
@@ -263,7 +267,9 @@ public record QueryUtils() {
      * @return el condicional combinado tipo in
      */
     public String getInConditional(String columns, String condition, String type) {
-        String inCondition = "", build = "";
+        String 
+            inCondition = "",
+            build       = "";
         String[] myColumns = columns.split(",");
         if(condition.toLowerCase().startsWith("select")) {
             for(String c: myColumns) {
@@ -299,8 +305,9 @@ public record QueryUtils() {
         String[] data = modelProperties.split("\n");
         String keyValue = "";
         for(int i = 1; i < data.length; i++) {
-            String key = data[i].split(":")[0];
-            String value = data[i].split(":")[1];
+            String 
+                key   = data[i].split(":")[0],
+                value = data[i].split(":")[1];
             keyValue += key.stripIndent() +"="+ "'"+value.stripIndent()+"'"+ ", ";
         }
         return cleanValues(keyValue, 2);
@@ -350,9 +357,10 @@ public record QueryUtils() {
      * @return el condicional del inner join
      */
     public String innerJoinConditional(String localProperties, String refProperties, String localTable, String refTable) {
-        String pk = "", fk = "", build = "";
-        pk = getPkFk(refProperties).get("pk");
-        fk = getPkFk(localProperties).get("fk");
+        String 
+            pk    = getPkFk(refProperties).get("pk"),
+            fk    = getPkFk(localProperties).get("fk"),
+            build = "";
         build += localTable + "." + fk +"="+ refTable +"."+ pk;
         return build;
     }
@@ -395,10 +403,11 @@ public record QueryUtils() {
      * @return retorna las columnas a eliminar, agregar o renombrar
      */
     public HashMap<String, String> compareColumnName(String modelProperties, ResultSet rst) throws SQLException {
-        String localProperties = getModelColumns(modelProperties, true);
-        ArrayList<String> modelColumns = auxiliarmodelProperties(localProperties);
-        ArrayList<String> tableColumns = getTableData(rst).get("columns");
         HashMap<String, String> resultado = new HashMap<>();
+        String localProperties = getModelColumns(modelProperties, true);
+        ArrayList<String> 
+            modelColumns = auxiliarmodelProperties(localProperties),
+            tableColumns = getTableData(rst).get("columns");
         if(modelColumns.size() == tableColumns.size()) {
             String rename = "";
             for(int i=0; i<modelColumns.size(); ++i) {
@@ -437,9 +446,10 @@ public record QueryUtils() {
      */
     public HashMap<String, String> compareColumnType(String modelProperties, ResultSet rst) throws SQLException {
         String localTypes = getModelType(modelProperties, true);
-        ArrayList<String> tableTypes = getTableData(rst).get("tipos");
-        ArrayList<String> modelTypes = auxiliarmodelProperties(localTypes);
         HashMap<String, String> resultado = new HashMap<>();
+        ArrayList<String> 
+            tableTypes = getTableData(rst).get("tipos"),
+            modelTypes = auxiliarmodelProperties(localTypes);
         if(modelTypes.size() == tableTypes.size()) {
             String rename = "";
             for(int i=0; i<modelTypes.size(); ++i) {
