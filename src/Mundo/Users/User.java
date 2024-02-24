@@ -68,10 +68,10 @@ public class User implements ModelMethods {
      * @param nUpdate_at
      */
     public User(int nId_pk, String nNombre, String nEmail, String nPassword, String nRol, String nCreate_at, String nUpdate_at) {
-        id_pk = nId_pk;
-        nombre = nNombre;
-        email = nEmail;
-        password = nPassword;
+        id_pk     = nId_pk;
+        nombre    = nNombre;
+        email     = nEmail;
+        password  = nPassword;
         rol = nRol;
         create_at = nCreate_at;
         update_at = nUpdate_at;
@@ -84,10 +84,10 @@ public class User implements ModelMethods {
      * @param nRol
      */
     public User(String nNombre, String nEmail, String nPassword, String nRol) {
-        nombre = nNombre;
-        email = nEmail;
+        nombre   = nNombre;
+        email    = nEmail;
         password = nPassword;
-        rol = nRol;
+        rol      = nRol;
     }
     
     /**
@@ -141,8 +141,8 @@ public class User implements ModelMethods {
         String date = null;
         if(create_at != null) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
-            LocalDateTime miDate = LocalDateTime.parse(create_at, dtf);  
-            date = dtf.format(miDate).toString();
+            LocalDateTime miDate  = LocalDateTime.parse(create_at, dtf);  
+            date                  = dtf.format(miDate).toString();
         }
         return date;    
     }
@@ -152,8 +152,8 @@ public class User implements ModelMethods {
      * */
     public void setCreate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
-        LocalDateTime miDate = LocalDateTime.now();  
-        create_at = dtf.format(miDate).toString();
+        LocalDateTime miDate  = LocalDateTime.now();  
+        create_at             = dtf.format(miDate).toString();
     }
 
     /**
@@ -164,8 +164,8 @@ public class User implements ModelMethods {
         String date = null;
         if(update_at != null) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
-            LocalDateTime miDate = LocalDateTime.parse(update_at, dtf);  
-            date = dtf.format(miDate).toString();
+            LocalDateTime miDate  = LocalDateTime.parse(update_at, dtf);  
+            date                  = dtf.format(miDate).toString();
         }
         return date;    
     }
@@ -175,8 +175,8 @@ public class User implements ModelMethods {
      * */
     public void setUpdate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
-        LocalDateTime miDate = LocalDateTime.now();  
-        update_at = dtf.format(miDate).toString();
+        LocalDateTime miDate  = LocalDateTime.now();  
+        update_at             = dtf.format(miDate).toString();
     }
 
     /**
