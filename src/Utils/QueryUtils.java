@@ -1,6 +1,7 @@
 package Utils;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,21 +26,11 @@ public record QueryUtils() {
     /**
      * regresa la cantidad de columnas en la sentencia sql
      * @param metadata: datos de la sentencia sql
+     * @throws SQLException: execute exception
      * @return cantidad de columnas en la sentencia sql
      */
-    public int getMetadataNumColumns(String metadata) {
-        String values    = metadata.split(":")[1];
-        String[] columns = values.split("=");
-        int count        = 0;
-        for(int i = 0; i < columns.length; i++) {
-            String[] name = columns[i].split(",");
-            for(int j = 0; j < name.length; j++) {
-                if(name[j].equalsIgnoreCase("columnName") == true) {
-                    count++;
-                }
-            }
-        }
-        return count;
+    public int getMetadataNumColumns(ResultSetMetaData metadata) throws SQLException {
+        return metadata.getColumnCount();
     }
     /**
      * obtener las columnas de los datos del modelo

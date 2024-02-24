@@ -74,7 +74,7 @@ public class QueryDAO<T> {
         ResultSet rst = null;
         try {
             rst     = queryExecution.executeMyQuery(stm, sql);
-            int len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
+            int len = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 for(int i=1; i<= len; i++) {
                     String columnName = rst.getMetaData().getColumnName(i);
@@ -244,7 +244,7 @@ public class QueryDAO<T> {
         ArrayList<T> resultados = new ArrayList<T>();
         try {
             rst        = queryExecution.executeReadAll(pstm);
-            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
+            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 resultados.add(modelBuilderMethods.createFromRST(rst, lenght));
             }
@@ -283,7 +283,7 @@ public class QueryDAO<T> {
         ResultSet rst          = null;
         try {
             rst        = queryExecution.executeFindOne(pstm, condition, type);
-            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
+            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
             }
@@ -321,7 +321,7 @@ public class QueryDAO<T> {
         ResultSet rst = null;
         try {
             rst        = queryExecution.executeFindByColumnName(stm, condition, type);
-            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
+            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
             }
@@ -371,7 +371,7 @@ public class QueryDAO<T> {
                     type
             );
             if(returnColumns == null || returnColumns.isEmpty()) {
-                len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
+                len = queryUtil.getMetadataNumColumns(rst.getMetaData());
             } else if(returnColumns != null || !returnColumns.isEmpty()) {
                 len = returnColumns.split(",").length;
             }
@@ -420,7 +420,7 @@ public class QueryDAO<T> {
                     condition,
                     type
             );
-            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
+            int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
             }
@@ -466,7 +466,7 @@ public class QueryDAO<T> {
             );
             int len = 0;
             if(columns == null || columns.isEmpty()) {
-                len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
+                len = queryUtil.getMetadataNumColumns(rst.getMetaData());
             } else if(columns != null || !columns.isEmpty()) {
                 len = columns.split(",").length;
             }
@@ -517,7 +517,7 @@ public class QueryDAO<T> {
             );
             int len = 0;
             if(columns == null || columns.isEmpty() == true) {
-                len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
+                len = queryUtil.getMetadataNumColumns(rst.getMetaData());
             }
             else if(columns != null || columns.isEmpty() == false) {
                 len = columns.split(",").length;
