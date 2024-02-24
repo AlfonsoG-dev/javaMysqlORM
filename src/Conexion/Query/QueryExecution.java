@@ -40,10 +40,10 @@ public class QueryExecution {
      * @param tb_name: nombre de la tabla; tb_name != null && tb_name != ""
      */
     public QueryExecution(String tbName, Connection miConector) {
-        table = tbName;
+        table        = tbName;
         queryBuilder = new QueryBuilder(tbName);
-        queryUtil = new QueryUtils();
-        cursor = miConector;
+        queryUtil    = new QueryUtils();
+        cursor       = miConector;
     }
     /**
      * check if the view is created or not.
@@ -53,7 +53,7 @@ public class QueryExecution {
      * @return 1 if is created, 0 if not and -1 if nothing happens
      */
     private int isViewCreated(String viewName) throws SQLException {
-        int res = -1;
+        int res       = -1;
         ResultSet rst = cursor.getMetaData().getTables(
                 null,
                 null,
@@ -89,7 +89,7 @@ public class QueryExecution {
      * @return the row count or '0' when nothing is returned
      */
     public int executeMyUpdateQuery(Statement stm, String sql) throws SQLException {
-        stm = cursor.createStatement();
+        stm     = cursor.createStatement();
         int rst = stm.executeUpdate(sql);
         return rst;
     }
@@ -105,13 +105,14 @@ public class QueryExecution {
      */
     public int executeCreateView(Statement stm, String viewName, String condition, String columns,
             String type) throws SQLException {
-        stm = cursor.createStatement();
-        String selectSQL = queryBuilder.createFindColumnValueQuery(
+        stm              = cursor.createStatement();
+        String
+            selectSQL = queryBuilder.createFindColumnValueQuery(
                 condition,
                 columns,
                 type
-        );
-        String viewSQL = "create view " + viewName + " as " + selectSQL;
+            ),
+            viewSQL   = "create view " + viewName + " as " + selectSQL;
         stm.executeUpdate(viewSQL);
         return isViewCreated(viewName);
     }
@@ -122,7 +123,7 @@ public class QueryExecution {
      * @return 0 if the view doesn't exists, 1 if exists and -1 if nothing happen
      */
     public int executeDeleteView(Statement stm, String viewName) throws SQLException {
-        stm = cursor.createStatement();
+        stm        = cursor.createStatement();
         String sql = "drop view if exists " + viewName;
         stm.executeUpdate(sql);
         return isViewCreated(viewName);
@@ -134,8 +135,8 @@ public class QueryExecution {
      * @return {@link ResultSet} de la ejecución
     */
     public ResultSet executeCountData(PreparedStatement pstm) throws SQLException {
-        String sql = "select id_pk from " + table;
-        pstm = cursor.prepareStatement(sql);
+        String sql    = "select id_pk from " + table;
+        pstm          = cursor.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
         return rst;
     }
@@ -146,8 +147,8 @@ public class QueryExecution {
      * @return {@link ResultSet} de la ejecución
      */
     public ResultSet executeShowTableData(Statement stm) throws SQLException {
-        String sql = "show columns from " + this.table;
-        stm = cursor.createStatement();
+        String sql    = "show columns from " + this.table;
+        stm           = cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -158,8 +159,8 @@ public class QueryExecution {
      * @return {@link ResultSet} de la ejecución
     */
     public ResultSet executeReadAll(PreparedStatement pstm) throws SQLException {
-        String sql = "select * from " + table;
-        pstm = cursor.prepareStatement(sql);
+        String sql    = "select * from " + table;
+        pstm          = cursor.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
         return rst;
     }
@@ -173,14 +174,15 @@ public class QueryExecution {
     */
     public ResultSet executeFindOne(PreparedStatement pstm, String condition,
             String type) throws SQLException {
-        String sql = queryBuilder.createFindQuery(condition, type);
-        String val = queryUtil.getOptionValue(condition);
-        pstm = cursor.prepareStatement(sql);
+        String 
+            sql         = queryBuilder.createFindQuery(condition, type),
+            val         = queryUtil.getOptionValue(condition);
+        pstm            = cursor.prepareStatement(sql);
         String[] fields = val.split(",");
         for(int i=0; i<fields.length; ++i) {
             pstm.setString((i+1), fields[i].trim());
         }
-        ResultSet rst = pstm.executeQuery();
+        ResultSet rst   = pstm.executeQuery();
         return rst;
     }
     /**
@@ -194,8 +196,8 @@ public class QueryExecution {
     */
     public ResultSet executeFindByColumnName(Statement stm, String condition,
             String type) throws SQLException {
-        stm = cursor.createStatement();
-        String sql = queryBuilder.createFindByColumnQuery(condition, type);
+        stm           = cursor.createStatement();
+        String sql    = queryBuilder.createFindByColumnQuery(condition, type);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -211,8 +213,8 @@ public class QueryExecution {
      */
     public ResultSet executeFindIn(Statement stm, String returnColumns, String conditionalColumns,
             String condition, String type)  throws SQLException {
-        stm = cursor.createStatement();
-        String sql = queryBuilder.createFindInQuery(
+        stm           = cursor.createStatement();
+        String sql    = queryBuilder.createFindInQuery(
                 returnColumns,
                 conditionalColumns,
                 condition,
@@ -232,8 +234,8 @@ public class QueryExecution {
      */
     public ResultSet executeFindMinMax(Statement stm, String columns, String condition,
             String type) throws SQLException {
-        stm = cursor.createStatement();
-        String sql = queryBuilder.createFindMinMaxQuery(
+        stm           = cursor.createStatement();
+        String sql    = queryBuilder.createFindMinMaxQuery(
                 columns,
                 condition,
                 type
@@ -252,8 +254,8 @@ public class QueryExecution {
      */
     public ResultSet executeFindPattern(Statement stm, String pattern, String condition,
             String type) throws SQLException {
-        stm = cursor.createStatement();
-        String sql = queryBuilder.createFindPatternQuery(
+        stm           = cursor.createStatement();
+        String sql    = queryBuilder.createFindPatternQuery(
                 table,
                 condition.trim().split(","),
                 type
@@ -274,8 +276,8 @@ public class QueryExecution {
     */
     public ResultSet executeGetValueOfColumnName(Statement stm, String condition, String columns,
             String type) throws SQLException {
-        stm = cursor.createStatement();
-        String sql = queryBuilder.createFindColumnValueQuery(
+        stm           = cursor.createStatement();
+        String sql    = queryBuilder.createFindColumnValueQuery(
                 condition,
                 columns,
                 type
@@ -293,8 +295,8 @@ public class QueryExecution {
     */
     public int executeInsertNewRegister(Statement stm, ModelMethods model) throws SQLException {
         String sql = queryBuilder.createInsertRegisterQuery(model);
-        stm = cursor.createStatement();
-        int rst = stm.executeUpdate(sql);
+        stm        = cursor.createStatement();
+        int rst    = stm.executeUpdate(sql);
         return rst;
     }
     /**
@@ -310,17 +312,18 @@ public class QueryExecution {
      */
     public int executeInsertIntoSelect(Statement stm, String sourceT, String targetT, String condition, 
             String columns, String type) throws SQLException {
-        stm = cursor.createStatement();
-        String sql = "";
-        String selectSQL = "";
+        stm           = cursor.createStatement();
+        String 
+            sql       = "",
+            selectSQL = "";
         if(columns == null || columns == "") {
             selectSQL = new QueryBuilder(sourceT).createFindByColumnQuery(condition, type);
-            sql = "insert into " + targetT + " " + selectSQL;
+            sql       = "insert into " + targetT + " " + selectSQL;
         } else {
             selectSQL = new QueryBuilder(sourceT).createFindColumnValueQuery(condition, columns, type);
-            sql = "insert into " + targetT + " (" + columns + ")" + selectSQL;
+            sql       = "insert into " + targetT + " (" + columns + ")" + selectSQL;
         }
-        int rst = stm.executeUpdate(sql);
+        int rst       = stm.executeUpdate(sql);
         return rst;
     }
     /**
@@ -336,14 +339,14 @@ public class QueryExecution {
      */
     public ResultSet executeInnerJoin(Statement stm, ModelMethods primary, ModelMethods foreign,
             String foreignT, String condition, String type) throws SQLException {
-        String sql = queryBuilder.createInnerJoinQuery(
+        String sql    = queryBuilder.createInnerJoinQuery(
                 primary,
                 foreign,
                 foreignT,
                 condition,
                 type
         );
-        stm = cursor.createStatement();
+        stm           = cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -359,8 +362,8 @@ public class QueryExecution {
     */
     public int executeUpdateRegister(Statement stm, ModelMethods model, String conditions, String type)
             throws SQLException {
-        stm = cursor.createStatement();
-        String sql = queryBuilder.createModifyRegisterQuery(
+        stm         = cursor.createStatement();
+        String sql  = queryBuilder.createModifyRegisterQuery(
                 model,
                 conditions,
                 type
@@ -379,7 +382,7 @@ public class QueryExecution {
     */
     public int executeEliminarRegistro(Statement stm, String condition, String type)
             throws SQLException {
-        stm = cursor.createStatement();
+        stm        = cursor.createStatement();
         String sql = queryBuilder.createDeleteRegisterQuery(condition, type);
         int result = stm.executeUpdate(sql);
         return result;
