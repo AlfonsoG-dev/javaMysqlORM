@@ -11,7 +11,7 @@ import Config.DbConfig;
 public class Conector {
 
     // driver de MySQL
-    private final static String mysql_driver = "com.mysql.cj.jdbc.Driver";
+    private final static String mysql_driver      = "com.mysql.cj.jdbc.Driver";
 
     // driver de postgresql 
     private final static String postgresql_driver = "org.postgresql.Driver";
@@ -34,7 +34,11 @@ public class Conector {
         Connection conn = null;
         try {
             Class.forName(mysql_driver);
-            conn = DriverManager.getConnection(miConfig.getMysqlUrl(), miConfig.username(), miConfig.password());
+            conn = DriverManager.getConnection(
+                    miConfig.getMysqlUrl(),
+                    miConfig.username(),
+                    miConfig.password()
+            );
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -48,7 +52,11 @@ public class Conector {
         Connection conn = null;
         try {
             Class.forName(postgresql_driver);
-            conn = DriverManager.getConnection(miConfig.getPostgresqlUrl(), miConfig.username(), miConfig.password());
+            conn = DriverManager.getConnection(
+                    miConfig.getPostgresqlUrl(),
+                    miConfig.username(),
+                    miConfig.password()
+            );
         } catch(ClassNotFoundException | SQLException e) {
             System.err.println(e.getMessage());
         }
