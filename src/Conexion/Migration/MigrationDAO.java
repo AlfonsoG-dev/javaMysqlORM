@@ -27,8 +27,8 @@ public class MigrationDAO {
      * constructor
      */
     public MigrationDAO(String nTableName, Connection miCursor) {
-        cursor = miCursor;
-        tableName = nTableName;
+        cursor             = miCursor;
+        tableName          = nTableName;
         migrationExecution = new MigrationExecution(tableName, cursor);
     }
     /**
@@ -37,15 +37,15 @@ public class MigrationDAO {
      * @return true si la base de datos fue creada false de lo contrario
      */
     public boolean createDataBase(String DbName) {
-        Statement stm = null;
-        ResultSet rst = null;
-        boolean resultado = false;
+        Statement stm     = null;
+        ResultSet rst     = null;
+        boolean isCreated = false;
         try {
             stm = migrationExecution.executeCreateDatabase(DbName);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 System.out.println("database created");
-                resultado = true;
+                isCreated = true;
             }
         } catch(Exception e) {
             System.err.println(e);
@@ -67,7 +67,7 @@ public class MigrationDAO {
                 stm = null;
             }
         }
-        return resultado;
+        return isCreated;
     }
     /**
      * seleccionar una base de datos
@@ -75,14 +75,14 @@ public class MigrationDAO {
      * @return true si se selecciona la base de datos, false de lo contrario
      */
     public boolean selecDatabase(String DbName) {
-        Statement stm = null;
-        ResultSet rst = null;
-        boolean resultado = false;
+        Statement stm     = null;
+        ResultSet rst     = null;
+        boolean isSelected = false;
         try {
             stm = migrationExecution.executeSelectDatabase(DbName, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
-                resultado = true;
+                isSelected = true;
                 System.out.println("se selecciona la base de datos");
             }
         } catch(Exception e) {
@@ -105,7 +105,7 @@ public class MigrationDAO {
                 stm = null;
             }
         }
-        return resultado;
+        return isSelected;
     }
     /**
      * crea la tabla si esta no existe
@@ -113,14 +113,14 @@ public class MigrationDAO {
      * @return true si creo la tabla de lo contrario false
      */
     public boolean createTable(ModelMethods model) {
-        Statement stm = null;
-        ResultSet rst = null;
-        boolean resultado = false;
+        Statement stm     = null;
+        ResultSet rst     = null;
+        boolean isCreated = false;
         try {
             rst = migrationExecution.executeCreateTable(model, stm).getGeneratedKeys();
             if(showTableData() == true && rst.getMetaData().getColumnCount() > 0) {
                 System.out.println("tabla creada");
-                resultado = true;
+                isCreated = true;
             }
         } catch(Exception e) {
             System.err.println(e.getMessage());
@@ -142,7 +142,7 @@ public class MigrationDAO {
                 stm = null;
             }
         }
-        return resultado;
+        return isCreated;
     }
     /**
      * create a temporary table in this session.
@@ -153,13 +153,18 @@ public class MigrationDAO {
      * @return true if its created, false otherwise
      */
     public boolean createTemporaryTable(ModelMethods model) {
+        Statement stm     = null;
+        ResultSet rst     = null;
         boolean isCreated = false;
-        Statement stm = null;
-        ResultSet rst = null;
         try {
             rst = migrationExecution.executeCreateTemporaryTable(model, stm).getGeneratedKeys();
             if(showTableData() == true && rst.getMetaData().getColumnCount() > 0) {
-                System.out.println(String.format("temporary table { %s } has been created", tableName));
+                System.out.println(
+                        String.format(
+                            "temporary table { %s } has been created",
+                            tableName
+                        )
+                );
                 isCreated = true;
             }
         } catch(Exception e) {
@@ -190,13 +195,13 @@ public class MigrationDAO {
      * @return resultado de la consulta
      */
     public boolean showTableData() {
-        Statement stm = null;
-        ResultSet rst = null;
-        boolean comprobar = false;
+        Statement stm     = null;
+        ResultSet rst     = null;
+        boolean isShowing = false;
         try {
             rst = migrationExecution.executeShowTableData(stm);
             if(rst.next() == true) {
-                comprobar = true;
+                isShowing = true;
             }
         } catch (Exception e) {
             System.err.println(e);
@@ -219,7 +224,7 @@ public class MigrationDAO {
                 stm = null;
             }
         }
-        return comprobar;
+        return isShowing;
     }
     /**
      * agrega las columnas que no estan presentes en la tabla pero si en el modelo
@@ -227,14 +232,20 @@ public class MigrationDAO {
      * @return true si se agrega de lo contrario false
      */
     public boolean addColumn(ModelMethods localModel, ModelMethods refModel, String refTable, boolean includePKFK) {
-        Statement stm = null;
-        ResultSet rst = null;
-        boolean resultado = false;
+        Statement stm     = null;
+        ResultSet rst     = null;
+        boolean isAdded = false;
         try {
-            stm = migrationExecution.executeAddColumn(localModel, refModel, refTable, includePKFK, stm);
+            stm = migrationExecution.executeAddColumn(
+                    localModel,
+                    refModel,
+                    refTable,
+                    includePKFK,
+                    stm
+            );
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
-                resultado = true;
+                isAdded = true;
                 System.out.println("se agregaron las columnas");
             }
         } catch(Exception e) {
@@ -257,7 +268,7 @@ public class MigrationDAO {
                 stm = null;
             }
         }
-        return resultado;
+        return isAdded;
     }
     /**
      * renombrar una columna de la tabla según el modelo
@@ -265,14 +276,14 @@ public class MigrationDAO {
      * @return true si cambio el nombre de lo contrario false;
      */
     public boolean renameColumn(ModelMethods model) {
-        Statement stm = null;
-        ResultSet rst = null;
-        boolean resultado = false;
+        Statement stm     = null;
+        ResultSet rst     = null;
+        boolean isRenamed = false;
         try {
             stm = migrationExecution.exceuteRenameColumn(model, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
-                resultado = true;
+                isRenamed = true;
                 System.out.println("se modifico el nombre de la columna");
             }
         } catch(Exception e) {
@@ -295,7 +306,7 @@ public class MigrationDAO {
                 stm = null;
             }
         }
-        return resultado;
+        return isRenamed;
     }
     /**
      * modificar el tipo de dato de la columna según el modelo
@@ -303,14 +314,14 @@ public class MigrationDAO {
      * @return true si cambio el nombre de lo contrario false
      */
     public boolean changeType(ModelMethods model, boolean includePKFK) {
-        Statement stm = null;
-        ResultSet rst = null;
-        boolean resultado = false;
+        Statement stm     = null;
+        ResultSet rst     = null;
+        boolean isChanged = false;
         try {
             stm = migrationExecution.executeChangeColumnType(model, includePKFK, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
-                resultado = true;
+                isChanged = true;
                 System.out.println("se modifico el tipo de dato");
             }
         } catch(Exception e) {
@@ -333,7 +344,7 @@ public class MigrationDAO {
                 stm = null;
             }
         }
-        return resultado;
+        return isChanged;
     }
     /**
      * eliminar una columna de la tabla según el modelo
@@ -341,14 +352,14 @@ public class MigrationDAO {
      * @return true si se elimina la columna false de lo contrario
      */
     public boolean deleteColumn(ModelMethods model, boolean includePKFK) {
-        Statement stm = null;
-        ResultSet rst = null;
-        boolean resultado = false;
+        Statement stm     = null;
+        ResultSet rst     = null;
+        boolean isDeleted = false;
         try {
             stm = migrationExecution.executeDeleteColumn(model, includePKFK, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
-                resultado = true;
+                isDeleted = true;
                 System.out.println("se elimino la columna");
             }
         } catch(Exception e) {
@@ -371,6 +382,6 @@ public class MigrationDAO {
                 stm = null;
             }
         }
-        return resultado;
+        return isDeleted;
     }
 }
