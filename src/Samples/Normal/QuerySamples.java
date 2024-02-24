@@ -12,15 +12,15 @@ public class QuerySamples<T> {
     private QueryDAO<T> myDAO;
     private String tableName;
     public QuerySamples(Connection nCursor, String nTableName, ModelBuilderMethods<T> builder) {
-        cursor = nCursor;
+        cursor    = nCursor;
         tableName = nTableName;
-        myDAO = new QueryDAO<>(tableName, cursor, builder);
+        myDAO     = new QueryDAO<>(tableName, cursor, builder);
     }
 
     public void sampleAnyQuery() {
         String condition = " where nombre='test'";
-        String sql = "select * from " + tableName + condition;
-        String result = myDAO.anyQuery(sql);
+        String sql       = "select * from " + tableName + condition;
+        String result    = myDAO.anyQuery(sql);
         System.out.println(
                 String.format(
                     "Result of the execution of anyQuery method: \n%s",
@@ -30,8 +30,8 @@ public class QuerySamples<T> {
     }
 
     public void sampleAnyExecution() {
-        String condition = " where nombre='test'";
-        String sql = "update " + tableName + " set column='otroValue'" + condition;
+        String condition  = " where nombre='test'";
+        String sql        = "update " + tableName + " set column='otroValue'" + condition;
         boolean isUpdated = myDAO.anyExecution(sql);
         if(isUpdated) {
             System.out.println("updated");
@@ -40,10 +40,10 @@ public class QuerySamples<T> {
 
     public void sampleCreateView()  {
         String
-            viewName = "my_view_name",
-            condition  = "nombre: test, rol: admin",
-            columns  = "nombre, email",
-            type     = "or";
+            viewName      = "my_view_name",
+            condition     = "nombre: test, rol: admin",
+            columns       = "nombre, email",
+            type          = "or";
 
         boolean isCreated = myDAO.createView(
                 viewName,
@@ -58,7 +58,7 @@ public class QuerySamples<T> {
     }
 
     public void sampleDeleteView() {
-        String viewName = "my_view_name";
+        String viewName   = "my_view_name";
         boolean isDeleted = myDAO.deleteView(viewName);
         if(isDeleted) {
             System.out.println("deleted");
@@ -74,14 +74,14 @@ public class QuerySamples<T> {
 
     public void sampleReadAll() {
         ArrayList<T> myList = myDAO.readAll();
-        if(myList.size() > 0) {
-            System.out.println("the size of list data is: " + myList.size());
-        }
+        myList
+            .parallelStream()
+            .forEach(e -> System.out.println("element: " + e));
     }
 
     public void sampleFindOne() {
         String condition = "nombre: test", type = "and";
-        T myObject = myDAO.findOne(condition, type);
+        T myObject       = myDAO.findOne(condition, type);
         if(myObject != null) {
             System.out.println(myObject.getClass().getName());
         }
@@ -89,7 +89,7 @@ public class QuerySamples<T> {
 
     public void sampleFindByColumnName() {
         String condition = "nombre: test", type = "and";
-        T myObject = myDAO.findByColumnName(condition, type);
+        T myObject       = myDAO.findByColumnName(condition, type);
         if(myObject != null) {
             System.out.println(myObject.getClass().getName());
         }
@@ -101,7 +101,7 @@ public class QuerySamples<T> {
             conditionalColumns = "nombre",
             condition          = "test, admin",
             type               = "and";
-        String result = myDAO.findIn(
+        String result          = myDAO.findIn(
                 returnColumns,
                 conditionalColumns,
                 condition,
@@ -111,10 +111,10 @@ public class QuerySamples<T> {
     }
     public void sampleFindPattern() {
         String 
-            pattern = "@gmail.com%",
+            pattern   = "@gmail.com%",
             condition = "email, nombre",
-            type    = "or";
-        T myObject = myDAO.findPattern(
+            type      = "or";
+        T myObject    = myDAO.findPattern(
                 pattern,
                 condition,
                 type
@@ -140,8 +140,8 @@ public class QuerySamples<T> {
     public void sampleGetValueOfColumn() {
         String
             condition = "nombre: admin, rol: admin",
-            columns = "nombre, email, rol, create_at",
-            type    = "or";
+            columns   = "nombre, email, rol, create_at",
+            type      = "or";
         String result = myDAO.getValueOfColumnName(
                 condition,
                 columns,
@@ -154,7 +154,7 @@ public class QuerySamples<T> {
             foreignT     = "foreign_table_name",
             condition    = "nombre: test",
             type         = "or";
-        String result = myDAO.innerJoin(
+        String result    = myDAO.innerJoin(
                 primary,
                 foreign,
                 foreignT,
@@ -166,8 +166,8 @@ public class QuerySamples<T> {
 
     public void sampleInsertNewRegister(ModelMethods model) {
         String 
-            condition = "nombre: test",
-            type      = "or";
+            condition      = "nombre: test",
+            type           = "or";
         boolean isInserted = myDAO.insertNewRegister(
                 model,
                 condition,
@@ -180,11 +180,11 @@ public class QuerySamples<T> {
 
     public void sampleInsertIntoSelection() {
         String 
-            sourceTable  = "source_table_name",
-            targetTable  = "target_table_name",
-            condition    = "nombre: admin, rol: admin",
-            columns      = "nombre, email, rol",
-            type         = "or";
+            sourceTable    = "source_table_name",
+            targetTable    = "target_table_name",
+            condition      = "nombre: admin, rol: admin",
+            columns        = "nombre, email, rol",
+            type           = "or";
         boolean isInserted = myDAO.insertIntoSelect(
                 sourceTable,
                 targetTable,
@@ -199,8 +199,8 @@ public class QuerySamples<T> {
 
     public void sampleUpdateRegister(ModelMethods updatedModel) {
         String 
-            conditions = "nombre: test",
-            type       = "and";
+            conditions    = "nombre: test",
+            type          = "and";
         boolean isUpdated = myDAO.updateRegister(
                 updatedModel,
                 conditions,
@@ -213,8 +213,8 @@ public class QuerySamples<T> {
 
     public void sampleDeleteRegister() {
         String
-            condition = "nombre: test, rol: admin",
-            type      = "or";
+            condition     = "nombre: test, rol: admin",
+            type          = "or";
         boolean isDeleted = myDAO.deleteRegister(condition, type);
         if(isDeleted) {
             System.out.println("deleted");

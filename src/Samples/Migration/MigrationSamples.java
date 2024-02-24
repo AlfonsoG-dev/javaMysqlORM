@@ -10,9 +10,9 @@ public class MigrationSamples {
     private MigrationDAO myDAO;
     private String tableName;
     public MigrationSamples(Connection nCursor, String nTableName) {
-        cursor = nCursor;
+        cursor    = nCursor;
         tableName = nTableName;
-        myDAO = new MigrationDAO(tableName, cursor);
+        myDAO     = new MigrationDAO(tableName, cursor);
     }
 
     public void sampleCreateDataBase(String dbName) {

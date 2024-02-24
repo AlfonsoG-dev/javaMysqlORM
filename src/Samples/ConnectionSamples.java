@@ -9,7 +9,7 @@ import Model.ModelMethods;
 import Mundo.Cuentas.Cuenta;
 import Mundo.Users.User;
 
-public class MainApp {
+public class ConnectionSamples {
     private final static DbConfig InitDB(String db_name) {
         // if the database schema is not created, do not provide its name
         DbConfig mConfig = new DbConfig(
@@ -21,7 +21,7 @@ public class MainApp {
         );
         try {
             // create the database schema
-            Connection con = new Conector(mConfig).conectarMySQL();
+            Connection con     = new Conector(mConfig).conectarMySQL();
             MigrationDAO miDAO = new MigrationDAO("", con);
             miDAO.createDataBase(db_name);
             con.close();
