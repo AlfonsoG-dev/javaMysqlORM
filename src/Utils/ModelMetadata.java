@@ -47,8 +47,7 @@ public class ModelMetadata {
         } catch(ClassNotFoundException e) {
             System.err.println(e);
         }
-        String cleanRest = resultado.substring(0, resultado.length()-2);
-        return cleanRest;
+        return resultado.substring(0, resultado.length()-2);
     }
     /**
      * genera una lista de annotations del modelo
@@ -81,8 +80,7 @@ public class ModelMetadata {
         for(Annotation[] m: misAnnotations) {
             constraint += m[0] + " and ";
         }
-        String cleanConstraint = constraint.substring(0, constraint.length()-5);
-        return cleanConstraint;
+        return constraint.substring(0, constraint.length()-5);
     }
     /**
      * genera un String con el constraint de cada columna en orden
@@ -90,7 +88,6 @@ public class ModelMetadata {
      * @return un String con los constraint de cada columna
      */
     private String getModelColumConstraint() {
-        String resultado = "";
         try {
             String[] myConstraint = getAnnotationConstraint().split(" and ");
             String datos = "";
@@ -103,13 +100,14 @@ public class ModelMetadata {
                     }
                 }
             }
-            String restDatos = datos.replace("=", ", ");
-            String cleanDatos = restDatos.substring(2, restDatos.length());
-            resultado = cleanDatos;
+            String 
+                restDatos  = datos.replace("=", ", "),
+                cleanDatos = restDatos.substring(2, restDatos.length());
+            return cleanDatos;
         } catch(Exception e) {
             System.err.println(e);
+            return "";
         }
-        return resultado;
     }
     /**
      * genera un String con el tipo de dato de cada columna
@@ -117,7 +115,6 @@ public class ModelMetadata {
      * @return un String con el tipo de dato de cada columna
      */
     private String getModelColumnType() {
-        String resultado = "";
         try {
             String[] myConstraint = getAnnotationConstraint().split(" and ");
             String datos = "";
@@ -135,13 +132,14 @@ public class ModelMetadata {
                     }
                 }
             }
-            String restDatos = datos.replace("\")", "\", ");
-            String cleanDatos = restDatos.substring(0, restDatos.length()-2);
-            resultado = cleanDatos;
+            String 
+                restDatos  = datos.replace("\")", "\", "),
+                cleanDatos = restDatos.substring(0, restDatos.length()-2);
+            return cleanDatos;
         } catch(Exception e) {
             System.err.println(e);
+            return "";
         }
-        return resultado;
     }
     /**
      * genera un String con los datos combinados del modelo
@@ -149,15 +147,15 @@ public class ModelMetadata {
      */
     public String getModelProperties() {
         String build = "";
-        String[] columns = getModelColumns().split(", ");
-        String[] types = getModelColumnType().split(", ");
-        String[] constraint = getModelColumConstraint().split(", ");
+        String[] 
+            columns    = getModelColumns().split(", "),
+            types      = getModelColumnType().split(", "),
+            constraint = getModelColumConstraint().split(", ");
         for(int i=0; i<columns.length; ++i) {
             if(constraint[i] != "") {
                 build += columns[i] + ": " + types[i] + " " + constraint[i] + "\n";
             }
         }
-        String cleanBuild = build.replace("\"", "");
-        return cleanBuild;
+        return build.replace("\"", "");
     }
 }
