@@ -40,10 +40,10 @@ public class QueryDAO<T> {
      * inicializa el conector de mysql
      */
     public QueryDAO(String tableName, Connection miConector, ModelBuilderMethods<T> builder) {
-        tbName = tableName;
-        cursor = miConector;
-        queryExecution = new QueryExecution(tableName, miConector);
-        queryUtil = new QueryUtils();
+        tbName              = tableName;
+        cursor              = miConector;
+        queryExecution      = new QueryExecution(tableName, miConector);
+        queryUtil           = new QueryUtils();
         modelBuilderMethods = builder;
     }
     /**
@@ -69,11 +69,11 @@ public class QueryDAO<T> {
      * @return value of column name
      */
     public String anyQuery(String sql) {
-        String result ="";
+        String result = "";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeMyQuery(stm, sql);
+            rst     = queryExecution.executeMyQuery(stm, sql);
             int len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 for(int i=1; i<= len; i++) {
@@ -109,12 +109,12 @@ public class QueryDAO<T> {
      * @return true if row count is > 0 othewise false
      */
     public boolean anyExecution(String sql) {
-        boolean result = false;
-        Statement stm = null;
+        Statement stm      = null;
+        boolean isExecuted = false;
         try {
             int rst = queryExecution.executeMyUpdateQuery(stm, sql);
             if(rst > 0) {
-                result = true;
+                isExecuted = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,7 +128,7 @@ public class QueryDAO<T> {
                 stm = null;
             }
         }
-        return result;
+        return isExecuted;
     }
     /**
      * create a view from selection.
@@ -140,8 +140,8 @@ public class QueryDAO<T> {
      * @return true if its created, otherwise false
      */
     public boolean createView(String viewName, String condition, String columns, String type) {
-        boolean isCreated = false;
-        Statement stm = null;
+        boolean isCreate  = false;
+        Statement stm     = null;
         try {
             int rst = queryExecution.executeCreateView(
                     stm,
@@ -151,7 +151,7 @@ public class QueryDAO<T> {
                     type
             );
             if(rst == 1) {
-                isCreated = true;
+                isCreate = true;
             } else if(rst == -1) {
                 throw new Exception("nothing happen when trying to create a new view");
             }
@@ -167,7 +167,7 @@ public class QueryDAO<T> {
                 stm = null;
             }
         }
-        return isCreated;
+        return isCreate; 
     }
     /**
      * delete views from database.
@@ -176,7 +176,7 @@ public class QueryDAO<T> {
      */
     public boolean deleteView(String viewName) {
         boolean isDeleted = false;
-        Statement stm = null;
+        Statement stm     = null;
         try {
             int rst = queryExecution.executeDeleteView(stm, viewName);
             if(rst == 0) {
@@ -203,9 +203,9 @@ public class QueryDAO<T> {
      * @return cantidad de datos
      */
     public int countData() {
-        int count = 0;
+        int count              = 0;
         PreparedStatement pstm = null;
-        ResultSet rst = null;
+        ResultSet rst          = null;
         try{
             rst = queryExecution.executeCountData(pstm);
             while(rst.next()) {
@@ -239,11 +239,11 @@ public class QueryDAO<T> {
      * @return lista de registros
      */
     public ArrayList<T> readAll() {
-        PreparedStatement pstm = null;
-        ResultSet rst = null;
+        PreparedStatement pstm  = null;
+        ResultSet rst           = null;
         ArrayList<T> resultados = new ArrayList<T>();
         try {
-            rst = queryExecution.executeReadAll(pstm);
+            rst        = queryExecution.executeReadAll(pstm);
             int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 resultados.add(modelBuilderMethods.createFromRST(rst, lenght));
@@ -278,11 +278,11 @@ public class QueryDAO<T> {
      * @return el usuario buscado
      */
     public T findOne(String condition, String type) {
-        T buscado = null;
+        T buscado              = null;
         PreparedStatement pstm = null;
-        ResultSet rst = null;
+        ResultSet rst          = null;
         try {
-            rst = queryExecution.executeFindOne(pstm, condition, type);
+            rst        = queryExecution.executeFindOne(pstm, condition, type);
             int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
@@ -316,11 +316,11 @@ public class QueryDAO<T> {
      * @return el registro buscado
      */
     public T findByColumnName(String condition, String type) {
-        T buscado = null;
+        T buscado     = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeFindByColumnName(stm, condition, type);
+            rst        = queryExecution.executeFindByColumnName(stm, condition, type);
             int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
@@ -359,17 +359,17 @@ public class QueryDAO<T> {
      */
     public String findIn(String returnColumns, String conditionalColumns, String condition, String type) {
         String buscado = null;
-        Statement stm = null;
-        ResultSet rst = null;
+        Statement stm  = null;
+        ResultSet rst  = null;
         try {
-            rst = queryExecution.executeFindIn(
+            int len = 0;
+            rst     = queryExecution.executeFindIn(
                     stm,
                     returnColumns,
                     conditionalColumns,
                     condition,
                     type
             );
-            int len = 0;
             if(returnColumns == null || returnColumns.isEmpty()) {
                 len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             } else if(returnColumns != null || !returnColumns.isEmpty()) {
@@ -410,11 +410,16 @@ public class QueryDAO<T> {
      * @return an object of the generic type
      */
     public T findPattern(String pattern, String condition, String type) {
-        T buscado = null;
+        T buscado     = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeFindPattern(stm, pattern, condition, type);
+            rst        = queryExecution.executeFindPattern(
+                    stm,
+                    pattern,
+                    condition,
+                    type
+            );
             int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
@@ -450,10 +455,15 @@ public class QueryDAO<T> {
      */
     public String getMinMax(String columns, String condition, String type) {
         String buscado = null;
-        Statement stm = null;
-        ResultSet rst = null;
+        Statement stm  = null;
+        ResultSet rst  = null;
         try {
-            rst = queryExecution.executeFindMinMax(stm, columns, condition, type);
+            rst     = queryExecution.executeFindMinMax(
+                    stm,
+                    columns,
+                    condition,
+                    type
+            );
             int len = 0;
             if(columns == null || columns.isEmpty()) {
                 len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
@@ -495,11 +505,16 @@ public class QueryDAO<T> {
      * @return value of column name
      */
     public String getValueOfColumnName(String condition, String columns, String type) {
-        String result ="";
+        String result = "";
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = queryExecution.executeGetValueOfColumnName(stm, condition, columns, type);
+            rst     = queryExecution.executeGetValueOfColumnName(
+                    stm,
+                    condition,
+                    columns,
+                    type
+            );
             int len = 0;
             if(columns == null || columns.isEmpty() == true) {
                 len = queryUtil.getMetadataNumColumns(rst.getMetaData().toString());
@@ -584,8 +599,7 @@ public class QueryDAO<T> {
                 stm = null;
             }
         }
-        String cleanResult = result.substring(0, result.length()-2);
-        return cleanResult;
+        return result.substring(0, result.length()-2);
     }
     /**
      * ingresar un registro de GenericObjects.
@@ -595,8 +609,8 @@ public class QueryDAO<T> {
      * @return true si se registra de lo contrario false
      */
     public boolean insertNewRegister(ModelMethods model, String condition, String type) {
-        boolean registrado = false;
-        Statement stm = null;
+        boolean isInserted  = false;
+        Statement stm       = null;
         try {
             if(model == null) {
                 throw new Exception("el objeto no deberia ser null");
@@ -608,10 +622,10 @@ public class QueryDAO<T> {
                 int rst = queryExecution.executeInsertNewRegister(stm, model);
                 if(rst > 0){
                     System.out.println(model.getAllProperties());
-                    registrado = true;
+                    isInserted = true;
                 }
             } else {
-                registrado = false;
+                isInserted = false;
                 throw new Exception("el objeto deberia ser null");
             }
 
@@ -627,7 +641,7 @@ public class QueryDAO<T> {
                 stm = null;
             }
         }
-        return registrado;
+        return isInserted;
     }
     /**
      * copy the columns from one table to another.
@@ -642,7 +656,7 @@ public class QueryDAO<T> {
     public boolean insertIntoSelect(String sourceT, String targetT, String condition, String columns, 
             String type) {
         boolean isInserted = false;
-        Statement stm = null;
+        Statement stm      = null;
         try {
             int rst = queryExecution.executeInsertIntoSelect(
                     stm,
@@ -677,8 +691,8 @@ public class QueryDAO<T> {
      * @return true si se modifican los datos de lo contrario false
      **/
     public boolean updateRegister(ModelMethods model, String conditions, String type) {
-        boolean registrado = false;
-        Statement stm = null;
+        boolean isUpdated = false;
+        Statement stm      = null;
         try {
             if(model == null) {
                 throw new Exception("model no deberia ser null");
@@ -695,10 +709,10 @@ public class QueryDAO<T> {
                 );
                 if(result > 0) {
                     System.out.println(model.getAllProperties());
-                    registrado = true;
+                    isUpdated = true;
                 }
             } else {
-                registrado = false;
+                isUpdated = false;
                 throw new Exception("nObject no deberia ser null");
             }
 
@@ -715,7 +729,7 @@ public class QueryDAO<T> {
                 stm = null;
             }
         }
-        return registrado;
+        return isUpdated;
     }
     /**
      * eliminar un registro por cualquier columna valida de la bd.
@@ -724,8 +738,8 @@ public class QueryDAO<T> {
      * @return true si elimina de lo contrario false
      * */
     public boolean deleteRegister(String condition, String type) {
-        boolean eliminar = false;
-        Statement stm = null;
+        boolean isDeleted = false;
+        Statement stm    = null;
         try {
             if(condition.isEmpty() == true || condition == null) {
                 throw new Exception("no deberia ser null ni vacio");
@@ -741,10 +755,10 @@ public class QueryDAO<T> {
                 );
                 if(rst > 0) {
                     System.out.println(condition);
-                    eliminar = true;
+                    isDeleted = true;
                 }
             } else {
-                eliminar = false;
+                isDeleted = false;
                 throw new Exception("no deberia ser null");
             }
         } catch (Exception e ) {
@@ -760,6 +774,6 @@ public class QueryDAO<T> {
                 stm = null;
             }
         }
-        return eliminar;
+        return isDeleted;
     }
 }
