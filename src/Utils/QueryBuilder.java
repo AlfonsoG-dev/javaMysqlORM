@@ -21,7 +21,7 @@ public class QueryBuilder {
      */
     public QueryBuilder(String nTableName) {
         queryUtil = new QueryUtils();
-        tbName = nTableName;
+        tbName    = nTableName;
     }
     /**
      * crea la query para la sentencia de FindOne
@@ -30,12 +30,14 @@ public class QueryBuilder {
      * @return: el usuario buscado
      */
     public String createFindQuery(String condition, String type) {
-        String sql = "", cleanValues = "";
+        String 
+            sql         = "",
+            cleanValues = "";
         if(condition == null || condition.isEmpty()) {
             sql = "SELECT *" + " FROM "+ tbName;
         } else {
             cleanValues = queryUtil.getPrepareConditional(condition, type);
-            sql = "SELECT *" + " FROM "+ tbName+ " WHERE " + cleanValues;
+            sql         = "SELECT *" + " FROM "+ tbName+ " WHERE " + cleanValues;
         }
         return sql;
     }
@@ -46,12 +48,14 @@ public class QueryBuilder {
      * @return: el usuario buscado
      */
     public String createFindByColumnQuery(String condition, String type) {
-        String sql = "", cleanValues = "";
+        String 
+            sql         = "",
+            cleanValues = "";
         if(condition == null || condition.isEmpty()) {
             sql = "SELECT *" +" FROM " + tbName;
         } else {
             cleanValues = queryUtil.getNormalConditional(condition, type);
-            sql = "SELECT *" +" FROM " + tbName + " WHERE " + cleanValues.stripIndent();
+            sql         = "SELECT *" +" FROM " + tbName + " WHERE " + cleanValues.stripIndent();
         }
         return sql;
     }
@@ -63,14 +67,15 @@ public class QueryBuilder {
      * @return la sentencia sql con los valores a retornar y los valores de condicion
      */
     public String createFindColumnValueQuery(String condition, String columns, String type) {
-        String sql = "";
-        String cleanValues = "";
+        String
+            sql         = "",
+            cleanValues = "";
         if(columns == null || columns.isEmpty() == true) {
             if(condition == null || condition.isEmpty()) {
                 sql =  "SELECT *" +" FROM " + tbName;
             } else {
                 cleanValues = queryUtil.getNormalConditional(condition, type);
-                sql =  "SELECT *" +" FROM " + tbName + " where " + cleanValues.stripIndent();
+                sql         =  "SELECT *" +" FROM " + tbName + " where " + cleanValues.stripIndent();
             }
         }
         else if(columns != null || columns.isEmpty() == false) {
@@ -78,7 +83,7 @@ public class QueryBuilder {
                 sql =  "SELECT "+ columns +" FROM " + tbName;
             } else {
                 cleanValues = queryUtil.getNormalConditional(condition, type);
-                sql =  "SELECT "+ columns +" FROM " + tbName + " WHERE " + cleanValues.stripIndent();
+                sql         =  "SELECT "+ columns +" FROM " + tbName + " WHERE " + cleanValues.stripIndent();
             }
         }
         return sql;
@@ -92,7 +97,9 @@ public class QueryBuilder {
      */
     public String createFindInQuery(String returnColumns, String conditionalColumns, String condition,
             String type) {
-        String sql = "", inCondition = "";
+        String 
+            sql         = "",
+            inCondition = "";
         if(returnColumns == null) {
             if(condition == null || condition.isEmpty() && (conditionalColumns == null ||
                         conditionalColumns.isEmpty())) {
@@ -103,7 +110,7 @@ public class QueryBuilder {
                         condition,
                         type
                 );
-                sql = "SELECT * FROM " + tbName + " WHERE " + inCondition;
+                sql         = "SELECT * FROM " + tbName + " WHERE " + inCondition;
             }
         } else if(returnColumns != null && !returnColumns.isEmpty()) {
             if(condition == null || condition.isEmpty() && (conditionalColumns == null ||
@@ -115,7 +122,7 @@ public class QueryBuilder {
                         condition,
                         type
                 );
-                sql = "SELECT " + returnColumns + " FROM " + tbName + " WHERE " + inCondition;
+                sql         = "SELECT " + returnColumns + " FROM " + tbName + " WHERE " + inCondition;
             }
         }
         return sql;
@@ -128,7 +135,9 @@ public class QueryBuilder {
      * @return la sentencia sql para buscar por patrón
      */
     public String createFindPatternQuery(String pattern, String[] conditions, String type) {
-        String sql = "", patternCondition = "";
+        String 
+            sql              = "",
+            patternCondition = "";
         if(pattern == null || conditions == null) {
             sql = "SELECT * FROM "  + this.tbName;
         } else {
@@ -137,7 +146,7 @@ public class QueryBuilder {
                     conditions,
                     type
             );
-            sql = "SELECT * FROM "  + this.tbName + " WHERE " + patternCondition;
+            sql              = "SELECT * FROM "  + this.tbName + " WHERE " + patternCondition;
         }
         return sql;
     }
@@ -151,13 +160,15 @@ public class QueryBuilder {
      * @param type: and or not
      */
     public String createFindMinMaxQuery(String columns, String condition, String type) {
-        String sql = "", getCondition = "";
-        String minMaxSelection = queryUtil.getMinMaxSelection(columns);
+        String 
+            sql             = "",
+            getCondition    = "",
+            minMaxSelection = queryUtil.getMinMaxSelection(columns);
         if(condition == null || condition.isEmpty()) {
             sql = "SELECT " + minMaxSelection + " FROM " + tbName;
         } else {
             getCondition = queryUtil.getNormalConditional(condition, type);
-            sql = "SELECT " + minMaxSelection + " FROM " + tbName + " WHERE " + getCondition;
+            sql          = "SELECT " + minMaxSelection + " FROM " + tbName + " WHERE " + getCondition;
         }
         return sql;
     }
@@ -168,15 +179,18 @@ public class QueryBuilder {
      */
     public String createInsertRegisterQuery(ModelMethods model) {
         String[] data = queryUtil.getModelType(model.getAllProperties(), false).split(",");
-        String miData = "", cleanData = "";
+        String 
+            miData    = "",
+            cleanData = "";
         for(String d: data) {
             if(!d.equals("''")) {
                 miData += d +",";
             }
         }
-        cleanData = miData.substring(0, miData.length()-1);
-        String column = queryUtil.getModelColumns(model.getAllProperties(), false);
-        String sql = "INSERT INTO " + tbName + " (" + column +") VALUES (" + cleanData + ")";
+        cleanData     = miData.substring(0, miData.length()-1);
+        String 
+            column = queryUtil.getModelColumns(model.getAllProperties(), false),
+            sql    = "INSERT INTO " + tbName + " (" + column +") VALUES (" + cleanData + ")";
         return sql;
     }
     /**
@@ -190,21 +204,22 @@ public class QueryBuilder {
      */
     public String createInnerJoinQuery(ModelMethods primary, ModelMethods foreign, String foreignT,
             String condition, String type) {
-        String refNombres = queryUtil.asignTableNameToColumns(
+        String 
+            refNombres   = queryUtil.asignTableNameToColumns(
                 foreign.getAllProperties(),
                 foreignT
-        );
-        String localNombres = queryUtil.asignTableNameToColumns(
+            ),
+            localNombres = queryUtil.asignTableNameToColumns(
                 primary.getAllProperties(),
                 this.tbName
-        );
-        String pkfk = queryUtil.innerJoinConditional(
+            ),
+            pkfk         = queryUtil.innerJoinConditional(
                 primary.getAllProperties(),
                 foreign.getAllProperties(),
                 this.tbName,
                 foreignT
-        );
-        String sql = "";
+            ),
+            sql          = "";
         if(condition == null || condition.isEmpty()) {
             sql =
                 "SELECT " + localNombres + ", " +
@@ -231,13 +246,15 @@ public class QueryBuilder {
      * @return la sentencia sql para modificar
      */
     public String createModifyRegisterQuery(ModelMethods model, String condicional, String type) {
-        String sql = "", condition = "";
-        String cleanKeyValue = queryUtil.getAsignModelValues(model.getAllProperties());
+        String 
+            sql           = "",
+            condition     = "",
+            cleanKeyValue = queryUtil.getAsignModelValues(model.getAllProperties());
         if(condicional == null || condicional.isEmpty()) {
             sql = "UPDATE " + tbName + " SET " +  cleanKeyValue;
         } else {
             condition = queryUtil.getNormalConditional(condicional, type);
-            sql = "UPDATE " + tbName + " SET " +  cleanKeyValue + " WHERE " + condition;
+            sql       = "UPDATE " + tbName + " SET " +  cleanKeyValue + " WHERE " + condition;
         }
         return sql;
    }
@@ -248,12 +265,14 @@ public class QueryBuilder {
     * @return la sentencia sql
     **/
    public String createDeleteRegisterQuery(String condition, String type) {
-       String sql = "", condicional = "";
+       String 
+           sql         = "",
+           condicional = "";
        if(condition == null || condition.isEmpty()) {
            sql = "DELETE FROM " + tbName;
        } else {
            condicional = queryUtil.getNormalConditional(condition, type);
-           sql = "DELETE FROM " + tbName + " WHERE " + condicional;
+           sql         = "DELETE FROM " + tbName + " WHERE " + condicional;
        }
        return sql;
    }
