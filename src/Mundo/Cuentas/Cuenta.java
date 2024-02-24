@@ -29,7 +29,10 @@ public class Cuenta implements ModelMethods {
     /**
      * foreign key de la cuenta al usuario
      */
-    @TableProperties(miConstraint = "not null. foreign key(user_id_fk) references `user`(id_pk) on delete cascade on update cascade", miType = "int")
+    @TableProperties(
+        miConstraint = "not null. foreign key(user_id_fk) references `user`(id_pk) on delete cascade on update cascade",
+        miType = "int"
+    )
     private int user_id_fk;
     /**
      * password of the account
@@ -57,13 +60,13 @@ public class Cuenta implements ModelMethods {
      * @param nUpdate_at
      */
     public Cuenta(int nId, String nNombre, String nEmail, int nFk, String nPassword, String nCreate_at, String nUpdate_at) {
-        id_pk = nId;
-        nombre = nNombre;
-        email = nEmail;
+        id_pk      = nId;
+        nombre     = nNombre;
+        email      = nEmail;
         user_id_fk = nFk;
-        password = nPassword;
-        create_at = nCreate_at;
-        update_at = nUpdate_at;
+        password   = nPassword;
+        create_at  = nCreate_at;
+        update_at  = nUpdate_at;
     }
     
     /**
@@ -73,10 +76,10 @@ public class Cuenta implements ModelMethods {
      * @param nFk
      */
     public Cuenta(String nNombre, String nEmail, int nFk, String nPassword) {
-        nombre = nNombre;
-        email = nEmail;
+        nombre     = nNombre;
+        email      = nEmail;
         user_id_fk = nFk;
-        password = nPassword;
+        password   = nPassword;
     }
     
     /**
@@ -148,8 +151,8 @@ public class Cuenta implements ModelMethods {
         String date = null;
         if(create_at != null) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
-            LocalDateTime miDate = LocalDateTime.parse(create_at, dtf);  
-            date = dtf.format(miDate).toString();
+            LocalDateTime miDate  = LocalDateTime.parse(create_at, dtf);  
+            date                  = dtf.format(miDate).toString();
         }
         return date;    
     }
@@ -159,8 +162,8 @@ public class Cuenta implements ModelMethods {
      */
     public void setCreate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
-        LocalDateTime miDate = LocalDateTime.now();  
-        create_at = dtf.format(miDate).toString();
+        LocalDateTime miDate  = LocalDateTime.now();  
+        create_at             = dtf.format(miDate).toString();
     }
 
     /**
@@ -170,8 +173,8 @@ public class Cuenta implements ModelMethods {
         String date = null;
         if(update_at != null) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
-            LocalDateTime miDate = LocalDateTime.parse(update_at, dtf);  
-            date = dtf.format(miDate).toString();
+            LocalDateTime miDate  = LocalDateTime.parse(update_at, dtf);  
+            date                  = dtf.format(miDate).toString();
         }
         return date;    
     }
@@ -182,8 +185,8 @@ public class Cuenta implements ModelMethods {
      */
     public void setUpdate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
-        LocalDateTime miDate = LocalDateTime.now();  
-        update_at = dtf.format(miDate).toString();
+        LocalDateTime miDate  = LocalDateTime.now();  
+        update_at             = dtf.format(miDate).toString();
     }
 
 
