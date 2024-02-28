@@ -173,24 +173,43 @@ public class QueryBuilder {
         return sql;
     }
     /**
+     * allows to build the insert statement query without PK and including FK
+     * @param model: model with table creation data 
+     * @return an Array of string with the types and columns for the insert statement
+     */
+    private String[] insertData(ModelMethods model) {
+        String[] 
+            build   = new String[2],
+            types   = queryUtil.getModelType(model.getAllProperties(), true).split(","),
+            columns = queryUtil.getModelColumns(model.getAllProperties(), true).split(",");
+        String 
+            type   = "",
+            column = "";
+        for(int i=1; i<types.length; ++i) {
+            String d = types[i];
+            if(!d.equals("''")) {
+                type += d + ",";
+            }
+        }
+        for(int i=1; i<columns.length; ++i) {
+            column += columns[i] + ",";
+        }
+        build[0] = type;
+        build[1] = column;
+        return build;
+    }
+    /**
      * crea la sentencia sql para el registro de datos
      * @param model: model with the data to insert
      * @return la sentencia sql para registrar
      */
     public String createInsertRegisterQuery(ModelMethods model) {
-        String[] data = queryUtil.getModelType(model.getAllProperties(), false).split(",");
         String 
-            miData    = "",
-            cleanData = "";
-        for(String d: data) {
-            if(!d.equals("''")) {
-                miData += d +",";
-            }
-        }
-        cleanData     = miData.substring(0, miData.length()-1);
-        String 
-            column = queryUtil.getModelColumns(model.getAllProperties(), false),
-            sql    = "INSERT INTO " + tbName + " (" + column +") VALUES (" + cleanData + ")";
+            types     = insertData(model)[0],
+            columns   = insertData(model)[1],
+            cTypes    = types.substring(0, types.length()-1),
+            cColumns  = columns.substring(0, columns.length()-1);
+        String sql    = "INSERT INTO " + tbName + " (" + cColumns +") VALUES (" + cTypes + ")";
         return sql;
     }
     /**
