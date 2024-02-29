@@ -300,6 +300,20 @@ public class QueryExecution {
         return rst;
     }
     /**
+     * executes an insert query
+     * @param stm: statement executor
+     * @param options: column: value insert options
+     * @throws SQLException: exception when trying to execute
+     * @return row count or '0' when nothing is returned
+     */
+    public int executeInsertByColumns(Statement stm, String options)  throws SQLException {
+        String 
+            cOptions = options.trim(),
+            sql = queryBuilder.createInsertByColumnQuery(cOptions);
+        stm = cursor.createStatement();
+        return stm.executeUpdate(sql);
+    }
+    /**
      * executes the insert into select statement
      * @param stm: statement object 
      * @param sourceT: source table

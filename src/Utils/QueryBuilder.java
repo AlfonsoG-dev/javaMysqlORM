@@ -146,7 +146,7 @@ public class QueryBuilder {
                     conditions,
                     type
             );
-            sql              = "SELECT * FROM "  + this.tbName + " WHERE " + patternCondition;
+            sql = "SELECT * FROM "  + this.tbName + " WHERE " + patternCondition;
         }
         return sql;
     }
@@ -177,11 +177,11 @@ public class QueryBuilder {
      * @param model: model with table creation data 
      * @return an Array of string with the types and columns for the insert statement
      */
-    private String[] insertData(ModelMethods model) {
+    private String[] insertData(String modelData) {
         String[] 
             build   = new String[2],
-            types   = queryUtil.getModelType(model.getAllProperties(), true).split(","),
-            columns = queryUtil.getModelColumns(model.getAllProperties(), true).split(",");
+            types   = queryUtil.getModelType(modelData, true).split(","),
+            columns = queryUtil.getModelColumns(modelData, true).split(",");
         String 
             type   = "",
             column = "";
@@ -205,11 +205,26 @@ public class QueryBuilder {
      */
     public String createInsertRegisterQuery(ModelMethods model) {
         String 
-            types     = insertData(model)[0],
-            columns   = insertData(model)[1],
+            types     = insertData(model.getAllProperties())[0],
+            columns   = insertData(model.getAllProperties())[1],
             cTypes    = types.substring(0, types.length()-1),
             cColumns  = columns.substring(0, columns.length()-1);
         String sql    = "INSERT INTO " + tbName + " (" + cColumns +") VALUES (" + cTypes + ")";
+        return sql;
+    }
+    /**
+     * creates an insert statement using string options.
+     * <br> pre: </br> format column_name: value_type, 
+     * @param options: the string options to use
+     * @return an insert statement
+     */
+    public String createInsertByColumnQuery(String options) {
+        String 
+            types    = insertData(options)[0],
+            columns  = insertData(options)[1],
+            cTypes   = types.substring(0, types.length()-1),
+            cColumns = columns.substring(0, columns.length()-1),
+            sql      = "INSERT INTO " + tbName + " (" + cColumns + ") VALUES (" + cTypes + ")";
         return sql;
     }
     /**

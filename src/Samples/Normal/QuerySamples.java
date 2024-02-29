@@ -178,6 +178,22 @@ public class QuerySamples<T> {
         }
     }
 
+    public void sampleInsertByColumns() {
+        // options: column: value
+        // condition: column: value
+        String 
+            options     = "nombre: test, email: test@gmail.com, password: 123asd",
+            condition   = "nombre: test, email: test@gmail.com",
+            type        = "and";
+        boolean isInserted = myDAO.insertByColumns(
+                options,
+                condition,
+                type
+        );
+        if(isInserted) {
+            System.out.println("inserted");
+        }
+    }
     public void sampleInsertIntoSelection() {
         String 
             sourceTable    = "source_table_name",

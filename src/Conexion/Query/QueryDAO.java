@@ -643,6 +643,38 @@ public class QueryDAO<T> {
         }
         return isInserted;
     }
+    public boolean insertByColumns(String options, String condition, String type) {
+        Statement stm = null;
+        boolean isInserted = false;
+        try {
+            if(options == null || options.isEmpty()) {
+                throw new Exception("trying to use an empty insert option");
+            }
+            T searched = findByColumnName(condition, type);
+            if(searched == null) {
+                int rst = queryExecution.executeInsertByColumns(stm, options);
+                if(rst > 0) {
+                    System.out.println(options);
+                    isInserted = true;
+                }
+            } else {
+                isInserted = false;
+                throw new Exception("trying to insert an already existing record");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        return isInserted;
+    }
     /**
      * copy the columns from one table to another.
      * <br> pre: </br> you can copy all o some columns of the table
