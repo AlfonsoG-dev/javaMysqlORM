@@ -176,7 +176,7 @@ public class QueryExecution {
             String type) throws SQLException {
         String 
             sql         = queryBuilder.createFindQuery(condition, type),
-            val         = queryUtil.getOptionValue(condition);
+            val         = queryUtil.getValueOfCondition(condition);
         pstm            = cursor.prepareStatement(sql);
         String[] fields = val.split(",");
         for(int i=0; i<fields.length; ++i) {

@@ -63,15 +63,16 @@ public class MigrationBuilder extends QueryBuilder {
                 typeColumn = t.replace(".", ",");
             }
         }
-        String values = "(";
+        StringBuffer values = new StringBuffer();
+        values.append("(");
         for(int i = 0; i < columns.length; ++i) {
             if(types[i].contains(".")) {
                 types[i] = typeColumn;
             }
             String clearTypes = types[i].replace("'", "");
-            values += columns[i] + " " + clearTypes +", ";
+            values.append(columns[i] + " " + clearTypes +", ");
         }
-        String clearValues = queryUtil.cleanValues(values, 2)+ ")";
+        String clearValues = queryUtil.cleanValues(values.toString(), 2)+ ")";
         String sql = "";
         // n = normal
         // t = temporary
@@ -99,11 +100,11 @@ public class MigrationBuilder extends QueryBuilder {
      */
     public String createAddColumnQuery(String modelProperties, String refModelProperties, String refTable,
             boolean includePKFK , ResultSet rst) throws SQLException {
-        String 
-            sql        = "",
-            addColumns = queryUtil.compareColumnName(modelProperties, rst).get("agregar");
-        if(addColumns != "") {
-            String columns = queryUtil.getModelColumns(addColumns, includePKFK);
+        StringBuffer 
+            addColumns = queryUtil.compareColumnName(modelProperties, rst).get("agregar"),
+            sql        = new StringBuffer();
+        if(!addColumns.isEmpty()) {
+            String columns = queryUtil.getModelColumns(addColumns.toString(), includePKFK);
             String[] 
                 cleanColumns = queryUtil.cleanValues(columns, 1).split(","),
                 modelTypes   = queryUtil.getModelType(modelProperties, includePKFK).split(","),
@@ -117,12 +118,16 @@ public class MigrationBuilder extends QueryBuilder {
                 if(clearTypes.contains(".")) {
                     clearTypes = clearTypes.split("\\.")[0];
                 }
-                sql += "ADD COLUMN " + k + " " + clearTypes + " AFTER " + clearModelColumns + ", ";
+                sql.append(
+                        "ADD COLUMN " + k + " " + clearTypes + " AFTER " + clearModelColumns + ", "
+                );
                 if(includePKFK == true) {
-                    sql += createAddConstraintQuery(
-                            addColumns,
-                            refModelProperties,
-                            refTable
+                    sql.append(
+                            createAddConstraintQuery(
+                                addColumns.toString(),
+                                refModelProperties,
+                                refTable
+                            )
                     );
                 }
             }
@@ -131,11 +136,11 @@ public class MigrationBuilder extends QueryBuilder {
         String 
             clearSql = "",
             res      = "";
-        if(sql != "" && sql != null) {
+        if(!sql.isEmpty()) {
             if(includePKFK == true) {
-                clearSql = queryUtil.cleanValues(sql, 2);
+                clearSql = queryUtil.cleanValues(sql.toString(), 2);
             } else {
-                clearSql = queryUtil.cleanValues(sql, 0);
+                clearSql = queryUtil.cleanValues(sql.toString(), 0);
             }
             res = createAlterTableQuery(clearSql);
         }
@@ -149,21 +154,23 @@ public class MigrationBuilder extends QueryBuilder {
      * @return la sentencia sql para renombrar columnas
      */
     public String createRenameColumnQuery(String modelProperties, ResultSet rst) throws SQLException {
-        String 
-            sql           = "",
-            renameColumns = queryUtil.compareColumnName(modelProperties, rst).get("rename");
-        if(renameColumns != "" && renameColumns != null) {
-            String[] keys = renameColumns.split(", ");
+        StringBuffer 
+            renameColumns = queryUtil.compareColumnName(modelProperties, rst).get("rename"),
+            sql           = new StringBuffer();
+        if(!renameColumns.isEmpty()) {
+            String[] keys = renameColumns.toString().split(", ");
             for(String co: keys) {
                 String[] values = co.split(":");
-                sql += "RENAME COLUMN " + values[1] + " TO " + values[0] +  ", ";
+                sql.append(
+                        "RENAME COLUMN " + values[1] + " TO " + values[0] +  ", "
+                );
             }
         }
         String 
             clearSql = "",
             res      = "";
-        if(sql != "" && sql != null) {
-            clearSql = queryUtil.cleanValues(sql, 2);
+        if(!sql.isEmpty()) {
+            clearSql = queryUtil.cleanValues(sql.toString(), 2);
             res      = createAlterTableQuery(clearSql);
         }
         return res;
@@ -174,24 +181,26 @@ public class MigrationBuilder extends QueryBuilder {
      */
     public String createChangeTypeQuery(String modelProperties, boolean includePKFK,ResultSet rst) 
             throws SQLException {
-        String 
-            sql = "",
-            renameTypes = queryUtil.compareColumnType(modelProperties, rst).get("rename");
-        if(renameTypes != "" && renameTypes != null) {
+            StringBuffer 
+                renameTypes = queryUtil.compareColumnType(modelProperties, rst).get("rename"),
+                sql = new StringBuffer();
+        if(!renameTypes.isEmpty()) {
             String[] 
-                types        = renameTypes.split(", "),
+                types        = renameTypes.toString().split(", "),
                 modelColumns = queryUtil.getModelColumns(modelProperties, includePKFK).split(",");
             for(String t: types) {
                 String type = t.split(":")[0];
                 int index   = Integer.parseInt(t.split(":")[1]);
-                sql += "MODIFY COLUMN " + modelColumns[index] + " " + type + ", ";
+                sql.append(
+                        "MODIFY COLUMN " + modelColumns[index] + " " + type + ", "
+                );
             }
         }
         String 
             clearSql = "",
             res      = "";
-        if(sql != "" && sql != null) {
-            clearSql = queryUtil.cleanValues(sql, 2);
+        if(!sql.isEmpty()) {
+            clearSql = queryUtil.cleanValues(sql.toString(), 2);
             res      = createAlterTableQuery(clearSql);
         }
         return res;
@@ -205,25 +214,28 @@ public class MigrationBuilder extends QueryBuilder {
      */
     public String createDeleteColumnQuery(String modelProperties, boolean includePKFK, ResultSet rst)
             throws SQLException {
-        String sql = "";
-        String deleteColumns = queryUtil.compareColumnName(modelProperties, rst).get("eliminar");
-        if(deleteColumns != "" && deleteColumns != null) {
-            String[] columns = deleteColumns.split(", ");
+        StringBuffer 
+            deleteColumns = queryUtil.compareColumnName(modelProperties, rst).get("eliminar"),
+            sql = new StringBuffer();
+        if(!deleteColumns.isEmpty()) {
+            String[] columns = deleteColumns.toString().split(", ");
             for(String k: columns) {
                 String[] datos = k.split(":");
                 if(datos[0].contains("fk")) {
-                    sql += createDeleteConstraintQuery(
-                            deleteColumns,
-                            includePKFK) + "DROP COLUMN " + datos[0] + ", ";
+                    sql.append(
+                            createDeleteConstraintQuery(
+                            deleteColumns.toString(),
+                            includePKFK) + "DROP COLUMN " + datos[0] + ", "
+                    );
                 } else {
-                    sql += "DROP COLUMN "  + datos[0] + ", ";
+                    sql.append("DROP COLUMN "  + datos[0] + ", ");
                 }
             }
         }
         String clearSql = "";
         String res = "";
-        if(sql != "" && sql != null) {
-            clearSql = queryUtil.cleanValues(sql, 2);
+        if(!sql.isEmpty()) {
+            clearSql = queryUtil.cleanValues(sql.toString(), 2);
             res = createAlterTableQuery(clearSql);
         }
         return res;
@@ -239,23 +251,27 @@ public class MigrationBuilder extends QueryBuilder {
      */
     public String createAddConstraintQuery(String addColumns, String refModelProperties, String refTable)
             throws SQLException {
-        String 
-            sql          = "",
-            refpk        = queryUtil.getPkFk(refModelProperties).get("pk");
+        String refpk     = queryUtil.getPkFk(refModelProperties).get("pk");
+        StringBuffer sql = new StringBuffer();
         String[] columns = addColumns.split(",");
         for(String k: columns) {
             if(k.contains("pk") == true) {
-                sql += "ADD CONSTRAINT " + k + " PRIMARY KEY(" + k + "), ";
+                sql.append(
+                        "ADD CONSTRAINT " + k + " PRIMARY KEY(" + k + "), "
+                );
             }
             if(k.contains("fk") == true) {
-                sql +="ADD CONSTRAINT " + k + " FOREIGN KEY(" + k +") REFERENCES " + refTable + "(" + refpk + ") ON DELETE CASCADE ON UPDATE CASCADE, ";
+                sql.append(
+                        "ADD CONSTRAINT " + k + " FOREIGN KEY(" + k +") REFERENCES " +
+                        refTable + "(" + refpk + ") ON DELETE CASCADE ON UPDATE CASCADE, "
+                );
             }
         }
         String 
             clearSql = "",
             res      = "";
-        if(sql != "" && sql != null) {
-            clearSql = queryUtil.cleanValues(sql, 0);
+        if(!sql.isEmpty()) {
+            clearSql = queryUtil.cleanValues(sql.toString(), 0);
             res      = clearSql;
         }
         return res;
@@ -268,23 +284,23 @@ public class MigrationBuilder extends QueryBuilder {
      * @return la sentencia sql para eliminar el constraint de la pk o fk
      */
     public String createDeleteConstraintQuery(String deleteColumns, boolean includePKFK) throws SQLException {
-        String sql = "";
+        StringBuffer sql = new StringBuffer();
          if(deleteColumns != "" && deleteColumns != null) {
              String k1   = deleteColumns.split(", ")[0];
              String[] k2 = k1.split(":");
              if(k2[0].contains("pk")) {
-                 sql += "DROP PRIMARY KEY , ";
+                 sql.append("DROP PRIMARY KEY , ");
              }
              if(k2[0].contains("fk")) {
-                 sql += "DROP FOREIGN KEY " + k2[0] + ", ";
+                 sql.append("DROP FOREIGN KEY " + k2[0] + ", ");
 
              }
          }
         String 
             clearSql = "",
             res      = "";
-        if(sql != "" && sql != null) {
-            clearSql = queryUtil.cleanValues(sql, 0);
+        if(!sql.isEmpty()) {
+            clearSql = queryUtil.cleanValues(sql.toString(), 0);
             res      = clearSql;
         }
         return res;

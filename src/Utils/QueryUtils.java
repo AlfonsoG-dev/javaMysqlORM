@@ -12,15 +12,16 @@ import java.util.HashMap;
 public record QueryUtils() {
     /**
      * reduce el string por un valor especifico
-     * @param condition: los valores a limpiar
-     * @param val: valor especifico
+     * @param value: los valores a limpiar
+     * @param spaces: valor especifico
      * @return los valores limpios
     */
-    public String cleanValues(String condition, int val) {
-        if(condition.length() > 0) {
-            return condition.substring(0, condition.length()-val);
+    public String cleanValues(String value, int spaces) {
+        StringBuffer buffer = new StringBuffer(value);
+        if(buffer.length() > 0) {
+            return buffer.substring(0, buffer.length()-spaces);
         } else {
-            return condition;
+            return buffer.toString();
         }
     }
     /**
@@ -40,29 +41,29 @@ public record QueryUtils() {
      */
     public String getModelColumns(String modelProperties, boolean includePKFK) {
         String[] data = modelProperties.split("\n");
-        String 
-            columName = "",
-            cColumName = "";
-        for(int i = 0; i < data.length; i++) {
-            String myColumn = data[i].split(":")[0].stripIndent();
-            if(myColumn == null || myColumn.isEmpty()) {
-                myColumn = "";
+        StringBuffer
+            colName = new StringBuffer(),
+            modelCol = new StringBuffer();
+        for(int i=0; i<data.length; ++i) {
+            String col = data[i].split(":")[0].trim();
+            if(col == null || col.isEmpty()) {
+                col = "";
             } else {
-                columName += myColumn + ", ";
+                colName.append(col + ", ");
             }
         }
-        String[] columns = columName.split(",");
+        String[] cols = colName.toString().split(",");
         if(includePKFK == false) {
-            for(int i = 1; i < columns.length; i++) {
-                cColumName += columns[i].stripIndent() + ",";
+            for(int i=1; i<cols.length; ++i) {
+                modelCol.append(cols[i].stripIndent() + ",");
             }
         }
         else {
-            for(int i = 0; i < columns.length; i++) {
-                cColumName += columns[i].stripIndent() + ",";
+            for(int i=0; i<cols.length; ++i) {
+                modelCol.append(cols[i].stripIndent() + ",");
             }
         }
-        return cleanValues(cColumName, 2);
+        return cleanValues(modelCol.toString(), 2);
     }
     /**
      * obtener las columnas de la tabla
@@ -71,49 +72,49 @@ public record QueryUtils() {
      * @return la lista de columnas de la tabla
      */
     public HashMap<String, ArrayList<String>> getTableData(ResultSet rst) throws SQLException {
-        HashMap<String, ArrayList<String>> datosTable = new HashMap<>();
+        HashMap<String, ArrayList<String>> tableData = new HashMap<>();
         ArrayList<String>
-            columns = new ArrayList<>(),
+            cols    = new ArrayList<>(),
             types   = new ArrayList<>();
         while(rst.next()) {
             String[] data = rst.getString(1).split("\n");
             for(String k: data) {
-                columns.add(k);
+                cols.add(k);
             }
             String[] 
-                mTypes     = rst.getString(2).split("\n"),
-                nullColumn = rst.getString(3).split("\n"),
-                keyColumn  = rst.getString(4).split("\n"),
-                extraValue = rst.getString(6).split("\n");
-            for(int k = 0; k < mTypes.length; ++k) {
-                String type = "";
-                if(mTypes[k] != null) {
-                    type += mTypes[k];
+                tTypes     = rst.getString(2).split("\n"),
+                tNull      = rst.getString(3).split("\n"),
+                tKeyCol    = rst.getString(4).split("\n"),
+                tExtra     = rst.getString(6).split("\n");
+            for(int k=0; k<tTypes.length; ++k) {
+                StringBuffer type = new StringBuffer();
+                if(tTypes[k] != null) {
+                    type .append(tTypes[k]);
                 }
-                if(nullColumn[k] != null && nullColumn[k].contains("NO")) {
-                    type += " not null";
+                if(tNull[k] != null && tNull[k].contains("NO")) {
+                    type.append(" not null");
                 }
-                if(keyColumn[k] != null) {
-                    if(keyColumn[k].contains("PRI")) {
-                        type += " unique primary key";
+                if(tKeyCol[k] != null) {
+                    if(tKeyCol[k].contains("PRI")) {
+                        type.append(" unique primary key");
                     }
-                    if(keyColumn[k].contains("MUL")) {
-                        type += " foreign key";
+                    if(tKeyCol[k].contains("MUL")) {
+                        type.append(" foreign key");
                     }
-                    if(keyColumn[k].contains("UNI")) {
-                        type += " unique";
+                    if(tKeyCol[k].contains("UNI")) {
+                        type.append(" unique");
                     }
                 }
-                if(extraValue[k] != null) {
-                    type += " " + extraValue[k];
+                if(tExtra[k] != null) {
+                    type .append(" " + tExtra[k]);
                 }
-                types.add(type.trim());
+                types.add(type.toString().trim());
             }
 
         }
-        datosTable.put("columns", columns);
-        datosTable.put("tipos", types);
-        return datosTable;
+        tableData.put("columns", cols);
+        tableData.put("tipos", types);
+        return tableData;
     }
     /**
      * obtener el tipo por cada columna del modelo
@@ -123,24 +124,24 @@ public record QueryUtils() {
      */
     public String getModelType(String modelProperties, boolean includePKFK) {
         String[] data   = modelProperties.split("\n");
-        String userData = "";
+        StringBuffer types = new StringBuffer();
         if(includePKFK == false) {
             for(int i = 1; i < data.length; i++) {
-                String myType = data[i].split(":")[1].trim();
-                if(myType == null || myType.isEmpty()) {
-                    myType = "";
+                String type = data[i].split(":")[1].trim();
+                if(type == null || type.isEmpty()) {
+                    type = "";
                 } else {
-                    userData += "'" + myType + "'" + ",";
+                    types.append("'" + type + "'" + ",");
                 }
             }
         }
         else {
             for(int i = 0; i < data.length; i++) {
                 String myType = data[i].split(":")[1].stripIndent();
-                userData += "'" + myType + "'" + ",";
+                types.append("'" + myType + "'" + ",");
             }
         }
-        return cleanValues(userData, 1);
+        return cleanValues(types.toString(), 1);
     }
     /**
      * buscar el typo de dato de una columna
@@ -149,27 +150,27 @@ public record QueryUtils() {
      * @return el indice o index del typo de dato
      */
     public int searchColumnType(String modelProperties, String column) {
-        String[] modelColumns = getModelColumns(modelProperties, true).split(",");
+        String[] modelCols = getModelColumns(modelProperties, true).split(",");
         int res = 0;
-        for(int i=0; i<modelColumns.length; ++i) {
-            if(modelColumns[i].contains(column)) {
+        for(int i=0; i<modelCols.length; ++i) {
+            if(modelCols[i].contains(column)) {
                 res = i;
             }
         }
         return res;
     }
     /**
-     * combina las condition & valores en 1 solo String
+     * get the value of -> name: value
      * @param condition: los valores a limpiar
      * @return los valores limpios y combinados
      */
-    public String getOptionValue(String condition) {
-        String[] div = condition.split(", ");
-        String values = "";
-        for(String val: div) {
-            values += val.split(":")[1] +",";
+    public String getValueOfCondition(String condition) {
+        String[] properties = condition.split(", ");
+        StringBuffer val = new StringBuffer();
+        for(String p: properties) {
+            val.append(p.split(":")[1].trim() +",");
         }
-        return cleanValues(values, 1);
+        return cleanValues(val.toString(), 1);
     }
     /**
      * combine min and max operators for each column after ':' in condition
@@ -177,19 +178,19 @@ public record QueryUtils() {
      * @return min(column) as min_column, max(column) as max_column
      */
     public String getMinMaxSelection(String columns) {
-        String build = "";
-        String[] values = columns.split(",");
-        for(String v: values) {
+        StringBuffer build = new StringBuffer();
+        String[] properties = columns.split(",");
+        for(String v: properties) {
             String 
                 minMax = v.split(":")[0].trim(),
                 value  = v.split(":")[1].trim();
             if(minMax.equals("min")) {
-                build += "min(" + value +") as min_" + value + ", ";
+                build.append( "min(" + value +") as min_" + value + ", ");
             } else if(minMax.equals("max")) {
-                build += "max(" + value +") as max_" + value + ", ";
+                build.append("max(" + value +") as max_" + value + ", ");
             }
         }
-        return cleanValues(build, 2);
+        return cleanValues(build.toString(), 2);
     }
     /**
      * clean the given {@link String} using the logic type
@@ -197,16 +198,15 @@ public record QueryUtils() {
      * @param value: given string to clean
      * @return clean string
      */
-    private String cleanByLogicType(String type, String value) {
-        String cValue = "";
+    public String cleanByLogicType(String type, String value) {
         if(type.equals("and")) {
-            cValue = cleanValues(value, 4);
+            value = cleanValues(value, 4);
         } else if(type.equals("not")) {
-            cValue = cleanValues(value, 4);
+            value = cleanValues(value, 4);
         } else if(type.equals("or")) {
-            cValue = cleanValues(value, 3);
+            value = cleanValues(value, 3);
         }
-        return cValue;
+        return value;
     }
     /**
      * combina la llave con el valor para el condicional sql
@@ -216,16 +216,16 @@ public record QueryUtils() {
      * @return las columnas asignadas el valor
      */
     public String getPrepareConditional(String condition, String type) {
-        String build = "";
-        String[] div = condition.split(",");
-        for(String val: div) {
+        StringBuffer build = new StringBuffer();
+        String[] properties = condition.split(",");
+        for(String p: properties) {
             if(type.toLowerCase().equals("not")) {
-                build += "not " + val.split(":")[0] + "=" + "?" + " and";
+                build.append("not " + p.split(":")[0] + "=" + "?" + " and");
             } else {
-                build += val.split(":")[0] + "=" + "?" + " " + type;
+                build.append(p.split(":")[0] + "=" + "?" + " " + type);
             }
         }
-        return cleanByLogicType(type, build);
+        return cleanByLogicType(type, build.toString());
     }
     /**
      * combina la llave con el valor para el condicional sql
@@ -233,22 +233,26 @@ public record QueryUtils() {
      * @return las columnas asignadas el valor
      */
     public String getNormalConditional(String condition, String type) {
-        String build = "";
-        String[] div = condition.split(",");
-        for(String val: div) {
+        StringBuffer build = new StringBuffer();
+        String[] properties = condition.split(",");
+        for(String p: properties) {
             if(type.toLowerCase().equals("not")) {
-                build += "not " + val.split(":")[0] +
-                    "="+ "'"+
-                    val.split(":")[1].stripIndent()+
-                    "'" + " and";
+                build.append(
+                        "not " + p.split(":")[0] +
+                        "="+ "'"+
+                        p.split(":")[1].stripIndent()+
+                        "'" + " and"
+                );
             } else {
-                build += val.split(":")[0] +
-                    "="+ "'"+
-                    val.split(":")[1].stripIndent()+
-                    "'" + " " + type;
+                build.append(
+                        p.split(":")[0] +
+                        "="+ "'"+
+                        p.split(":")[1].stripIndent()+
+                        "'" + " " + type
+                );
             }
         }
-        return cleanByLogicType(type, build);
+        return cleanByLogicType(type, build.toString());
     }
     /**
      * combina la llave con el valor para el condicional sql tipo in
@@ -258,34 +262,34 @@ public record QueryUtils() {
      * @return el condicional combinado tipo in
      */
     public String getInConditional(String columns, String condition, String type) {
-        String 
-            inCondition = "",
-            build       = "";
-        String[] myColumns = columns.split(",");
+        StringBuffer 
+            inCondition = new StringBuffer(),
+            build       = new StringBuffer();
+        String[] cols = columns.split(",");
         if(condition.toLowerCase().startsWith("select")) {
-            for(String c: myColumns) {
+            for(String c: cols) {
                 if(type.toLowerCase().equals("not")) {
-                    build += c + " not in (" + condition + ")" + " " + "and";
+                    build.append(c + " not in (" + condition + ")" + " " + "and");
                 } else {
-                    build += c + " in (" + condition + ")" + " " + type;
+                    build.append(c + " in (" + condition + ")" + " " + type);
                 }
             }
         } else {
-            String[] partition = condition.split(",");
-            inCondition = "(";
-            for(String p: partition) {
-                inCondition += "'" + p.trim() + "', ";
+            String[] properties = condition.split(",");
+            inCondition.append("(");
+            for(String p: properties) {
+                inCondition.append("'" + p.trim() + "', ");
             }
-            String cCondition = cleanValues(inCondition, 3);
-            for(String c: myColumns) {
+            String cInCondition = cleanValues(inCondition.toString(), 3);
+            for(String c: cols) {
                 if(type.toLowerCase().equals("not")) {
-                    build += c + " not in " + cCondition + "') " + "and";
+                    build.append(c + " not in " + cInCondition + "') " + "and");
                 } else {
-                    build += c + " in " + cCondition + "') " + type;
+                    build.append(c + " in " + cInCondition + "') " + type);
                 }
             }
         }
-        return cleanByLogicType(type, build);
+        return cleanByLogicType(type, build.toString());
     }
     /**
      * asigna los valores a las columnas del modelo separados por ","
@@ -294,14 +298,16 @@ public record QueryUtils() {
      */
     public String getAsignModelValues(String modelProperties) {
         String[] data = modelProperties.split("\n");
-        String keyValue = "";
-        for(int i = 1; i < data.length; i++) {
+        StringBuffer assing = new StringBuffer();
+        for(int i=1; i<data.length; ++i) {
             String 
                 key   = data[i].split(":")[0],
                 value = data[i].split(":")[1];
-            keyValue += key.stripIndent() +"="+ "'"+value.stripIndent()+"'"+ ", ";
+            assing.append(
+                    key.stripIndent() +"="+ "'"+value.stripIndent()+"'"+ ", "
+            );
         }
-        return cleanValues(keyValue, 2);
+        return cleanValues(assing.toString(), 2);
     }
     /**
      * asignar el nombre de la tabla a las columnas del modelo
@@ -311,14 +317,16 @@ public record QueryUtils() {
      */
     public String asignTableNameToColumns(String modelProperties, String tbName) {
         String[] data = modelProperties.split("\n");
-        String build = "";
-        for(String l: data) {
-            String key = l.split(":")[0];
+        StringBuffer build = new StringBuffer();
+        for(String d: data) {
+            String key = d.split(":")[0];
             if(key.contains("pk") == false && key.contains("fk") == false) {
-                build += tbName + "." + key + " as " + tbName +"_"+ key +", ";
+                build.append(
+                        tbName + "." + key + " as " + tbName +"_"+ key +", "
+                );
             }
         }
-        return cleanValues(build, 2);
+        return cleanValues(build.toString(), 2);
     }
     /**
      * genera el condicional de la búsqueda por patrón
@@ -328,15 +336,15 @@ public record QueryUtils() {
      * @return la condición del patrón
      */
     public String getPatternCondition(String pattern, String[] condition, String type) {
-        String build = "";
+        StringBuffer build = new StringBuffer();
         for(String k: condition) {
             if(type.toLowerCase().equals("not")) {
-                build += k + " not like " + "'" + pattern + "'" + " and";
+                build.append(k + " not like " + "'" + pattern + "'" + " and");
             } else {
-                build += k + " like " + "'" + pattern + "'" + " " + type;
+                build.append(k + " like " + "'" + pattern + "'" + " " + type);
             }
         }
-        return cleanByLogicType(type, build);
+        return cleanByLogicType(type, build.toString());
     }
     /**
      * genera el condicional para innerjoin utilizando la fk del modelo de referencia y la pk del modelo primario
@@ -347,13 +355,16 @@ public record QueryUtils() {
      * @param ref_tb: tabla de referencia
      * @return el condicional del inner join
      */
-    public String innerJoinConditional(String localProperties, String refProperties, String localTable, String refTable) {
+    public String innerJoinConditional(String localProperties, String refProperties, String localTable,
+            String refTable) {
+        StringBuffer build = new StringBuffer();
         String 
             pk    = getPkFk(refProperties).get("pk"),
-            fk    = getPkFk(localProperties).get("fk"),
-            build = "";
-        build += localTable + "." + fk +"="+ refTable +"."+ pk;
-        return build;
+            fk    = getPkFk(localProperties).get("fk");
+        if(!pk.isEmpty() || !fk.isEmpty()) {
+            build.append(localTable + "." + fk +"="+ refTable +"."+ pk);
+        }
+        return build.toString();
     }
     /**
      * obtiene la pk o fk de la lista de columnas del modelo
@@ -363,8 +374,8 @@ public record QueryUtils() {
     public HashMap<String, String> getPkFk(String modelProperties) {
         HashMap<String, String> pkfk = new HashMap<String, String>();
         String[] data = modelProperties.split("\n");
-        for(int i=0; i<data.length; ++i) {
-            String key = data[i].split(":")[0];
+        for(String d: data) {
+            String key = d.split(":")[0];
             if(key.contains("id_pk")) {
                 pkfk.put("pk", key);
             }
@@ -381,8 +392,8 @@ public record QueryUtils() {
      */
     public ArrayList<String> auxiliarmodelProperties(String modelProperties) {
         ArrayList<String> columns =  new ArrayList<>();
-        String[] modelColumns = modelProperties.split(",");
-        for(String k: modelColumns) {
+        String[] modelCols = modelProperties.split(",");
+        for(String k: modelCols) {
             columns.add(k);
         }
         return columns;
@@ -393,40 +404,46 @@ public record QueryUtils() {
      * @param rst: resultado de la ejecución de la sentencia sql
      * @return retorna las columnas a eliminar, agregar o renombrar
      */
-    public HashMap<String, String> compareColumnName(String modelProperties, ResultSet rst) throws SQLException {
-        HashMap<String, String> resultado = new HashMap<>();
-        String localProperties = getModelColumns(modelProperties, true);
+    public HashMap<String, StringBuffer> compareColumnName(String modelProperties, ResultSet rst)
+            throws SQLException {
+        HashMap<String, StringBuffer> comparations = new HashMap<>();
         ArrayList<String> 
-            modelColumns = auxiliarmodelProperties(localProperties),
-            tableColumns = getTableData(rst).get("columns");
-        if(modelColumns.size() == tableColumns.size()) {
-            String rename = "";
-            for(int i=0; i<modelColumns.size(); ++i) {
-                if(tableColumns.get(i).equals(modelColumns.get(i)) == false) {
-                    rename += modelColumns.get(i) + ":" + tableColumns.get(i) + ", ";
+            modelCols = auxiliarmodelProperties(
+                    getModelColumns(modelProperties, true)
+            ),
+            tableCols = getTableData(rst).get("columns");
+        if(modelCols.size() == tableCols.size()) {
+            StringBuffer rename = new StringBuffer();
+            for(int i=0; i<modelCols.size(); ++i) {
+                if(tableCols.get(i).equals(modelCols.get(i)) == false) {
+                    rename.append(
+                            modelCols.get(i) + ":" + tableCols.get(i) + ", "
+                    );
                 }
             }
-            resultado.put("rename", rename);
+            comparations.put("rename", rename);
         }
-        else if(modelColumns.size() > tableColumns.size()) {
-            String agregar = "";
-            for(int i=0; i<modelColumns.size(); i++) {
-                if(!tableColumns.contains(modelColumns.get(i))) {
-                    agregar += modelColumns.get(i) + ", ";
+        else if(modelCols.size() > tableCols.size()) {
+            StringBuffer agregar = new StringBuffer();
+            for(int i=0; i<modelCols.size(); i++) {
+                if(!tableCols.contains(modelCols.get(i))) {
+                    agregar.append(modelCols.get(i) + ", ");
                 }
             }
-            resultado.put("agregar", agregar);
+            comparations.put("agregar", agregar);
         }
-        else if(tableColumns.size() > modelColumns.size()) {
-            String eliminar = "";
-            for(int i=0; i<tableColumns.size(); i++) {
-                if(modelColumns.contains(tableColumns.get(i)) == false) {
-                    eliminar += tableColumns.get(i) + ":" + i + ", ";
+        else if(tableCols.size() > modelCols.size()) {
+            StringBuffer eliminar = new StringBuffer();
+            for(int i=0; i<tableCols.size(); i++) {
+                if(modelCols.contains(tableCols.get(i)) == false) {
+                    eliminar.append(
+                            tableCols.get(i) + ":" + i + ", "
+                    );
                 }
             }
-            resultado.put("eliminar", eliminar);
+            comparations.put("eliminar", eliminar);
         }
-        return resultado;
+        return comparations;
     }
     /**
      * compara los tipos de datos del modelo con la tabla y regresa el distinto
@@ -435,18 +452,20 @@ public record QueryUtils() {
      * @throws SQLException: error de la consulta sql
      * @return las columnas con el tipo de dato a cambiar
      */
-    public HashMap<String, String> compareColumnType(String modelProperties, ResultSet rst) throws SQLException {
-        String localTypes = getModelType(modelProperties, true);
-        HashMap<String, String> resultado = new HashMap<>();
+    public HashMap<String, StringBuffer> compareColumnType(String modelProperties, ResultSet rst)
+            throws SQLException {
+        HashMap<String, StringBuffer> resultado = new HashMap<>();
         ArrayList<String> 
-            tableTypes = getTableData(rst).get("tipos"),
-            modelTypes = auxiliarmodelProperties(localTypes);
+            modelTypes = auxiliarmodelProperties(
+                    getModelType(modelProperties, true)
+            ),
+            tableTypes = getTableData(rst).get("tipos");
         if(modelTypes.size() == tableTypes.size()) {
-            String rename = "";
+            StringBuffer rename = new StringBuffer();
             for(int i=0; i<modelTypes.size(); ++i) {
                 String cleanTypes = modelTypes.get(i).replace("'", "");
                 if(tableTypes.contains(cleanTypes) == false) {
-                    rename += cleanTypes + ":" + i + ", ";
+                    rename.append(cleanTypes + ":" + i + ", ");
                 }
             }
             resultado.put("rename", rename);

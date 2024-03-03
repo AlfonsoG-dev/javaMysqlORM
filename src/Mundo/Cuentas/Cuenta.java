@@ -196,26 +196,29 @@ public class Cuenta implements ModelMethods {
      */
     @Override
     public String getAllProperties() {
-        String all = "id_pk: " + this.getId_pk() + "\n";
+        StringBuffer all = new StringBuffer();
+        if(this.getId_pk() > 0) {
+            all.append("id_pk: " + this.getId_pk() + "\n");
+        }
         if(this.getNombre() != null && this.getNombre() != "" ) {
-            all +="nombre: " + this.getNombre() + "\n";
+            all.append("nombre: " + this.getNombre() + "\n");
         }
         if(this.getEmail() != null && this.getEmail().isEmpty() == false){
-            all +="email: " + this.getEmail() + "\n";
+            all.append("email: " + this.getEmail() + "\n");
         }
         if(this.getUser_id_fk() != 0){
-            all +="user_id_fk: " + this.getUser_id_fk() + "\n";
+            all.append("user_id_fk: " + this.getUser_id_fk() + "\n");
         }
         if(this.getPassword() != null && this.getPassword().isEmpty() == false){
-            all +="password: " + this.getPassword() + "\n";
+            all.append("password: " + this.getPassword() + "\n");
         }
         if(this.getCreate_at() != null) {
-            all += "create_at: " + this.getCreate_at() + "\n";
+            all.append( "create_at: " + this.getCreate_at() + "\n");
         }
         if(this.getUpdate_at() != null) {
-            all += "update_at: " + this.getUpdate_at();
+            all.append( "update_at: " + this.getUpdate_at());
         }
-        return all;
+        return all.toString();
     }
 
     /**

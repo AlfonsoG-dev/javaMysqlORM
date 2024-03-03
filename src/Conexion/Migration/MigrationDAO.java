@@ -231,7 +231,8 @@ public class MigrationDAO {
      * @param model: modelo con las columnas a agregar
      * @return true si se agrega de lo contrario false
      */
-    public boolean addColumn(ModelMethods localModel, ModelMethods refModel, String refTable, boolean includePKFK) {
+    public boolean addColumn(ModelMethods localModel, ModelMethods refModel, String refTable,
+            boolean includePKFK) {
         Statement stm     = null;
         ResultSet rst     = null;
         boolean isAdded = false;

@@ -37,7 +37,7 @@ public class QueryBuilder {
             sql = "SELECT *" + " FROM "+ tbName;
         } else {
             cleanValues = queryUtil.getPrepareConditional(condition, type);
-            sql         = "SELECT *" + " FROM "+ tbName+ " WHERE " + cleanValues;
+            sql = "SELECT *" + " FROM "+ tbName+ " WHERE " + cleanValues;
         }
         return sql;
     }
@@ -55,7 +55,7 @@ public class QueryBuilder {
             sql = "SELECT *" +" FROM " + tbName;
         } else {
             cleanValues = queryUtil.getNormalConditional(condition, type);
-            sql         = "SELECT *" +" FROM " + tbName + " WHERE " + cleanValues.stripIndent();
+            sql = "SELECT *" +" FROM " + tbName + " WHERE " + cleanValues.stripIndent();
         }
         return sql;
     }
@@ -72,18 +72,18 @@ public class QueryBuilder {
             cleanValues = "";
         if(columns == null || columns.isEmpty() == true) {
             if(condition == null || condition.isEmpty()) {
-                sql =  "SELECT *" +" FROM " + tbName;
+                sql = "SELECT *" +" FROM " + tbName;
             } else {
                 cleanValues = queryUtil.getNormalConditional(condition, type);
-                sql         =  "SELECT *" +" FROM " + tbName + " where " + cleanValues.stripIndent();
+                sql = "SELECT *" +" FROM " + tbName + " where " + cleanValues.stripIndent();
             }
         }
         else if(columns != null || columns.isEmpty() == false) {
             if(condition == null || condition.isEmpty()) {
-                sql =  "SELECT "+ columns +" FROM " + tbName;
+                sql = "SELECT "+ columns +" FROM " + tbName;
             } else {
                 cleanValues = queryUtil.getNormalConditional(condition, type);
-                sql         =  "SELECT "+ columns +" FROM " + tbName + " WHERE " + cleanValues.stripIndent();
+                sql = "SELECT "+ columns +" FROM " + tbName + " WHERE " + cleanValues.stripIndent();
             }
         }
         return sql;
@@ -110,7 +110,7 @@ public class QueryBuilder {
                         condition,
                         type
                 );
-                sql         = "SELECT * FROM " + tbName + " WHERE " + inCondition;
+                sql = "SELECT * FROM " + tbName + " WHERE " + inCondition;
             }
         } else if(returnColumns != null && !returnColumns.isEmpty()) {
             if(condition == null || condition.isEmpty() && (conditionalColumns == null ||
@@ -122,7 +122,7 @@ public class QueryBuilder {
                         condition,
                         type
                 );
-                sql         = "SELECT " + returnColumns + " FROM " + tbName + " WHERE " + inCondition;
+                sql = "SELECT " + returnColumns + " FROM " + tbName + " WHERE " + inCondition;
             }
         }
         return sql;
@@ -168,7 +168,7 @@ public class QueryBuilder {
             sql = "SELECT " + minMaxSelection + " FROM " + tbName;
         } else {
             getCondition = queryUtil.getNormalConditional(condition, type);
-            sql          = "SELECT " + minMaxSelection + " FROM " + tbName + " WHERE " + getCondition;
+            sql = "SELECT " + minMaxSelection + " FROM " + tbName + " WHERE " + getCondition;
         }
         return sql;
     }
@@ -182,20 +182,20 @@ public class QueryBuilder {
             build   = new String[2],
             types   = queryUtil.getModelType(modelData, true).split(","),
             columns = queryUtil.getModelColumns(modelData, true).split(",");
-        String 
-            type   = "",
-            column = "";
+        StringBuffer 
+            type   = new StringBuffer(),
+            column = new StringBuffer();
         for(int i=1; i<types.length; ++i) {
             String d = types[i];
             if(!d.equals("''")) {
-                type += d + ",";
+                type.append(d + ",");
             }
         }
         for(int i=1; i<columns.length; ++i) {
-            column += columns[i] + ",";
+            column.append(columns[i] + ",");
         }
-        build[0] = type;
-        build[1] = column;
+        build[0] = type.toString();
+        build[1] = column.toString();
         return build;
     }
     /**
