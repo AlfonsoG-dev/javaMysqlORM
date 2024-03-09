@@ -45,10 +45,8 @@ public record QueryUtils() {
             colName = new StringBuffer(),
             modelCol = new StringBuffer();
         for(int i=0; i<data.length; ++i) {
-            String col = data[i].split(":")[0].trim();
-            if(col == null || col.isEmpty()) {
-                col = "";
-            } else {
+            StringBuffer col = new StringBuffer(data[i].split(":")[0].trim());
+            if(!col.isEmpty()) {
                 colName.append(col + ", ");
             }
         }
@@ -65,6 +63,53 @@ public record QueryUtils() {
         }
         return cleanValues(modelCol.toString(), 2);
     }
+    protected Thread combineTableProperties(ResultSet rst, ArrayList<String> cols, ArrayList<String> types) {
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    while(rst.next()) {
+                        String[] data = rst.getString(1).split("\n");
+                        for(String k: data) {
+                            cols.add(k);
+                        }
+                        String[] 
+                            tTypes     = rst.getString(2).split("\n"),
+                            tNull      = rst.getString(3).split("\n"),
+                            tKeyCol    = rst.getString(4).split("\n"),
+                            tExtra     = rst.getString(6).split("\n");
+                        for(int k=0; k<tTypes.length; ++k) {
+                            StringBuffer type = new StringBuffer();
+                            if(tTypes[k] != null) {
+                                type .append(tTypes[k]);
+                            }
+                            if(tNull[k] != null && tNull[k].contains("NO")) {
+                                type.append(" not null");
+                            }
+                            if(tKeyCol[k] != null) {
+                                if(tKeyCol[k].contains("PRI")) {
+                                    type.append(" unique primary key");
+                                }
+                                if(tKeyCol[k].contains("MUL")) {
+                                    type.append(" foreign key");
+                                }
+                                if(tKeyCol[k].contains("UNI")) {
+                                    type.append(" unique");
+                                }
+                            }
+                            if(tExtra[k] != null) {
+                                type .append(" " + tExtra[k]);
+                            }
+                            types.add(type.toString().trim());
+                        }
+
+                    }
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return t;
+    }
     /**
      * obtener las columnas de la tabla
      * @param rst: resultado de la consulta a la bd
@@ -76,41 +121,12 @@ public record QueryUtils() {
         ArrayList<String>
             cols    = new ArrayList<>(),
             types   = new ArrayList<>();
-        while(rst.next()) {
-            String[] data = rst.getString(1).split("\n");
-            for(String k: data) {
-                cols.add(k);
-            }
-            String[] 
-                tTypes     = rst.getString(2).split("\n"),
-                tNull      = rst.getString(3).split("\n"),
-                tKeyCol    = rst.getString(4).split("\n"),
-                tExtra     = rst.getString(6).split("\n");
-            for(int k=0; k<tTypes.length; ++k) {
-                StringBuffer type = new StringBuffer();
-                if(tTypes[k] != null) {
-                    type .append(tTypes[k]);
-                }
-                if(tNull[k] != null && tNull[k].contains("NO")) {
-                    type.append(" not null");
-                }
-                if(tKeyCol[k] != null) {
-                    if(tKeyCol[k].contains("PRI")) {
-                        type.append(" unique primary key");
-                    }
-                    if(tKeyCol[k].contains("MUL")) {
-                        type.append(" foreign key");
-                    }
-                    if(tKeyCol[k].contains("UNI")) {
-                        type.append(" unique");
-                    }
-                }
-                if(tExtra[k] != null) {
-                    type .append(" " + tExtra[k]);
-                }
-                types.add(type.toString().trim());
-            }
-
+        Thread t = this.combineTableProperties(rst, cols, types);
+        try {
+            t.start();
+            t.join();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
         }
         tableData.put("columns", cols);
         tableData.put("tipos", types);
@@ -127,10 +143,8 @@ public record QueryUtils() {
         StringBuffer types = new StringBuffer();
         if(includePKFK == false) {
             for(int i = 1; i < data.length; i++) {
-                String type = data[i].split(":")[1].trim();
-                if(type == null || type.isEmpty()) {
-                    type = "";
-                } else {
+                StringBuffer type = new StringBuffer(data[i].split(":")[1].trim());
+                if(!type.isEmpty()) {
                     types.append("'" + type + "'" + ",");
                 }
             }
@@ -181,12 +195,12 @@ public record QueryUtils() {
         StringBuffer build = new StringBuffer();
         String[] properties = columns.split(",");
         for(String v: properties) {
-            String 
-                minMax = v.split(":")[0].trim(),
-                value  = v.split(":")[1].trim();
-            if(minMax.equals("min")) {
+            StringBuffer 
+                minMax = new StringBuffer(v.split(":")[0].trim()),
+                value  = new StringBuffer(v.split(":")[1].trim());
+            if(minMax.indexOf("min") != -1) {
                 build.append( "min(" + value +") as min_" + value + ", ");
-            } else if(minMax.equals("max")) {
+            } else if(minMax.indexOf("max") != -1) {
                 build.append("max(" + value +") as max_" + value + ", ");
             }
         }
@@ -263,8 +277,9 @@ public record QueryUtils() {
      */
     public String getInConditional(String columns, String condition, String type) {
         StringBuffer 
-            inCondition = new StringBuffer(),
-            build       = new StringBuffer();
+            inCondition  = new StringBuffer(),
+            build        = new StringBuffer(),
+            cInCondition = new StringBuffer();
         String[] cols = columns.split(",");
         if(condition.toLowerCase().startsWith("select")) {
             for(String c: cols) {
@@ -280,7 +295,7 @@ public record QueryUtils() {
             for(String p: properties) {
                 inCondition.append("'" + p.trim() + "', ");
             }
-            String cInCondition = cleanValues(inCondition.toString(), 3);
+            cInCondition.append(cleanValues(inCondition.toString(), 3));
             for(String c: cols) {
                 if(type.toLowerCase().equals("not")) {
                     build.append(c + " not in " + cInCondition + "') " + "and");
@@ -398,6 +413,45 @@ public record QueryUtils() {
         }
         return columns;
     }
+    protected Thread compareProperties(ArrayList<String> modelCols, ArrayList<String> tableCols,
+            HashMap<String, StringBuffer> comparations) {
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                if(modelCols.size() == tableCols.size()) {
+                    StringBuffer rename = new StringBuffer();
+                    for(int i=0; i<modelCols.size(); ++i) {
+                        if(tableCols.get(i).equals(modelCols.get(i)) == false) {
+                            rename.append(
+                                    modelCols.get(i) + ":" + tableCols.get(i) + ", "
+                            );
+                        }
+                    }
+                    comparations.put("rename", rename);
+                }
+                else if(modelCols.size() > tableCols.size()) {
+                    StringBuffer agregar = new StringBuffer();
+                    for(int i=0; i<modelCols.size(); i++) {
+                        if(!tableCols.contains(modelCols.get(i))) {
+                            agregar.append(modelCols.get(i) + ", ");
+                        }
+                    }
+                    comparations.put("agregar", agregar);
+                }
+                else if(tableCols.size() > modelCols.size()) {
+                    StringBuffer eliminar = new StringBuffer();
+                    for(int i=0; i<tableCols.size(); i++) {
+                        if(modelCols.contains(tableCols.get(i)) == false) {
+                            eliminar.append(
+                                    tableCols.get(i) + ":" + i + ", "
+                            );
+                        }
+                    }
+                    comparations.put("eliminar", eliminar);
+                }
+            }
+        });
+        return t;
+    }
     /**
      * compara el nombre de las columnas del modelo con la tabla y ordena entre: agregar, eliminar y renombrar
      * @param model_properties: propiedades del modelo
@@ -412,36 +466,12 @@ public record QueryUtils() {
                     getModelColumns(modelProperties, true)
             ),
             tableCols = getTableData(rst).get("columns");
-        if(modelCols.size() == tableCols.size()) {
-            StringBuffer rename = new StringBuffer();
-            for(int i=0; i<modelCols.size(); ++i) {
-                if(tableCols.get(i).equals(modelCols.get(i)) == false) {
-                    rename.append(
-                            modelCols.get(i) + ":" + tableCols.get(i) + ", "
-                    );
-                }
-            }
-            comparations.put("rename", rename);
-        }
-        else if(modelCols.size() > tableCols.size()) {
-            StringBuffer agregar = new StringBuffer();
-            for(int i=0; i<modelCols.size(); i++) {
-                if(!tableCols.contains(modelCols.get(i))) {
-                    agregar.append(modelCols.get(i) + ", ");
-                }
-            }
-            comparations.put("agregar", agregar);
-        }
-        else if(tableCols.size() > modelCols.size()) {
-            StringBuffer eliminar = new StringBuffer();
-            for(int i=0; i<tableCols.size(); i++) {
-                if(modelCols.contains(tableCols.get(i)) == false) {
-                    eliminar.append(
-                            tableCols.get(i) + ":" + i + ", "
-                    );
-                }
-            }
-            comparations.put("eliminar", eliminar);
+        Thread t = this.compareProperties(modelCols, tableCols, comparations);
+        try {
+            t.start();
+            t.join();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
         }
         return comparations;
     }

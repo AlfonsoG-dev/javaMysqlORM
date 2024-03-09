@@ -2,6 +2,7 @@ package Conexion.Migration;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import Model.ModelMethods;
@@ -189,6 +190,14 @@ public class MigrationDAO {
         }
         return isCreated;
     }
+    protected void printTableData(ResultSet rst) throws SQLException {
+        int cols = rst.getMetaData().getColumnCount();
+        while(rst.next()) {
+            for(int i=1; i<cols; ++i) {
+                System.out.println(rst.getString(i));
+            }
+        }
+    }
     /**
      * muestra los datos de la tabla
      * @param model: modelo con los datos
@@ -201,6 +210,7 @@ public class MigrationDAO {
         try {
             rst = migrationExecution.executeShowTableData(stm);
             if(rst.next() == true) {
+                printTableData(rst);
                 isShowing = true;
             }
         } catch (Exception e) {
