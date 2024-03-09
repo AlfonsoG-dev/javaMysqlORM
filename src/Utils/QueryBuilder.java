@@ -185,13 +185,13 @@ public class QueryBuilder {
         StringBuffer 
             type   = new StringBuffer(),
             column = new StringBuffer();
-        for(int i=1; i<types.length; ++i) {
+        for(int i=0; i<types.length; ++i) {
             String d = types[i];
             if(!d.equals("''")) {
                 type.append(d + ",");
             }
         }
-        for(int i=1; i<columns.length; ++i) {
+        for(int i=0; i<columns.length; ++i) {
             column.append(columns[i] + ",");
         }
         build[0] = type.toString();
@@ -209,6 +209,8 @@ public class QueryBuilder {
             columns   = insertData(model.getAllProperties())[1],
             cTypes    = types.substring(0, types.length()-1),
             cColumns  = columns.substring(0, columns.length()-1);
+
+        System.out.println(cColumns + ":" + cTypes);
         String sql    = "INSERT INTO " + tbName + " (" + cColumns +") VALUES (" + cTypes + ")";
         return sql;
     }
