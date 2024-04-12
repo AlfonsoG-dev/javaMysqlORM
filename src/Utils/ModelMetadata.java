@@ -1,13 +1,13 @@
 package Utils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-
 
 /**
  * clase para obtener las propiedades del modelo
  */
-public class ModelMetadata {
+public class ModelMetadata<T> {
     /**
      * nombre del modelo
      */
@@ -140,6 +140,45 @@ public class ModelMetadata {
             System.err.println(e);
             return "";
         }
+    }
+    private boolean isMethodValid(String methodName) {
+        boolean isValid = false;
+        try {
+            Class<?> miClase = Class.forName(modelName);
+            Method[] methods = miClase.getMethods();
+            for(Method m: methods) {
+                if(m.getName().equals(methodName)) {
+                    isValid = true;
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return isValid;
+    }
+    /**
+     * genera un String con los resultados de la invocación de los métodos tipo get de los atributos de calse.
+     * @param model: es la instancia que contiene los atributos de la clase
+     * @return una cadena de caracteres con los atributos de clase
+     */
+    public String getModelValues(T model) {
+        String b = "";
+        Class<?> myClass = model.getClass();
+        Field[] fields = myClass.getDeclaredFields();
+        try {
+            for(Field f: fields) {
+                String 
+                    fieldName = f.getName(),
+                    methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+                if(isMethodValid(methodName) == true) {
+                    Method m = myClass.getMethod(methodName);
+                    b += fieldName + ": " + m.invoke(model) + "\n";
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return b.trim();
     }
     /**
      * genera un String con los datos combinados del modelo

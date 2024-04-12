@@ -188,37 +188,14 @@ public class Cuenta implements ModelMethods {
         LocalDateTime miDate  = LocalDateTime.now();  
         update_at             = dtf.format(miDate).toString();
     }
-
-
     /**
      * crear una cadena de texto con las propiedades del usuario
      * @return String con las propiedades del usuario
      */
     @Override
     public String getAllProperties() {
-        StringBuffer all = new StringBuffer();
-        if(this.getId_pk() > 0) {
-            all.append("id_pk: " + this.getId_pk() + "\n");
-        }
-        if(this.getNombre() != null && this.getNombre() != "" ) {
-            all.append("nombre: " + this.getNombre() + "\n");
-        }
-        if(this.getEmail() != null && this.getEmail().isEmpty() == false){
-            all.append("email: " + this.getEmail() + "\n");
-        }
-        if(this.getUser_id_fk() != 0){
-            all.append("user_id_fk: " + this.getUser_id_fk() + "\n");
-        }
-        if(this.getPassword() != null && this.getPassword().isEmpty() == false){
-            all.append("password: " + this.getPassword() + "\n");
-        }
-        if(this.getCreate_at() != null) {
-            all.append( "create_at: " + this.getCreate_at() + "\n");
-        }
-        if(this.getUpdate_at() != null) {
-            all.append( "update_at: " + this.getUpdate_at());
-        }
-        return all.toString();
+        ModelMetadata<Cuenta> metadata = new ModelMetadata<Cuenta>("Mundo.Cuentas.Cuenta");
+        return metadata.getModelValues(this);
     }
 
     /**
@@ -227,7 +204,7 @@ public class Cuenta implements ModelMethods {
      */
     @Override
     public String initModel() {
-        ModelMetadata metadata = new ModelMetadata("Mundo.Cuentas.Cuenta");
+        ModelMetadata<Cuenta> metadata = new ModelMetadata<Cuenta>("Mundo.Cuentas.Cuenta");
         return metadata.getModelProperties();
     }
 
