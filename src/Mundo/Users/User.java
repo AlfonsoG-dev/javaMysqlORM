@@ -185,8 +185,29 @@ public class User implements ModelMethods {
      * */
     @Override
     public String getAllProperties() {
-        ModelMetadata<User> metadata = new ModelMetadata<User>("Mundo.Users.User");
-        return metadata.getModelValues(this);
+        StringBuffer all = new StringBuffer();
+        if(this.getId_pk() > 0) {
+            all.append("id_pk: " + this.getId_pk() + "\n");
+        }
+        if(this.getNombre() != null && this.getNombre() != "" ) {
+            all.append("nombre: " + this.getNombre() + "\n");
+        }
+        if(this.getEmail() != null && this.getEmail().isEmpty() == false){
+            all.append("email: " + this.getEmail() + "\n");
+        }
+        if(this.getPassword() != null && this.getPassword().isEmpty() == false){
+            all.append("password: " + this.getPassword() + "\n");
+        }
+        if(this.getRol() != null && this.getRol().isEmpty() == false){
+            all.append( "Rol: " + this.getRol() + "\n");
+        }
+        if(this.getCreate_at() != null) {
+            all.append( "create_at: " + this.getCreate_at() + "\n");
+        }
+        if(this.getUpdate_at() != null) {
+            all.append( "update_at: " + this.getUpdate_at());
+        }
+        return all.toString();
     }
     /**
      * método que inicializa las propiedades del modelo de base de datos
@@ -194,7 +215,7 @@ public class User implements ModelMethods {
      */
     @Override
     public String initModel() {
-        ModelMetadata<User> metadata = new ModelMetadata<User>("Mundo.Users.User");
+        ModelMetadata metadata = new ModelMetadata("Mundo.Users.User");
         return metadata.getModelProperties();
     }
 }
