@@ -47,7 +47,7 @@ public class QueryBuilder {
         if(condition != null && !condition.isEmpty()) {
             whereClause = " WHERE " + queryUtil.getNormalConditional(condition, type);
         }
-        return "SELECT *" +" FROM " + tbName + whereClause.trim();
+        return "SELECT *" + " FROM " + tbName + whereClause;
     }
     /**
      * crea la query para la sentencia GetValueOfColumnName
@@ -61,7 +61,7 @@ public class QueryBuilder {
         if(condition != null && !condition.isEmpty()) {
             whereClause = " WHERE " + queryUtil.getNormalConditional(condition, type);
         }
-        return "SELECT "+ columns +" FROM " + tbName + whereClause.trim();
+        return "SELECT "+ columns + " FROM " + tbName + whereClause;
     }
     /**
      * crea la query para la buscar un registro dentro de varias posibilidades
