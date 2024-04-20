@@ -167,7 +167,6 @@ public class MigrationExecution {
                 includePKFK,
                 rst
         );
-        System.out.println(sql);
         if(sql != "" || sql != null) {
             stm = cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);

@@ -45,7 +45,7 @@ public class MigrationDAO {
             stm = migrationExecution.executeCreateDatabase(DbName);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
-                System.out.println("database created");
+                System.out.println("[ INFO ]:  database has been created");
                 isCreated = true;
             }
         } catch(Exception e) {
@@ -84,7 +84,7 @@ public class MigrationDAO {
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 isSelected = true;
-                System.out.println("se selecciona la base de datos");
+                System.out.println("[ INFO ]: se selecciona la base de datos");
             }
         } catch(Exception e) {
             System.err.println(e);
@@ -120,7 +120,7 @@ public class MigrationDAO {
         try {
             rst = migrationExecution.executeCreateTable(model, stm).getGeneratedKeys();
             if(showTableData() == true && rst.getMetaData().getColumnCount() > 0) {
-                System.out.println("tabla creada");
+                System.out.println("[ INFO ]: table has been created");
                 isCreated = true;
             }
         } catch(Exception e) {
@@ -162,7 +162,7 @@ public class MigrationDAO {
             if(showTableData() == true && rst.getMetaData().getColumnCount() > 0) {
                 System.out.println(
                         String.format(
-                            "temporary table { %s } has been created",
+                            "[ INFO ]: temporary table { %s } has been created",
                             tableName
                         )
                 );
@@ -257,7 +257,7 @@ public class MigrationDAO {
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 isAdded = true;
-                System.out.println("se agregaron las columnas");
+                System.out.println("[ INFO ]: new columns has been added");
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -295,7 +295,7 @@ public class MigrationDAO {
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 isRenamed = true;
-                System.out.println("se modifico el nombre de la columna");
+                System.out.println("[ INFO ]: name of the column has been modified");
             }
         } catch(Exception e) {
             System.err.println(e);
@@ -333,7 +333,7 @@ public class MigrationDAO {
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 isChanged = true;
-                System.out.println("se modifico el tipo de dato");
+                System.out.println("[ INFO ]: column data type has been modified");
             }
         } catch(Exception e) {
             System.err.println(e);
@@ -371,7 +371,7 @@ public class MigrationDAO {
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 isDeleted = true;
-                System.out.println("se elimino la columna");
+                System.out.println("[ INFO ]: columns has been deleted");
             }
         } catch(Exception e) {
             e.printStackTrace();

@@ -61,6 +61,7 @@ public class QueryDAO<T> {
     public void disconnectConnection() {
         try {
             cursor.close();
+            System.out.println("[ INFO ]: connection has been closed");
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -90,7 +91,7 @@ public class QueryDAO<T> {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 rst = null;
             }
@@ -98,9 +99,12 @@ public class QueryDAO<T> {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 stm = null;
+            }
+            if(!result.isEmpty()) {
+                System.out.println("[ INFO ]: query successfully completed");
             }
         }
         return result.substring(0, result.length()-2);
@@ -116,6 +120,7 @@ public class QueryDAO<T> {
         try {
             int rst = queryExecution.executeMyUpdateQuery(stm, sql);
             if(rst > 0) {
+                System.out.println("[ INFO ]: anyQuery successfully completed");
                 isExecuted = true;
             }
         } catch (Exception e) {
@@ -125,7 +130,7 @@ public class QueryDAO<T> {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 stm = null;
             }
@@ -153,9 +158,12 @@ public class QueryDAO<T> {
                     type
             );
             if(rst == 1) {
+                System.out.println("[ INFO ]: anyExecution successfully completed");
                 isCreate = true;
             } else if(rst == -1) {
-                throw new Exception("nothing happen when trying to create a new view");
+                throw new Exception(
+                        "[ ERROR ]: while trying to create a view"
+                );
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -182,9 +190,12 @@ public class QueryDAO<T> {
         try {
             int rst = queryExecution.executeDeleteView(stm, viewName);
             if(rst == 0) {
+                System.out.println("[ INFO ]: delete view completed");
                 isDeleted = true;
             } else if(rst == -1) {
-                throw new Exception("nothing happen when trying to delete a view");
+                throw new Exception(
+                        "[ ERROR ]: while trying to delete a view"
+                );
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -220,7 +231,7 @@ public class QueryDAO<T> {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 rst = null;
             }
@@ -229,9 +240,12 @@ public class QueryDAO<T> {
                 try {
                     pstm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 pstm = null;
+            }
+            if(count > 0) {
+                System.out.println("[ INFO ]: count data completed");
             }
         }
         return count;
@@ -257,7 +271,7 @@ public class QueryDAO<T> {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 rst = null;
             }
@@ -265,9 +279,12 @@ public class QueryDAO<T> {
                 try {
                     pstm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 pstm = null;
+            }
+            if(resultados.size() > 0) {
+                System.out.println("[ INFO ]: list data completed");
             }
         }
         return resultados;
@@ -296,7 +313,7 @@ public class QueryDAO<T> {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 rst = null;
             }
@@ -304,9 +321,12 @@ public class QueryDAO<T> {
                 try {
                     pstm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 pstm = null;
+            }
+            if(buscado != null) {
+                System.out.println("[ INFO ]: preparedFind completed");
             }
         }
         return buscado;
@@ -334,7 +354,7 @@ public class QueryDAO<T> {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 rst = null;
             }
@@ -342,9 +362,12 @@ public class QueryDAO<T> {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 stm = null;
+            }
+            if(buscado != null) {
+                System.out.println("[ INFO ]: findByColumnName completed");
             }
         }
         return buscado;
@@ -389,7 +412,7 @@ public class QueryDAO<T> {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 rst = null;
             }
@@ -397,9 +420,12 @@ public class QueryDAO<T> {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 stm = null;
+            }
+            if(buscado != null) {
+                System.out.println("[ INFO ]: findIn completed");
             }
         }
         return buscado.substring(0, buscado.length()-2);
@@ -433,7 +459,7 @@ public class QueryDAO<T> {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 rst = null;
             }
@@ -441,9 +467,12 @@ public class QueryDAO<T> {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 stm = null;
+            }
+            if(buscado != null) {
+                System.out.println("[ INFO ]: findPattern completed");
             }
         }
         return buscado;
@@ -484,7 +513,7 @@ public class QueryDAO<T> {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 rst = null;
             }
@@ -492,9 +521,12 @@ public class QueryDAO<T> {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 stm = null;
+            }
+            if(buscado != null) {
+                System.out.println("[ INFO ]: getMinMax completed");
             }
         }
         return buscado.substring(0, buscado.length()-2);
@@ -536,7 +568,7 @@ public class QueryDAO<T> {
                 try {
                     rst.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 rst = null;
             }
@@ -544,9 +576,12 @@ public class QueryDAO<T> {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 stm = null;
+            }
+            if(!result.isEmpty()) {
+                System.out.println("[ INFO ]: getValueOfColumnName completed");
             }
         }
         return result.substring(0, result.length()-2);
@@ -600,6 +635,9 @@ public class QueryDAO<T> {
                 } 
                 stm = null;
             }
+            if(!result.isEmpty()) {
+                System.out.println("[ INFO ]: innerJoin completed");
+            }
         }
         return result.substring(0, result.length()-2);
     }
@@ -615,7 +653,9 @@ public class QueryDAO<T> {
         Statement stm       = null;
         try {
             if(model == null) {
-                throw new Exception("el objeto no deberia ser null");
+                throw new Exception(
+                        "[ ERROR ]: model cannot be [ NULL ]"
+                );
             }
             cursor.beginRequest();
             T buscado = findByColumnName(condition, type);
@@ -623,12 +663,13 @@ public class QueryDAO<T> {
                 cursor.endRequest();
                 int rst = queryExecution.executeInsertNewRegister(stm, model);
                 if(rst > 0){
-                    System.out.println(model.getAllProperties());
                     isInserted = true;
                 }
             } else {
                 isInserted = false;
-                throw new Exception("el objeto deberia ser null");
+                throw new Exception(
+                        "[ ERROR ]: find statement must be [ NULL ]"
+                );
             }
 
         } catch (Exception e) {
@@ -638,9 +679,12 @@ public class QueryDAO<T> {
                 try {
                     stm.close();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
                 stm = null;
+            }
+            if(isInserted) {
+                System.out.println("[ INFO ]: insertNewRegister completed");
             }
         }
         return isInserted;
@@ -657,15 +701,20 @@ public class QueryDAO<T> {
         PreparedStatement pstm = null;
         try {
             if(model == null) {
-                throw new Exception("[ ERROR ]: model cannot be [ NULL ]");
+                throw new Exception(
+                        "[ ERROR ]: model cannot be [ NULL ]"
+                );
             }
             T buscado = findByColumnName(condition, type);
             if(buscado == null) {
                 int rst = queryExecution.executeInsertPreparedInsert(pstm, model);
                 if(rst >0 ) {
-                    System.out.println("[ INFO ]: " + model.getAllProperties());
                     isInserted = true;
                 }
+            } else {
+                throw new Exception(
+                        "[ ERROR ]: find statement must be [ NULL ]"
+                );
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -677,6 +726,9 @@ public class QueryDAO<T> {
                     e.printStackTrace();
                 }
                 pstm = null;
+            }
+            if(isInserted) {
+                System.out.println("[ INFO ]: preparedInsert completed");
             }
         }
         return isInserted;
@@ -693,18 +745,21 @@ public class QueryDAO<T> {
         boolean isInserted = false;
         try {
             if(options == null || options.isEmpty()) {
-                throw new Exception("trying to use an empty insert option");
+                throw new Exception(
+                        "[ ERROR ]: options cannot be [ NULL ] || [ EMPTY ]"
+                );
             }
             T searched = findByColumnName(condition, type);
             if(searched == null) {
                 int rst = queryExecution.executeInsertByColumns(stm, options);
                 if(rst > 0) {
-                    System.out.println(options);
                     isInserted = true;
                 }
             } else {
                 isInserted = false;
-                throw new Exception("trying to insert an already existing record");
+                throw new Exception(
+                        "[ ERROR ]: find statement must be [ NULL ]"
+                );
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -716,6 +771,9 @@ public class QueryDAO<T> {
                     e.printStackTrace();
                 }
                 stm = null;
+            }
+            if(isInserted) {
+                System.out.println("[ INFO ]: insertByColumns completed");
             }
         }
         return isInserted;
@@ -745,6 +803,11 @@ public class QueryDAO<T> {
             );
             if(rst > 0) {
                 isInserted = true;
+            } else {
+                isInserted = false;
+                throw new Exception(
+                        "[ ERROR ]: while trying to insert a new register"
+                );
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -756,6 +819,9 @@ public class QueryDAO<T> {
                     e.printStackTrace();
                 }
                 stm = null;
+            }
+            if(isInserted) {
+                System.out.println("[ INFO ]: insertIntoSelect completed");
             }
         }
         return isInserted;
@@ -772,7 +838,9 @@ public class QueryDAO<T> {
         Statement stm      = null;
         try {
             if(model == null) {
-                throw new Exception("model no deberia ser null");
+                throw new Exception(
+                        "[ ERROR ]: model cannot be [ NULL ]"
+                );
             }
             cursor.beginRequest();
             T buscado = findByColumnName(conditions.split(",")[0], type);
@@ -785,12 +853,13 @@ public class QueryDAO<T> {
                         type
                 );
                 if(result > 0) {
-                    System.out.println(model.getAllProperties());
                     isUpdated = true;
                 }
             } else {
                 isUpdated = false;
-                throw new Exception("nObject no deberia ser null");
+                throw new Exception(
+                        "[ ERROR ]: find statement cannot [ NULL ]"
+                );
             }
 
         } catch( Exception e) {
@@ -804,6 +873,9 @@ public class QueryDAO<T> {
                     System.err.println(e2.getMessage());
                 }
                 stm = null;
+            }
+            if(isUpdated) {
+                System.out.println("[ INFO ]: update completed");
             }
         }
         return isUpdated;
@@ -819,7 +891,9 @@ public class QueryDAO<T> {
         Statement stm    = null;
         try {
             if(condition.isEmpty() == true || condition == null) {
-                throw new Exception("no deberia ser null ni vacio");
+                throw new Exception(
+                        "[ ERROR ]: condition cannot be [ EMPTY ] || [ NULL ]"
+                );
             }
             cursor.beginRequest();
             T buscado = findByColumnName(condition.split(",")[0], type);
@@ -831,12 +905,13 @@ public class QueryDAO<T> {
                         type
                 );
                 if(rst > 0) {
-                    System.out.println(condition);
                     isDeleted = true;
                 }
             } else {
                 isDeleted = false;
-                throw new Exception("no deberia ser null");
+                throw new Exception(
+                        "[ ERROR ]: find statement cannot [ NULL ]"
+                );
             }
         } catch (Exception e ) {
 
@@ -849,6 +924,9 @@ public class QueryDAO<T> {
                     System.err.println(e);
                 }
                 stm = null;
+            }
+            if(isDeleted) {
+                System.out.println("[ INFO ]: delete completed");
             }
         }
         return isDeleted;
