@@ -7,6 +7,7 @@
 
 >- [Java JDK 17.0.8](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 >- [mysql connector 8.1.0](https://dev.mysql.com/downloads/connector/j/)
+>- [javabuild tool](https://github.com/AlfonsoG-dev/javaBuild)
 
 # References
 
@@ -109,22 +110,24 @@ private int user_id_fk;
 ---------
 
 # Compile And Execute
+This project use [javaBuild_tool](https://github.com/AlfonsoG-dev/javaBuild) to build the project.
+
 >- if you are not using vscode and need to compile the project with the `javac` CLI tool.
 >- I include a `java-exe.ps1` shell script for powershell.
 
 ## PowerShell script for compile and execute.
 
 ```shell
-$Clases = "all the clases in the program"
-$Compilation = "javac -d ./bin/" + "$Clases";
-$javaCommand = "java -cp " + '"./bin;path to a custom jar file" .\src\App.java';
-$runCommand = "$Compilation" + " & " + "$javaCommand"
-$CreateJarFile = "md test-jar_extraction && Copy-Item -Path .\lib\mysql-connector-j-8.1.0\mysql-connector-j-8.1.0.jar -Destination .\test-jar_extraction\ && cd .\test-jar_extraction\ && jar -xf .\mysql-connector-j-8.1.0.jar && rm -r .\mysql-connector-j-8.1.0.jar && cd .. && jar -cfm test.jar Manifesto.txt -C bin . -C test-jar_extraction . && rm -r ./test-jar_extraction/"
+$clases = "all the clases in the program"
+$compilation = "javac -d ./bin/" + "$clases";
+$javaCommand = "java -cp " + '"./bin;path to a custom jar file" .\src\MainClass.java';
+$createJar = "jar -cfm jarName.jar Manifesto.txt -C .\bin\ . -C .\lib extracted file path\ ."
+$runCommand = "$compilation" + " && " + "&createJar" + " && " + "$javaCommand"
 Invoke-Expression $runCommand
 ```
 >- if you need to add a custom jar file from another project
 ```shell
-$Compilation = "javac -d ./bin/ -cp " + '" path to a custom jar file"' + "$Clases";
+$compilation = "javac -d ./bin/ -cp " + '" path to a custom jar file"' + "$clases";
 ```
 >- if your need to create a jar file
 >>- add in the root of the project: `Manifesto.txt`
@@ -132,10 +135,14 @@ $Compilation = "javac -d ./bin/ -cp " + '" path to a custom jar file"' + "$Clase
 Manifest-Version: 1.0
 Main-Class: MyMainClassName
 ```
->- in the powershell script you need to change the `Invoke-Expression $runCommand` to `Invoke-Expression $CreateJarFile`
->>- the name of the created jar file if: `test.jar`
->>- Create Jar File have a bunch of commands to create the jar and add the content of the MYSQL connector 
->>- i cannot do the jar file creation in other way.
+>- remember if you want the lib dependency as part of the jar build you must add it.
+>>- create a directory name: `extractionFile`
+>>- move the lib jar file dependency only to `extractionFile` directory.
+>>- in the `extractionFile` directory extract the jar file dependency.
+>>- finally for the ps1 build script add the following sentence.
+```
+$createJar = "jar -cfm jarName.jar Manifesto.txt -C .\bin\ . -C .\extractionFile\lib extracted file path\ ."
+```
 
 --------
 
