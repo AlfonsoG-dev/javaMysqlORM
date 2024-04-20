@@ -881,6 +881,57 @@ public class QueryDAO<T> {
         return isUpdated;
     }
     /**
+     * @param model: the model with the data to update
+     * @param condition: where clause condition
+     * @param type: logic type for where clause
+     * @return true if the data is updated, false otherwise
+     */
+    public boolean preparedUpdate(ModelMethods model, String condition, String type) {
+        boolean isUpdated = false;
+        PreparedStatement pstm = null;
+        try {
+            if(model == null) {
+                throw new Exception(
+                        "[ ERROR ]: model cannot be [ NULL ]"
+                );
+            }
+            cursor.beginRequest();
+            T buscado = findByColumnName(condition.split(",")[0], type);
+            if(buscado != null) {
+                cursor.endRequest();
+                int result = queryExecution.executePreparedUpdate(
+                        pstm,
+                        model,
+                        condition,
+                        type
+                );
+                if(result > 0) {
+                    isUpdated = true;
+                }
+            } else {
+                isUpdated = false;
+                throw new Exception(
+                        "[ ERROR ]: find statement cannot [ NULL ]"
+                );
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(pstm != null) {
+                try {
+                    pstm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                pstm = null;
+            }
+            if(isUpdated) {
+                System.out.println("[ INFO ]: preparedUpdated completed");
+            }
+        }
+        return isUpdated;
+    }
+    /**
      * eliminar un registro por cualquier columna valida de la bd.
      * @param condition: columna con el valor para el condicional
      * @param type: tipo de condicion para la setencia sql

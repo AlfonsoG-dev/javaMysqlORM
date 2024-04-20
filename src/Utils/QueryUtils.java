@@ -242,6 +242,17 @@ public record QueryUtils() {
         return cleanByLogicType(type, build.toString());
     }
     /**
+     * creates the preparedUpdate values combination with question mark: name=?
+    */
+    public String getPreparedUpdateValues(String modelProperties) {
+        String[] modelColumns = getModelColumns(modelProperties, true).split(",");
+        String b = "";
+        for(String m: modelColumns) {
+            b += m + "=?" + ", ";
+        }
+        return b.substring(0, b.length()-2);
+    }
+    /**
      * combina la llave con el valor para el condicional sql
      * @param condition: las columnas para asignar el valor
      * @return las columnas asignadas el valor

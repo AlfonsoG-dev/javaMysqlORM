@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import Model.ModelMethods;
 import Utils.QueryBuilder;
@@ -401,6 +404,38 @@ public class QueryExecution {
         );
         int retorno = stm.executeUpdate(sql);
         return retorno;
+    }
+    /**
+     * @param pstm: execute the sql sentences
+     * @param model: model with the data to update
+     * @param condition: where clause condition
+     * @param type: logic type for where clause
+     * @throws SQLException: error while trying to update
+     * @return row count or '0' when nothing is returned
+     */
+    public int executePreparedUpdate(PreparedStatement pstm, ModelMethods model, String condition,
+            String type) throws SQLException {
+        String 
+            sql = queryBuilder.createPreparedUpdate(model, condition, type),
+            valCondition = queryUtil.getValueOfCondition(condition),
+            modelValues  = queryUtil.getModelType(model.getAllProperties(), true);
+        pstm = cursor.prepareStatement(sql);
+        String[] 
+            setValues = modelValues.split(","),
+            conditionValues   = valCondition.split(",");
+        // set the condition values
+        List<String> vals = new ArrayList<>();
+        for(String s: setValues) {
+            vals.add(s.replace("'", ""));
+        }
+        for(String s: conditionValues) {
+            vals.add(s);
+        }
+        // set the update values
+        for(int i=0; i<vals.size(); ++i) {
+            pstm.setString((i+1), vals.get(i));
+        }
+        return pstm.executeUpdate();
     }
     /**
      * ejecuta la eliminación de un registro

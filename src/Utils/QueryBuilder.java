@@ -281,6 +281,15 @@ public class QueryBuilder {
         return "UPDATE " + tbName + " SET " +  cleanKeyValue + whereClause;
    }
    /**
+    * creates the preparedUpdate statement
+    */
+   public String createPreparedUpdate(ModelMethods model, String conditional, String type) {
+       String 
+           pValues = queryUtil.getPreparedUpdateValues(model.getAllProperties()),
+           pConditional = queryUtil.getPrepareConditional(conditional, type);
+       return "UPDATE " + tbName + " SET " + pValues + " WHERE " + pConditional;
+   }
+   /**
     * crear la sentencia sql para eliminar el registro
     * @param condition: las columnas con los valores para el condicional
     * @param type: tipo de condicion para la sentencia sql
