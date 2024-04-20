@@ -300,6 +300,23 @@ public class QueryExecution {
         return rst;
     }
     /**
+     * execute the {@link PreparedStatement} for insert query
+     * @param pstm: {@link PreparedStatement}
+     * @param model: model to insert
+     * @throws SQLException: error while trying to insert
+     * @return row count or '0' when nothing is returned
+     */
+    public int executeInsertPreparedInsert(PreparedStatement pstm, ModelMethods model) throws SQLException {
+        String sql = queryBuilder.createPreparedInsert(model);
+        pstm = cursor.prepareStatement(sql);
+        String[] fields = queryUtil.getModelType(model.getAllProperties(), true).split(",");
+        for(int i=0; i<fields.length; ++i) {
+            pstm.setString((i+1), fields[i].trim().replace("'", ""));
+        }
+        return pstm.executeUpdate();
+
+    }
+    /**
      * executes an insert query
      * @param stm: statement executor
      * @param options: column: value insert options

@@ -5,10 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import java.util.ArrayList;
 
 import Model.ModelBuilderMethods;
 import Model.ModelMethods;
+
 import Utils.QueryUtils;
 
 /**
@@ -643,6 +645,49 @@ public class QueryDAO<T> {
         }
         return isInserted;
     }
+    /**
+     * insert register using {@link PreparedStatement}
+     * @param model: model to insert
+     * @param condition: where clause condition
+     * @param type: logic type for where clause condition
+     * @return true if its inserted, false othewise
+     */
+    public boolean preparedInsert(ModelMethods model, String condition, String type) {
+        boolean isInserted = false;
+        PreparedStatement pstm = null;
+        try {
+            if(model == null) {
+                throw new Exception("[ ERROR ]: model cannot be [ NULL ]");
+            }
+            T buscado = findByColumnName(condition, type);
+            if(buscado == null) {
+                int rst = queryExecution.executeInsertPreparedInsert(pstm, model);
+                if(rst >0 ) {
+                    System.out.println("[ INFO ]: " + model.getAllProperties());
+                    isInserted = true;
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(pstm != null) {
+                try {
+                    pstm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                pstm = null;
+            }
+        }
+        return isInserted;
+    }
+    /**
+     * insert register using options like {@link String} sentence
+     * @param options: the data to insert
+     * @param condition: where clause condition
+     * @param type: logic type for where clause
+     * @return true if its inserted, false othewise
+     */
     public boolean insertByColumns(String options, String condition, String type) {
         Statement stm = null;
         boolean isInserted = false;

@@ -179,6 +179,32 @@ public class QueryBuilder {
         return "INSERT INTO " + tbName + " (" + cColumns +") VALUES (" + cTypes + ")";
     }
     /**
+     * replace the column name for question mark
+     * @param columns: model columns
+     * @return a {@link String} with the question marks
+     */
+    private String replaceColumForQuestionMark(String columns) {
+        String b = "";
+        String[] separate = columns.split(",");
+        for(int i=0; i<separate.length; ++i) {
+            b += "?,";
+        }
+        return b.substring(0, b.length()-1);
+    }
+    /**
+     * create the sql query to insert using {@link PreparedStatement}
+     * @param model: model with the data to insert
+     * @param the sql insert statement
+     */
+    public String createPreparedInsert(ModelMethods model) {
+
+        String 
+            columns   = insertData(model.getAllProperties())[1],
+            cColumns  = columns.substring(0, columns.length()-1),
+            questionMark = replaceColumForQuestionMark(cColumns);
+        return "INSERT INTO " + tbName + " (" + cColumns + ") VALUES (" + questionMark + ")";
+    }
+    /**
      * creates an insert statement using string options.
      * <br> pre: </br> format column_name: value_type, 
      * @param options: the string options to use
