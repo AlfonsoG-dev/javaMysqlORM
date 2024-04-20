@@ -10,21 +10,6 @@ import Model.ModelBuilderMethods;
  */
 public class CuentaBuilder implements ModelBuilderMethods<Cuenta>{
     /**
-     * valida los datos del ResultSet
-     * @return lista de datos
-     */
-    @Override
-    public String[] resultDataValidator(ResultSet rst, int capacity) throws SQLException {
-        String[] data = new String[capacity + 1];
-        for(int i = 1; i < data.length; i++) {
-            data[i]   = rst.getString(i);
-        }
-        //System.out.println(data.length);
-        assert data.length == 1 : "deberia ser mayor a 1";
-        return data;
-    }
-    
-    /**
      * crea la cuenta con los datos del ResultSet
      * @param rst: el resultado de la consulta sql
      * @param capacity: tamaño de la lista de datos

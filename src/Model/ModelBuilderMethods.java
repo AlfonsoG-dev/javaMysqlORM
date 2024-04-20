@@ -11,7 +11,16 @@ public interface ModelBuilderMethods<T>{
      * @throws SQLException: error al ejecutar la consulta sql
      * @return la lista de resultados
      */
-    public String[] resultDataValidator(ResultSet rst, int capacity) throws SQLException;
+    public default String[] resultDataValidator(ResultSet rst, int capacity) throws SQLException {
+        String[] data = new String[capacity + 1];
+        for(int i = 1; i < data.length; i++) {
+            data[i] = rst.getString(i);
+        }
+        if(data.length == 1) {
+            System.err.println("[ ERROR ]: must bee greater than 1");
+        }
+        return data;
+    }
     /**
      * crea el usuario con los datos del ResultSet
      * @param rst: resultados de la consulta sql

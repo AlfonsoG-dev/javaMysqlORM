@@ -107,7 +107,10 @@ public class QueryDAO<T> {
                 System.out.println("[ INFO ]: query successfully completed");
             }
         }
-        return result.substring(0, result.length()-2);
+        if(result.length()-2 > 0) {
+            result = result.substring(0, result.length()-2);
+        }
+        return result;
     }
     /**
      * INSERT UPDATE DELETE statements.
@@ -428,7 +431,10 @@ public class QueryDAO<T> {
                 System.out.println("[ INFO ]: findIn completed");
             }
         }
-        return buscado.substring(0, buscado.length()-2);
+        if(buscado.length()-2 > 0) {
+            buscado = buscado.substring(0, buscado.length()-2);
+        }
+        return buscado;
     }
     /**
      * busca los datos con regex o patrones.
@@ -584,7 +590,10 @@ public class QueryDAO<T> {
                 System.out.println("[ INFO ]: getValueOfColumnName completed");
             }
         }
-        return result.substring(0, result.length()-2);
+        if(result.length()-2 > 0) {
+            result = result.substring(0, result.length()-2);
+        }
+        return result;
     }
     /**
      * inner join of 2 tables.
@@ -639,7 +648,10 @@ public class QueryDAO<T> {
                 System.out.println("[ INFO ]: innerJoin completed");
             }
         }
-        return result.substring(0, result.length()-2);
+        if(result.length()-2 > 0) {
+            result = result.substring(0, result.length()-2);
+        }
+        return result;
     }
     /**
      * ingresar un registro de GenericObjects.
