@@ -81,7 +81,7 @@ public class QuerySamples<T> {
 
     public void sampleFindOne() {
         String condition = "nombre: test", type = "and";
-        T myObject       = myDAO.findOne(condition, type);
+        T myObject       = myDAO.preparedFind(condition, type);
         if(myObject != null) {
             System.out.println(myObject.getClass().getName());
         }

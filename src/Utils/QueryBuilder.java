@@ -29,7 +29,7 @@ public class QueryBuilder {
      * @param type: tipo de condicion para la sentencia sql
      * @return: el usuario buscado
      */
-    public String createFindQuery(String condition, String type) {
+    public String createPreparedFindQuery(String condition, String type) {
         String whereClause = "";
         if(condition != null && !condition.isEmpty()) {
             whereClause = " WHERE " + queryUtil.getPrepareConditional(condition, type);

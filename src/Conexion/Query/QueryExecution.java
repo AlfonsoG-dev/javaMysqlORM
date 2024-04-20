@@ -172,10 +172,10 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
      * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executeFindOne(PreparedStatement pstm, String condition,
+    public ResultSet executePreparedFind(PreparedStatement pstm, String condition,
             String type) throws SQLException {
         String 
-            sql         = queryBuilder.createFindQuery(condition, type),
+            sql         = queryBuilder.createPreparedFindQuery(condition, type),
             val         = queryUtil.getValueOfCondition(condition);
         pstm            = cursor.prepareStatement(sql);
         String[] fields = val.split(",");

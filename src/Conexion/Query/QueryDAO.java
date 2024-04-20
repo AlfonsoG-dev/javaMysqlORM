@@ -279,12 +279,12 @@ public class QueryDAO<T> {
      * @param type: and or not
      * @return el usuario buscado
      */
-    public T findOne(String condition, String type) {
+    public T preparedFind(String condition, String type) {
         T buscado              = null;
         PreparedStatement pstm = null;
         ResultSet rst          = null;
         try {
-            rst        = queryExecution.executeFindOne(pstm, condition, type);
+            rst        = queryExecution.executePreparedFind(pstm, condition, type);
             int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
