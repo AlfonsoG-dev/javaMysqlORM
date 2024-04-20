@@ -11,6 +11,7 @@
 # References
 
 >- [mysql_query_examples](https://www.w3schools.com/mysql/)
+>- [JDBC samples](https://www.javatpoint.com/PreparedStatement-interface)
 
 # Features
 - [x] dynamic query creation using class objects as table models.
@@ -22,6 +23,7 @@
 - [x] method to SELECT operations using SQL sentences as parameters.
 - [x] `CREATE VIEW ` statement.
 - [x] `INSERT INTO ... SELECT` statement.
+- [x] prepared and normal statements
 
 -----
 
