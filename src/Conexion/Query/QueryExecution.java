@@ -453,4 +453,23 @@ public class QueryExecution {
         int result = stm.executeUpdate(sql);
         return result;
     }
+    /**
+     * delete statement execution
+     * @param condition: where clause condition
+     * @param type: logic type for where clause
+     * @return row count or '0' when nothing is returned
+     */
+    public int executePreparedDelete(PreparedStatement pstm, String condition, String type) 
+        throws SQLException {
+
+        String 
+            values = queryUtil.getValueOfCondition(condition),
+            sql = queryBuilder.createPreparedDeleteQuery(condition, type);
+        pstm = cursor.prepareStatement(sql);
+        String[] fields = values.split(",");
+        for(int i=0; i<fields.length; ++i) {
+            pstm.setString((i+1), fields[i].trim());
+        }
+        return pstm.executeUpdate();
+    }
 }

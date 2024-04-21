@@ -994,4 +994,49 @@ public class QueryDAO<T> {
         }
         return isDeleted;
     }
+    /**
+     * delete operation using {@link PreparedStatement}
+     * @param condition: where clause condition
+     * @param type: logic type for where clause
+     * @return true if the data is deleted, false otherwise
+     */
+    public boolean preparedDelete(String condition, String type) {
+        boolean isDeleted = false;
+        PreparedStatement pstm = null;
+        try {
+            if(condition.isEmpty() == true || condition == null) {
+                throw new Exception(
+                        "[ ERROR ]: condition cannot be [ EMPTY ] || [ NULL ]"
+                );
+            }
+            T buscado = findByColumnName(condition, type);
+            if(buscado != null) {
+                int rst = queryExecution.executePreparedDelete(
+                        pstm,
+                        condition,
+                        type
+                );
+                if(rst > 0) {
+                    isDeleted = true;
+                }
+            } else {
+                isDeleted = false;
+                throw new Exception(
+                        "[ ERROR ]: find statement cannot [ NULL ]"
+                );
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(pstm != null) {
+                try {
+                    pstm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                pstm = null;
+            }
+        }
+        return isDeleted;
+    }
 }

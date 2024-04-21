@@ -302,4 +302,17 @@ public class QueryBuilder {
        }
        return "DELETE FROM " + tbName + " WHERE " + whereClause;
    }
+   /**
+    * delete statement query builder
+    * @param condition: where clause condition
+    * @param type: logic type for where clause
+    * @return delete statement query
+    */
+   public String createPreparedDeleteQuery(String condition, String type) {
+       String whereClause = "";
+       if(condition != null && !condition.isEmpty()) {
+           whereClause = queryUtil.getPrepareConditional(condition, type);
+       }
+       return "DELETE FROM " + tbName + " WHERE " + whereClause;
+   }
 }
