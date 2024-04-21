@@ -1036,6 +1036,9 @@ public class QueryDAO<T> {
                 }
                 pstm = null;
             }
+            if(isDeleted) {
+                System.out.println("[ INFO ]: preparedDelete completed");
+            }
         }
         return isDeleted;
     }
