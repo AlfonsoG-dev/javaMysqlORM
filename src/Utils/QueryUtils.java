@@ -295,9 +295,9 @@ public record QueryUtils() {
         if(condition.toLowerCase().startsWith("select")) {
             for(String c: cols) {
                 if(type.toLowerCase().equals("not")) {
-                    build.append(c + " not in (" + condition + ")" + " " + "and");
+                    build.append(c + " NOT IN (" + condition + ")" + " " + "AND");
                 } else {
-                    build.append(c + " in (" + condition + ")" + " " + type);
+                    build.append(c + " IN (" + condition + ")" + " " + type);
                 }
             }
         } else {
@@ -309,9 +309,9 @@ public record QueryUtils() {
             cInCondition.append(cleanValues(inCondition.toString(), 3));
             for(String c: cols) {
                 if(type.toLowerCase().equals("not")) {
-                    build.append(c + " not in " + cInCondition + "') " + "and");
+                    build.append(c + " NOT IN " + cInCondition + "') " + "AND");
                 } else {
-                    build.append(c + " in " + cInCondition + "') " + type);
+                    build.append(c + " IN " + cInCondition + "') " + type);
                 }
             }
         }

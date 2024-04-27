@@ -282,6 +282,53 @@ public class MigrationDAO {
         return isAdded;
     }
     /**
+     * add constraint mainly for CHECK validation
+     * @param options: columns for constraint. ejm -> edad: 18, ciudad: pasto.
+     * @param constraint: constraint operations -> <=, =, >=.
+     * @param constraintName: name for the constraint
+     * @param type: logic type for constraint operation.
+     * @return true if its added, false otherwise
+     */
+    public boolean addCheckContraint(String[] options, String[] constraint, String constraintName,
+            String type) {
+        boolean isAdded = false;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = migrationExecution.executeAddContrainStatement(
+                    options,
+                    constraint,
+                    constraintName,
+                    type,
+                    stm
+            ).getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
+                isAdded = true;
+                System.out.println("[ INFO ]: constraint has been added");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        return isAdded;
+    }
+    /**
      * renombrar una columna de la tabla según el modelo
      * @param model: modelo con las columnas a renombrar
      * @return true si cambio el nombre de lo contrario false;

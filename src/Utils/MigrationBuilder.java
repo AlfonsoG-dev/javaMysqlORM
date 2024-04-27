@@ -123,7 +123,7 @@ public class MigrationBuilder extends QueryBuilder {
                 );
                 if(includePKFK == true) {
                     sql.append(
-                            createAddConstraintQuery(
+                            getPkFKConstraintQuery(
                                 addColumns.toString(),
                                 refModelProperties,
                                 refTable
@@ -249,7 +249,7 @@ public class MigrationBuilder extends QueryBuilder {
      * @throws SQLException error de la consulta sql
      * @return la sentencia sql para agregar constraint de la pk o fk
      */
-    public String createAddConstraintQuery(String addColumns, String refModelProperties, String refTable)
+    public String getPkFKConstraintQuery(String addColumns, String refModelProperties, String refTable)
             throws SQLException {
         String refpk     = queryUtil.getPkFk(refModelProperties).get("pk");
         StringBuffer sql = new StringBuffer();
@@ -275,6 +275,41 @@ public class MigrationBuilder extends QueryBuilder {
             res      = clearSql;
         }
         return res;
+    }
+    /**
+     * @param options: columns for constraint. ejm -> edad: 18, ciudad: pasto.
+     * @param constraint: constraint operations -> <=, =, >=.
+     * @param constraintName: name for the constraint
+     * @param type: logic type for constraint operation.
+     * edad: 18 => edad > 18 | edad = 18 | edad < 18
+     * ciudad: pasto => ciudad = 'pasto'
+     * @return the sql query or an empty value.
+     */
+    public String getConstraintQuery(String[] options, String[] constraint, String constraintName, String type) {
+        String sql = "";
+        // ALTER TABLE Persons
+        // ADD CONSTRAINT CHK_PersonAge CHECK (Age>=18 AND City='Sandnes');
+        // ADD CONSTRAINT CHK_rol CHECK (rol IN ('', ''))
+        if(options.length == constraint.length) {
+            sql = "ADD CONSTRAINT " + constraintName + " CHECK (";
+            for(int i=0; i<options.length; ++i) {
+                if(options[i].contains(":") && options[i].split(":").length > 0) {
+                    String
+                        column = options[i].split(":")[0].trim(),
+                        value  = options[i].split(":")[1].trim();
+                    if(constraint[i].contains(":") && constraint[i].split(":").length > 0) {
+                        String cVal = constraint[i].split(":")[1];
+                        sql += queryUtil.getInConditional(column, cVal, type) + " ";
+                    } else {
+                        sql += column + constraint[i] + "'" + value + "' " + type + " ";
+                        sql = queryUtil.cleanByLogicType(type, sql);
+                    }
+                } else {
+                    System.err.println("[ ERROR ]: while trying to create addCheckContraint");
+                }
+            }
+        }
+        return createAlterTableQuery(sql).trim() + ")";
     }
     /**
      * crea la sentencia sql para eliminar el constraint de la pk o fk

@@ -120,6 +120,28 @@ public class MigrationExecution {
         return stm;
     }
     /**
+     * query execution for add constraint mainly for CHECK validation
+     * @param options: columns for constraint. ejm -> edad: 18, ciudad: pasto.
+     * @param constraint: constraint operations -> <=, =, >=.
+     * @param constraintName: name for the constraint
+     * @param type: logic type for constraint operation.
+     * @return the row count or '0' if nothing is returned
+     */
+    public Statement executeAddContrainStatement(String[] options, String[] constraint, String constraintName,
+            String type, Statement stm) throws SQLException {
+        String sql = migrationBuilder.getConstraintQuery(
+                options,
+                constraint,
+                constraintName, 
+                type
+        );
+        if(!sql.isEmpty()) {
+            stm = cursor.createStatement();
+            stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+        }
+        return stm;
+    }
+    /**
      * renombra una columna de la tabla según el modelo
      * @param model: modelo con la columna a renombrar
      * @param stm: ejecutor de la sentencia sql
