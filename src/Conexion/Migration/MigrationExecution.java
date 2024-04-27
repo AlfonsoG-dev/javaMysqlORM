@@ -125,16 +125,29 @@ public class MigrationExecution {
      * @param constraint: constraint operations -> <=, =, >=.
      * @param constraintName: name for the constraint
      * @param type: logic type for constraint operation.
-     * @return the row count or '0' if nothing is returned
+     * @return execution object
      */
-    public Statement executeAddContrainStatement(String[] options, String[] constraint, String constraintName,
+    public Statement executeAddCheckConstraint(String[] options, String[] constraint, String checkName,
             String type, Statement stm) throws SQLException {
-        String sql = migrationBuilder.getConstraintQuery(
+        String sql = migrationBuilder.getCheckQuery(
                 options,
                 constraint,
-                constraintName, 
+                checkName, 
                 type
         );
+        if(!sql.isEmpty()) {
+            stm = cursor.createStatement();
+            stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+        }
+        return stm;
+    }
+    /**
+     * query execution for drop check constraint
+     * @param checkName: name of the constraint to drop
+     * @return the execution object
+     */
+    public Statement executeDropCheckConstraint(String checkName, Statement stm) throws SQLException {
+        String sql = migrationBuilder.getDeleteCheckQuery(checkName);
         if(!sql.isEmpty()) {
             stm = cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);

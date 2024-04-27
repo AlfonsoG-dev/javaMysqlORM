@@ -295,7 +295,7 @@ public class MigrationDAO {
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst = migrationExecution.executeAddContrainStatement(
+            rst = migrationExecution.executeAddCheckConstraint(
                     options,
                     constraint,
                     constraintName,
@@ -327,6 +327,91 @@ public class MigrationDAO {
             }
         }
         return isAdded;
+    }
+    /**
+     * updates a check constraint
+     * @param options: columns for constraint. ejm -> edad: 18, ciudad: pasto.
+     * @param constraint: constraint operations -> <=, =, >=.
+     * @param checkName: name for the constraint
+     * @param type: logic type for constraint operation.
+     * @return true if its updated, false otherwise
+     */
+    public boolean updateCheckConstraint(String[] options, String[] constraint, String checkName,
+            String type) {
+        boolean isUpdated = false;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            boolean isDeleted = dropCheckConstraint(checkName);
+            if(isDeleted == true) {
+                isUpdated = addCheckContraint(options, constraint, checkName, type);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        if(isUpdated == true) {
+            System.out.println("[ INFO ]: the check constraint has been updated");
+        } else {
+            System.out.println("[ ERROR ]: while trying to update a check constraint");
+        }
+        return isUpdated;
+    }
+    /**
+     * delete a check constraint given its name.
+     * @param checkName: check contraint name
+     * @return true if its deleted, false otherwise
+     */
+    public boolean dropCheckConstraint(String checkName) {
+        boolean isDeleted = false;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = migrationExecution.executeDropCheckConstraint(
+                    checkName,
+                    stm
+            ).getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
+                isDeleted = true;
+                System.out.println("[ INFO ]: check constraint has been deleted");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        return isDeleted;
     }
     /**
      * renombrar una columna de la tabla según el modelo

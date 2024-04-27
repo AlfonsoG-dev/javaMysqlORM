@@ -285,13 +285,13 @@ public class MigrationBuilder extends QueryBuilder {
      * ciudad: pasto => ciudad = 'pasto'
      * @return the sql query or an empty value.
      */
-    public String getConstraintQuery(String[] options, String[] constraint, String constraintName, String type) {
+    public String getCheckQuery(String[] options, String[] constraint, String checkName, String type) {
         String sql = "";
         // ALTER TABLE Persons
         // ADD CONSTRAINT CHK_PersonAge CHECK (Age>=18 AND City='Sandnes');
         // ADD CONSTRAINT CHK_rol CHECK (rol IN ('', ''))
         if(options.length == constraint.length) {
-            sql = "ADD CONSTRAINT " + constraintName + " CHECK (";
+            sql = "ADD CONSTRAINT " + checkName + " CHECK (";
             for(int i=0; i<options.length; ++i) {
                 if(options[i].contains(":") && options[i].split(":").length > 0) {
                     String
@@ -310,6 +310,23 @@ public class MigrationBuilder extends QueryBuilder {
             }
         }
         return createAlterTableQuery(sql).trim() + ")";
+    }
+    /**
+     * @param checkName: name of the check to drop
+     * @return the delete check query
+     */
+    public String getDeleteCheckQuery(String checkName) {
+        String sql = "";
+        if(checkName.contains(",")) {
+            String[] names = checkName.split(",");
+            for(String n: names) {
+                sql += "DROP CHECK " + n + ", ";
+            }
+            sql = queryUtil.cleanValues(sql, 2);
+        } else {
+            sql += "DROP CHECK " + checkName;
+        }
+        return createAlterTableQuery(sql);
     }
     /**
      * crea la sentencia sql para eliminar el constraint de la pk o fk
