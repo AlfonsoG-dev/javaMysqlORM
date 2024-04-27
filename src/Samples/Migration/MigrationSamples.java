@@ -57,7 +57,28 @@ public class MigrationSamples {
             System.out.println("a column has been added");
         }
     }
-
+    public void sampleAddCheckConstraint() {
+        String[] 
+            options = {"edad: 18"},
+            constraint = {">="};
+        String
+            checkname = "check_edad",
+            type = "and";
+        myDAO.addCheckContraint(options, constraint, checkname, type);
+    }
+    public void sampleUpdateCheckConstraint() {
+        String[] 
+            options = {"edad: 60"},
+            constraint = {"<="};
+        String
+            checkname = "check_edad",
+            type = "and";
+        myDAO.updateCheckConstraint(options, constraint, checkname, type);
+    }
+    public void sampleDropCheckConstraint() {
+        String checkName = "";
+        myDAO.dropCheckConstraint(checkName);
+    }
     public void sampleRenameColumn(ModelMethods model) {
         // <pre> rename a field of the table model first
         // private String renamedF

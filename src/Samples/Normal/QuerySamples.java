@@ -79,7 +79,7 @@ public class QuerySamples<T> {
             .forEach(e -> System.out.println("element: " + e));
     }
 
-    public void sampleFindOne() {
+    public void samplePreparedFind() {
         String condition = "nombre: test", type = "and";
         T myObject       = myDAO.preparedFind(condition, type);
         if(myObject != null) {
@@ -177,6 +177,12 @@ public class QuerySamples<T> {
             System.out.println("inserted");
         }
     }
+    public void samplePreparedInsert(ModelMethods model) {
+        String 
+            condition = "nombre: test",
+            type = "or";
+        myDAO.preparedInsert(model, condition, type);
+    }
 
     public void sampleInsertByColumns() {
         // options: column: value
@@ -226,7 +232,12 @@ public class QuerySamples<T> {
             System.out.println("updated");
         }
     }
-
+    public void samplePreaparedUpdate(ModelMethods updateModel) {
+        String 
+            condition = "nombre: test",
+            type = "and";
+        myDAO.preparedUpdate(updateModel, condition, type);
+    }
     public void sampleDeleteRegister() {
         String
             condition     = "nombre: test, rol: admin",
@@ -235,6 +246,12 @@ public class QuerySamples<T> {
         if(isDeleted) {
             System.out.println("deleted");
         }
+    }
+    public void samplePreaparedDelete() {
+        String 
+            condition = "nomber: test",
+            type = "and";
+        myDAO.preparedDelete(condition, type);
     }
 
 }

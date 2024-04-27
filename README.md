@@ -134,6 +134,7 @@ $compilation = "javac -d ./bin/ -cp " + '" path to a custom jar file"' + "$clase
 ```txt
 Manifest-Version: 1.0
 Main-Class: MyMainClassName
+Class-Path: lib\lib_dependency\dependency.jar
 ```
 >- remember if you want the lib dependency as part of the jar build you must add it.
 >>- create a directory name: `extractionFile`
