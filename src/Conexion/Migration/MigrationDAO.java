@@ -146,10 +146,76 @@ public class MigrationDAO {
         return isCreated;
     }
     /**
-     * TODO: add the following
-     * 1- CREATE INDEX
-     * 2- DEFAULT CONSTRAINT
+     * create index query
+     * @param unique: if the index is unique
+     * @param columns: columns to create the index
+     * @param stm: executor of statements
+     * @return true if its created, false otherwise
      */
+    public boolean createIndex(boolean isUnique, String columns) {
+        boolean isCreated = false;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = migrationExecution.executeCreateIndex(isUnique, columns, stm).getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
+                System.out.println("[ INFO ]: index has been created");
+                isCreated = true;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        return isCreated;
+    }
+    public boolean dropIndex(String columns) {
+        boolean isDeleted = false;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = migrationExecution.executeDropIndex(columns, stm).getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
+                System.out.println("[ INFO ]: index has been deleted");
+                isDeleted = true;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        return isDeleted;
+    }
     /**
      * create a temporary table in this session.
      * <br> pre: </br> the temporary table name is the same as the instance creation,
@@ -284,6 +350,14 @@ public class MigrationDAO {
                 stm = null;
             }
         }
+        return isAdded;
+    }
+    /**
+     * TODO: add the following
+     * 2- DEFAULT CONSTRAINT
+     */
+    public boolean addDefaultConstraint() {
+        boolean isAdded = false;
         return isAdded;
     }
     /**

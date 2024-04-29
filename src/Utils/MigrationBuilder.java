@@ -84,6 +84,41 @@ public class MigrationBuilder extends QueryBuilder {
         return sql;
     }
     /**
+     * create index query
+     * @param unique: if the index is unique
+     * @param columns: columns to create the index
+     * @return the create index query
+     */
+    public String createIndexQuery(boolean unique, String columns) {
+        StringBuffer sql = new StringBuffer();
+        sql.append("CREATE ");
+        if(unique == true) {
+            sql.append("UNIQUE INDEX ");
+        } else {
+            sql.append("INDEX ");
+        }
+        if(!columns.isEmpty()) {
+            sql.append("(");
+            sql.append(columns);
+            sql.append(")");
+        }
+        return sql.toString();
+    }
+    public String createDropIndexQuery(String columns) {
+        String sql = "";
+        if(columns.contains(",")) {
+            String[] spaces = columns.trim().split(",");
+            String b = "";
+            for(String s: spaces) {
+                b += "DROP INDEX " + s + ", ";
+            }
+            sql = queryUtil.cleanValues(b, 2);
+        } else {
+            sql += "DROP INDEX " + columns;
+        }
+        return createAlterTableQuery(sql);
+    }
+    /**
      * crear la sentencia para alterar la tabla
      * @param AlterOperation: tipo de operacíon a realizar
      * @return sentencia para alterar la tabla

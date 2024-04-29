@@ -72,6 +72,29 @@ public class MigrationExecution {
         return stm;
     }
     /**
+     * execute create index query
+     * @param unique: if the index is unique
+     * @param columns: columns to create the index
+     * @param stm: executor of statements
+     * @return the executor object
+     */
+    public Statement executeCreateIndex(boolean unique, String columns, Statement stm) throws SQLException {
+        String sql = migrationBuilder.createIndexQuery(unique, columns);
+        if(!sql.isEmpty()) {
+            stm = cursor.createStatement();
+            stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+        }
+        return stm;
+    }
+    public Statement executeDropIndex(String columns, Statement stm) throws SQLException {
+        String sql = migrationBuilder.createDropIndexQuery(columns);
+        if(!sql.isEmpty()) {
+            stm = cursor.createStatement();
+            stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+        }
+        return stm;
+    }
+    /**
      * create a temporary table from model
      * @param model: model to use for table creation
      * @param stm: query execution object
