@@ -146,6 +146,11 @@ public class MigrationDAO {
         return isCreated;
     }
     /**
+     * TODO: add the following
+     * 1- CREATE INDEX
+     * 2- DEFAULT CONSTRAINT
+     */
+    /**
      * create a temporary table in this session.
      * <br> pre: </br> the temporary table name is the same as the instance creation,
      * new MigrationBuilder("user", cursor): user is the table name,
