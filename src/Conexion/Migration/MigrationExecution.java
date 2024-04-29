@@ -86,6 +86,22 @@ public class MigrationExecution {
         }
         return stm;
     }
+    public Statement executeAddDefaultConstraint(String options, Statement stm) throws Exception {
+        String sql = migrationBuilder.getDefaultConstraintQuery(options);
+        if(!sql.isEmpty()) {
+            stm = cursor.createStatement();
+            stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+        }
+        return stm;
+    }
+    public Statement executeDropDefaultConstraint(String columns, Statement stm) throws SQLException {
+        String sql = migrationBuilder.getDropDefaultConstraintQuery(columns);
+        if(!sql.isEmpty()) {
+            stm = cursor.createStatement();
+            stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+        }
+        return stm;
+    }
     public Statement executeDropIndex(String columns, Statement stm) throws SQLException {
         String sql = migrationBuilder.createDropIndexQuery(columns);
         if(!sql.isEmpty()) {

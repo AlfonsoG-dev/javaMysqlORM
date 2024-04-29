@@ -353,12 +353,70 @@ public class MigrationDAO {
         return isAdded;
     }
     /**
-     * TODO: add the following
-     * 2- DEFAULT CONSTRAINT
      */
-    public boolean addDefaultConstraint() {
+    public boolean addDefaultConstraint(String options) {
         boolean isAdded = false;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = migrationExecution.executeAddDefaultConstraint(options, stm).getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
+                System.out.println("[ INFO ]: default constraint has been added");
+                isAdded = true;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
         return isAdded;
+    }
+    public boolean dropDefaultConstraint(String columns) {
+        boolean isDeleted = false;
+        Statement stm = null;
+        ResultSet rst = null;
+        try {
+            rst = migrationExecution.executeDropDefaultConstraint(columns, stm).getGeneratedKeys();
+            if(rst.getMetaData().getColumnCount() > 0) {
+                System.out.println("[ INFO ]: default constriant has been deleted");
+                isDeleted = true;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(rst != null) {
+                try {
+                    rst.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                rst = null;
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+        }
+        return isDeleted;
     }
     /**
      * add constraint mainly for CHECK validation

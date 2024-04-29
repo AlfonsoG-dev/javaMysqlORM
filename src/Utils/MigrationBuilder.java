@@ -312,6 +312,55 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
+     * @param options: column: value
+     * @return the default constraint query
+     */
+    public String getDefaultConstraintQuery(String options) throws Exception {
+        StringBuffer sql = new StringBuffer();
+        if(!options.contains(":")) {
+            throw new Exception(
+                    "[ ERROR ]: default options must have !column: value¡ format"
+            );
+        }
+        sql.append(" ALTER ");
+        if(options.contains(",")) {
+            String[] others = options.trim().split(",");
+            String b = "";
+            for(String o: others) {
+                String[] spaces = o.trim().split(":");
+                b += spaces[0].trim();
+                b += " SET DEFAULT '";
+                b += spaces[1].trim();
+                b += "', ";
+            }
+            sql.append(queryUtil.cleanValues(b, 2));
+        } else {
+            String[] spaces = options.trim().split(":");
+            sql.append(spaces[0].trim());
+            sql.append(" SET DEFAULT '");
+            sql.append(spaces[1].trim());
+            sql.append("'");
+        }
+        return createAlterTableQuery(sql.toString());
+    }
+    public String getDropDefaultConstraintQuery(String columns) {
+        StringBuffer sql = new StringBuffer();
+        sql.append("ALTER ");
+        if(columns.contains(",")) {
+            String[] cols = columns.trim().split(",");
+            String b = "";
+            for(String c: cols) {
+                b += c.trim();
+                b += " DROP DEFAULT, ";
+            }
+            sql.append(queryUtil.cleanValues(b, 2));
+        } else {
+            sql.append(columns);
+            sql.append(" DROP DEFAULT");
+        }
+        return createAlterTableQuery(sql.toString());
+    }
+    /**
      * @param options: columns for constraint. ejm -> edad: 18, ciudad: pasto.
      * @param constraint: constraint operations -> <=, =, >=.
      * @param constraintName: name for the constraint
