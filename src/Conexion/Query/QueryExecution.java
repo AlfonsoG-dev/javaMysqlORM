@@ -160,14 +160,8 @@ public class QueryExecution {
      * @throws SQLException error al ejecutar
      * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executeReadAll(PreparedStatement pstm) throws SQLException {
-        /**
-         * TODO: add the following to the statement
-         * 1- ORDER BY
-         * 2- LIMIT 
-         * 3- GROUP BY
-         */
-        String sql    = "select * from " + table;
+    public ResultSet executeReadAll(PreparedStatement pstm, String order, String group, int limit) throws SQLException {
+        String sql    = queryBuilder.readAllQuery(order, group, limit);
         pstm          = cursor.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
         return rst;

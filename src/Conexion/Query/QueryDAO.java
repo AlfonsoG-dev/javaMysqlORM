@@ -257,12 +257,12 @@ public class QueryDAO<T> {
      * crea una lista de registros con los datos de la bd.
      * @return lista de registros
      */
-    public ArrayList<T> readAll() {
+    public ArrayList<T> readAll(String order, String group, int limit) {
         PreparedStatement pstm  = null;
         ResultSet rst           = null;
         ArrayList<T> resultados = new ArrayList<T>();
         try {
-            rst        = queryExecution.executeReadAll(pstm);
+            rst        = queryExecution.executeReadAll(pstm, order, group, limit);
             int lenght = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 resultados.add(modelBuilderMethods.createFromRST(rst, lenght));

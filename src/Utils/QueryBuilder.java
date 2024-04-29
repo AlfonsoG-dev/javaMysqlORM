@@ -23,6 +23,44 @@ public class QueryBuilder {
         queryUtil = new QueryUtils();
         tbName    = nTableName;
     }
+    private String validationOrden(String validate) {
+        String v = "";
+        if(validate.toUpperCase().contains("ASC") || validate.toUpperCase().contains("DESC")) {
+            v = validate;
+        }
+        return v;
+    }
+    /**
+     * create the read all data query.
+     * @param order: nombre: ASC | DESC
+     * @param group:  nombre: ASC | DESC
+     * @param limit: the number of objects to get
+     * @return the read all data query
+     */
+    public String readAllQuery(String order, String group, int limit) {
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT * FROM ");
+        sql.append(tbName);
+        if(!order.isEmpty()) {
+            String[] separate = order.trim().split(":");
+            sql.append(" ORDER BY ");
+            sql.append(separate[0]);
+            sql.append(" ");
+            sql.append(validationOrden(separate[1]));
+        }
+        if(!group.isEmpty()) {
+            sql.append(" GROUP BY ");
+            String[] separate = group.trim().split(":");
+            sql.append(separate[0]);
+            sql.append(" ");
+            sql.append(validationOrden(separate[1]));
+        } 
+        if(limit > 0) {
+            sql.append(" LIMIT ");
+            sql.append(limit);
+        }
+        return sql.toString();
+    }
     /**
      * crea la query para la sentencia de FindOne
      * @param condition: condition: las columnas a buscar por key, value
