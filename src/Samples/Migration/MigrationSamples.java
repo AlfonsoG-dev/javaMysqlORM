@@ -30,6 +30,15 @@ public class MigrationSamples {
         // it uses the same name as the normal table only adding "t_" at the start.
         myDAO.createTemporaryTable(model);
     }
+    public void sampleCreateIndex() {
+        boolean isUnique = false;
+        String columns = "email, rol";
+        myDAO.createIndex(isUnique, columns);
+    }
+    public void sampleDropIndex() {
+        String columns = "email, rol";
+        myDAO.dropIndex(columns);
+    }
     public void sampleShowTableData() {
         boolean exists = myDAO.showTableData();
         if(exists) {
@@ -56,6 +65,20 @@ public class MigrationSamples {
         if(added) {
             System.out.println("a column has been added");
         }
+    }
+    /**
+     * options = column: value, column: value
+     */
+    public void sampleAddDefaultConstraint() {
+        String options = "rol: testing, email: test@gmail.com";
+        myDAO.addDefaultConstraint(options);
+    }
+    /**
+     * columns = col1, col2
+     */
+    public void sampleDropDefatulConstraint() {
+        String columns = "rol, email";
+        myDAO.dropDefaultConstraint(columns);
     }
     public void sampleAddCheckConstraint() {
         String[] 
