@@ -18,7 +18,7 @@ public record QueryUtils() {
     */
     public String cleanValues(String value, int spaces) {
         StringBuffer buffer = new StringBuffer(value);
-        if(buffer.length() > 0) {
+        if(buffer.length() > 0 && buffer.length()-spaces > 0) {
             return buffer.substring(0, buffer.length()-spaces);
         } else {
             return buffer.toString();
@@ -151,8 +151,11 @@ public record QueryUtils() {
         }
         else {
             for(int i = 0; i < data.length; i++) {
-                String myType = data[i].split(":")[1].stripIndent();
-                types.append("'" + myType + "'" + ",");
+                if(data[i].contains(":")) {
+                    String myType = data[i].split(":")[1].stripIndent();
+                    types.append("'" + myType + "'" + ",");
+                }
+
             }
         }
         return cleanValues(types.toString(), 1);

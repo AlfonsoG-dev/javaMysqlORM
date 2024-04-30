@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import Model.ModelMethods;
+
 import Mundo.TableProperties;
-import Utils.ModelMetadata;
 
 /**
  * clase que representa el modelo de cuentas
@@ -219,16 +219,6 @@ public class Cuenta implements ModelMethods {
             all.append( "update_at: " + this.getUpdate_at());
         }
         return all.toString();
-    }
-
-    /**
-     * crea una cadena de texto con los valores para inicializar el modelo
-     * @return String con los valores para inicializar el modelo
-     */
-    @Override
-    public String initModel() {
-        ModelMetadata metadata = new ModelMetadata("Mundo.Cuentas.Cuenta");
-        return metadata.getModelProperties();
     }
 
 }

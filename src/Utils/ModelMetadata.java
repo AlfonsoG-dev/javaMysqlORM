@@ -18,6 +18,9 @@ public class ModelMetadata {
     public ModelMetadata(String nModelName) {
         modelName = nModelName;
     }
+    public ModelMetadata(Class<?> model) {
+        modelName = model.getName();
+    }
     /**
      * lista de campos de la clase
      * <br> pre: </br> los campos de la clase deben ser `public`

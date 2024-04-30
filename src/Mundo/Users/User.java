@@ -1,12 +1,12 @@
 package Mundo.Users;
 
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 import Model.ModelMethods;
-import Mundo.TableProperties;
-import Utils.ModelMetadata;
 
-import java.time.LocalDateTime;
+import Mundo.TableProperties;
+
 
 /**
  * clase representante del usuario
@@ -208,14 +208,5 @@ public class User implements ModelMethods {
             all.append( "update_at: " + this.getUpdate_at());
         }
         return all.toString();
-    }
-    /**
-     * método que inicializa las propiedades del modelo de base de datos
-     * @return string con las propiedades del modelo de base de datos
-     */
-    @Override
-    public String initModel() {
-        ModelMetadata metadata = new ModelMetadata("Mundo.Users.User");
-        return metadata.getModelProperties();
     }
 }

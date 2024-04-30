@@ -212,7 +212,7 @@ public class QueryBuilder {
             types     = insertData(model.getAllProperties())[0],
             columns   = insertData(model.getAllProperties())[1],
             cTypes    = types.substring(0, types.length()-1),
-            cColumns  = columns.substring(0, columns.length()-1);
+            cColumns  = queryUtil.cleanValues(columns, 1);
 
         return "INSERT INTO " + tbName + " (" + cColumns +") VALUES (" + cTypes + ")";
     }
