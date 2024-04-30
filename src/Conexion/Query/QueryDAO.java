@@ -267,7 +267,7 @@ public class QueryDAO<T> {
             while(rst.next()) {
                 resultados.add(modelBuilderMethods.createFromRST(rst, lenght));
             }
-        } catch(SQLException e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
             if(rst != null) {
@@ -309,7 +309,7 @@ public class QueryDAO<T> {
             while(rst.next()) {
                 buscado = modelBuilderMethods.createFromRST(rst, lenght);
             }
-        } catch(SQLException e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
             if(rst != null) {

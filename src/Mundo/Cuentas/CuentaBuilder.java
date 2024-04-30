@@ -1,7 +1,6 @@
 package Mundo.Cuentas;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import Model.ModelBuilderMethods;
 
@@ -16,18 +15,20 @@ public class CuentaBuilder implements ModelBuilderMethods<Cuenta>{
      * @return la cuenta creada con los datos
      */
     @Override
-    public Cuenta createFromRST(ResultSet rst, int capacity) throws SQLException {
-        String[] data  = resultDataValidator(rst, capacity);
-        Cuenta nCuenta = new Cuenta(
-                Integer.parseInt(data[1]),
-                data[2],
-                data[3],
-                Integer.parseInt(data[4]),
-                data[5],
-                data[6],
-                data[7]
-        );
-        return nCuenta;
+    public Cuenta createFromRST(ResultSet rst, int capacity) throws Exception {
+        Object[] data  = resultDataValidator(rst, capacity);
+        Class<?> c = Cuenta.class;
+
+        Cuenta m = (Cuenta) c.getConstructor(
+                int.class,
+                String.class,
+                String.class,
+                int.class,
+                String.class,
+                String.class,
+                String.class
+        ).newInstance(data);
+        return m;
     }
     /**
      * crea la cuenta con los datos que llegan por parametro en forma de String
@@ -35,18 +36,19 @@ public class CuentaBuilder implements ModelBuilderMethods<Cuenta>{
      * @return la cuenta creada a partir de los daots
      */
     @Override
-    public Cuenta createFromSTR(String datos) {
-        String[] validate = datos.split(",");
-        Cuenta nCuenta    = new Cuenta(
-                Integer.parseInt(validate[0]),
-                validate[1],
-                validate[2],
-                Integer.parseInt(validate[3]),
-                validate[4],
-                validate[5],
-                validate[6]
-        );
-        return nCuenta;
+    public Cuenta createFromSTR(String datos) throws Exception {
+        Object[] validate = datos.split(",");
+        Class<?> c = Cuenta.class;
+        Cuenta m = (Cuenta) c.getConstructor(
+                int.class,
+                String.class,
+                String.class,
+                int.class,
+                String.class,
+                String.class,
+                String.class
+        ).newInstance(validate);
+        return m;
     }
 }
 

@@ -28,11 +28,11 @@ public interface ModelBuilderMethods<T>{
      * @throws SQLException: error el ejecutar la consulta sql
      * @return el objeto T con los datos de la consulta sql
      */
-    public T createFromRST(ResultSet rst, int capacity) throws SQLException;
+    public T createFromRST(ResultSet rst, int capacity) throws Exception;
     /**
      * crea el usuario con los datos de un String
      * @param datos: String con los datos
      * @return el objeto T con los datos del String
      */
-    public T createFromSTR(String datos);
+    public T createFromSTR(String datos) throws Exception;
 }

@@ -1,7 +1,6 @@
 package Mundo.Users;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import Model.ModelBuilderMethods;
 
 /**
@@ -15,18 +14,19 @@ public class UserBuilder implements ModelBuilderMethods<User>{
      * @return usuario creado con los datos
      */
     @Override
-    public User createFromRST(ResultSet rst, int capacity) throws SQLException {
-        String[] data = resultDataValidator(rst, capacity);
-        User nUser    = new User(
-                Integer.parseInt(data[1]),
-                data[2],
-                data[3],
-                data[4],
-                data[5],
-                data[6],
-                data[7]
-        );
-        return nUser;
+    public User createFromRST(ResultSet rst, int capacity) throws Exception {
+        Object[] data = resultDataValidator(rst, capacity);
+        Class<?> c = User.class;
+        User m = (User) c.getConstructor(
+                int.class,
+                String.class,
+                String.class,
+                String.class,
+                String.class,
+                String.class,
+                String.class
+        ).newInstance(data);
+        return m;
     }
     /**
      * crea el usuario con los datos que llegan por parametro en forma de String
@@ -34,18 +34,19 @@ public class UserBuilder implements ModelBuilderMethods<User>{
      * @return el usuario creado a partir de los daots
      */
     @Override
-    public User createFromSTR(String datos) {
-        String[] validate = datos.split(",");
-        User nUser        = new User(
-                Integer.parseInt(validate[0]),
-                validate[1],
-                validate[2],
-                validate[3],
-                validate[4],
-                validate[5],
-                validate[6]
-        );
-        return nUser;
+    public User createFromSTR(String datos) throws Exception {
+        Object[] validate = datos.split(",");
+        Class<?> c = User.class;
+        User m = (User) c.getConstructor(
+                int.class,
+                String.class,
+                String.class,
+                String.class,
+                String.class,
+                String.class,
+                String.class
+        ).newInstance(validate);
+        return m;
     }
 }
 
