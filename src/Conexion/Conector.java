@@ -13,9 +13,6 @@ public class Conector {
     // driver de MySQL
     private final static String mysql_driver      = "com.mysql.cj.jdbc.Driver";
 
-    // driver de postgresql 
-    private final static String postgresql_driver = "org.postgresql.Driver";
-
     // record con los datos de la conexión
     private DbConfig miConfig;
 
@@ -44,23 +41,4 @@ public class Conector {
         }
         return conn;
     }
-    /**
-     * crea la conexión a la base de datos en postgresql
-     * @return la conexión a la base de datos
-     */
-    public Connection conectarPostgreSQL() {
-        Connection conn = null;
-        try {
-            Class.forName(postgresql_driver);
-            conn = DriverManager.getConnection(
-                    miConfig.getPostgresqlUrl(),
-                    miConfig.username(),
-                    miConfig.password()
-            );
-        } catch(ClassNotFoundException | SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        return conn;
-    }
-
 }

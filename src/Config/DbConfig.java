@@ -13,12 +13,4 @@ public record DbConfig(String database, String hostname, String port, String use
         String url = "jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.database;
         return url;
     }
-    /**
-     * crea la url para la conexión a postgresql
-     * @return la url de la conexion
-     */
-    public String getPostgresqlUrl() {
-        String url = "jdbc:postgresql://" + this.hostname + ":" + this.port + "/" + this.database;
-        return url;
-    }
 }
