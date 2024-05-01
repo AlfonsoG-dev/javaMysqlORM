@@ -49,7 +49,7 @@ public class Model implements ModelMethods {
     * primary key for model always need to be id_pk
     * if you put another you have to add id_pk to the end or at the start 
     * ejm: mode_id_pk
-    * /
+    */
     @TableProperties(
         miConstraint = "not null primary key auto_increment",
         miType = "int"
