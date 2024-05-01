@@ -11,6 +11,7 @@ import java.util.List;
 import Model.ModelMethods;
 import Utils.QueryBuilder;
 import Utils.QueryUtils;
+import Utils.Formats.ParamValue;
 
 /**
  * clase para crear la ejecución de las sentencias sql
@@ -105,7 +106,7 @@ public class QueryExecution {
      * @throws SQLException: error of the execution
      * @return 1 if is created, 0 if is not created and -1 if nothing happens
      */
-    public int executeCreateView(Statement stm, String viewName, String condition, String columns,
+    public int executeCreateView(Statement stm, String viewName, ParamValue condition, String columns,
             String type) throws SQLException {
         stm              = cursor.createStatement();
         String
@@ -174,7 +175,7 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
      * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executePreparedFind(PreparedStatement pstm, String condition,
+    public ResultSet executePreparedFind(PreparedStatement pstm, ParamValue condition,
             String type) throws SQLException {
         String 
             sql         = queryBuilder.createPreparedFindQuery(condition, type),
@@ -196,7 +197,7 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
      * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executeFindByColumnName(Statement stm, String condition,
+    public ResultSet executeFindByColumnName(Statement stm, ParamValue condition,
             String type) throws SQLException {
         stm           = cursor.createStatement();
         String sql    = queryBuilder.createFindByColumnQuery(condition, type);
@@ -234,7 +235,7 @@ public class QueryExecution {
      * @throws SQLException: error de ejecución
      * @return {@link ResultSet} of the execution
      */
-    public ResultSet executeFindMinMax(Statement stm, String columns, String condition,
+    public ResultSet executeFindMinMax(Statement stm, ParamValue columns, ParamValue condition,
             String type) throws SQLException {
         stm           = cursor.createStatement();
         String sql    = queryBuilder.createFindMinMaxQuery(
@@ -276,7 +277,7 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
      * @return {@link ResultSet} de la ejecución
     */
-    public ResultSet executeGetValueOfColumnName(Statement stm, String condition, String columns,
+    public ResultSet executeGetValueOfColumnName(Statement stm, ParamValue condition, String columns,
             String type) throws SQLException {
         stm           = cursor.createStatement();
         String sql    = queryBuilder.createFindColumnValueQuery(
@@ -325,9 +326,9 @@ public class QueryExecution {
      * @throws SQLException: exception when trying to execute
      * @return row count or '0' when nothing is returned
      */
-    public int executeInsertByColumns(Statement stm, String options)  throws SQLException {
+    public int executeInsertByColumns(Statement stm, ParamValue options)  throws SQLException {
         String 
-            cOptions = options.trim(),
+            cOptions = options.getCombination().trim(),
             sql = queryBuilder.createInsertByColumnQuery(cOptions);
         stm = cursor.createStatement();
         return stm.executeUpdate(sql);
@@ -343,7 +344,7 @@ public class QueryExecution {
      * @throws SQLException: error while trying to execute
      * @return the row count or 0 when nothing is returned
      */
-    public int executeInsertIntoSelect(Statement stm, String sourceT, String targetT, String condition, 
+    public int executeInsertIntoSelect(Statement stm, String sourceT, String targetT, ParamValue condition, 
             String columns, String type) throws SQLException {
         stm           = cursor.createStatement();
         String 
@@ -371,7 +372,7 @@ public class QueryExecution {
      * @return el {@link ResultSet} de la ejecución
      */
     public ResultSet executeInnerJoin(Statement stm, ModelMethods primary, ModelMethods foreign,
-            String foreignT, String condition, String type) throws SQLException {
+            String foreignT, ParamValue condition, String type) throws SQLException {
         String sql    = queryBuilder.createInnerJoinQuery(
                 primary,
                 foreign,
@@ -393,7 +394,7 @@ public class QueryExecution {
      * @throws SQLException error de la ejecución
      * @return the row count of the statement or '0' when return nothing 
     */
-    public int executeUpdateRegister(Statement stm, ModelMethods model, String conditions, String type)
+    public int executeUpdateRegister(Statement stm, ModelMethods model, ParamValue conditions, String type)
             throws SQLException {
         stm         = cursor.createStatement();
         String sql  = queryBuilder.createModifyRegisterQuery(
@@ -412,7 +413,7 @@ public class QueryExecution {
      * @throws SQLException: error while trying to update
      * @return row count or '0' when nothing is returned
      */
-    public int executePreparedUpdate(PreparedStatement pstm, ModelMethods model, String condition,
+    public int executePreparedUpdate(PreparedStatement pstm, ModelMethods model, ParamValue condition,
             String type) throws SQLException {
         String 
             sql = queryBuilder.createPreparedUpdate(model, condition, type),
@@ -445,7 +446,7 @@ public class QueryExecution {
      * @throws SQLException error al ejecutar
      * @return the row count or '0' when nothing is returned
     */
-    public int executeEliminarRegistro(Statement stm, String condition, String type)
+    public int executeEliminarRegistro(Statement stm, ParamValue condition, String type)
             throws SQLException {
         stm        = cursor.createStatement();
         String sql = queryBuilder.createDeleteRegisterQuery(condition, type);
@@ -458,7 +459,7 @@ public class QueryExecution {
      * @param type: logic type for where clause
      * @return row count or '0' when nothing is returned
      */
-    public int executePreparedDelete(PreparedStatement pstm, String condition, String type) 
+    public int executePreparedDelete(PreparedStatement pstm, ParamValue condition, String type) 
         throws SQLException {
 
         String 

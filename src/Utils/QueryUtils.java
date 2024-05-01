@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import Utils.Formats.ParamValue;
+
 /**
  * record con las herramientas para crear las sentencias sql según los datos del modelo y tabla
  */
@@ -181,8 +183,8 @@ public record QueryUtils() {
      * @param condition: los valores a limpiar
      * @return los valores limpios y combinados
      */
-    public String getValueOfCondition(String condition) {
-        String[] properties = condition.split(", ");
+    public String getValueOfCondition(ParamValue condition) {
+        String[] properties = condition.getCombination().split(", ");
         StringBuffer val = new StringBuffer();
         for(String p: properties) {
             val.append(p.split(":")[1].trim() +",");
@@ -232,9 +234,9 @@ public record QueryUtils() {
      * @param type: logic operator type: and, or, not
      * @return las columnas asignadas el valor
      */
-    public String getPrepareConditional(String condition, String type) {
+    public String getPrepareConditional(ParamValue condition, String type) {
         StringBuffer build = new StringBuffer();
-        String[] properties = condition.split(",");
+        String[] properties = condition.getCombination().split(",");
         for(String p: properties) {
             if(type.toLowerCase().equals("not")) {
                 build.append("not " + p.split(":")[0] + "=" + "?" + " and");
