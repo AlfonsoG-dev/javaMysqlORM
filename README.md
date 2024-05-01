@@ -6,7 +6,7 @@
 # Dependencies
 
 >- [Java JDK 17.0.8](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
->- [mysql connector 8.1.0](https://dev.mysql.com/downloads/connector/j/)
+>- [mysql connector 8.3.0](https://dev.mysql.com/downloads/connector/j/)
 >- [javabuild tool](https://github.com/AlfonsoG-dev/javaBuild)
 
 # References
@@ -38,7 +38,7 @@
 
 # Connection use
 
-[connection_samples](./src/Samples/MainApp.java)
+[connection_samples](./src/Samples/ConnectionSamples.java)
 
 ## Model Creation
 >- A Class can be a model if implements `ModelMethods` interface
