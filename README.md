@@ -1,4 +1,4 @@
-# Java MYSQL ORM 
+# Java MYSQL ORMor fk 
 >- An ORM like app in java.
 >- creates SQL sentences for MYSQL databases using java classes as models.
 >>- i try to replicate an ORM functionality in java for MYSQL.
@@ -43,58 +43,50 @@
 ## Model Creation
 >- A Class can be a model if implements `ModelMethods` interface
 >>- Model Methods have 2 methods and each one have their own purpose.
-
 ```java
-/**
-* this method is to obtain the value of the model
-*/
-@Override
-public String GetAllProperties() {
-    String all = "id_pk: " + this.getId_pk() + "\n";
-    if(this.getNombre() != null && this.getNombre() != "" ) {
-        all +="nombre: " + this.getNombre() + "\n";
+public class Model implements ModelMethods {
+    /**
+    * primary key for model always need to be id_pk
+    * if you put another you have to add id_pk to the end or at the start 
+    * ejm: mode_id_pk
+    * /
+    @TableProperties(
+        miConstraint = "not null primary key auto_increment",
+        miType = "int"
+    )
+    private int id_pk;   
+    /**
+    * a class another class member
+     */
+    @TableProperties(
+        miConstraint = "not null",
+        miType = "varchar(100)"
+    )
+    private String description;
+    public Model() {
     }
-    if(this.getEmail() != null && this.getEmail().isEmpty() == false){
-        all +="email: " + this.getEmail() + "\n";
-    }
-    if(this.getPassword() != null && this.getPassword().isEmpty() == false){
-        all +="password: " + this.getPassword() + "\n";
-    }
-    if(this.getRol() != null && this.getRol().isEmpty() == false){
-        all += "Rol: " + this.getRol() + "\n";
-    }
-    if(this.getCreate_at() != null) {
-        all += "create_at: " + this.getCreate_at() + "\n";
-    }
-    if(this.getUpdate_at() != null) {
-        all += "update_at: " + this.getUpdate_at();
-    }
-    return all;
-}
-/**
-* this method is to obtain the value of the model properties
-*/
-@Override
-public String InitModel() {
-    ModelMetadata metadata = new ModelMetadata("Mundo.Users.User");
-    return metadata.GetModelProperties();
-}
-```
->- in each one of the members of that model is necessary to declare an Annotation
->>- the Annotation is to declara a constraint and type for the table column in the database.
 
-```java
-/**
- * id del usuario
- * solo posee método get
-* */
-@TableProperties(miConstraint = "not null primary key auto_increment", miType = "int")
-private int id_pk;   
-/**
- * nombre del usuario
- * */
-@TableProperties(miConstraint = "not null unique", miType = "varchar(100)")
-private String nombre;
+    // getter and setter
+
+    /**
+    * method to implement from ModelMethods.
+    * is used to get the model data in *column: value* format
+    */
+    @Override
+    public String getAllProperties() {
+        StringBuffer all = new StringBuffer();
+        if(this.getId_pk() > 0) {
+            all.append("id_pk: " + this.getId_pk() + "\n");
+        }
+        if(this.getName() != null) {
+            all.append( "name: " + this.getName() + "\n");
+        }
+        if(this.getDescription() != null) {
+            all.append( "decription: " + this.getDescription());
+        }
+        return all.toString();
+    }
+}
 ```
 >- if the model contains an FK column you must declare the reference inside de Annotation and separate the constraint with `.` before the FK reference
 >>- because of the nature of the migration operation.
@@ -102,8 +94,13 @@ private String nombre;
 ```java
 /**
 * foreign key de la cuenta al usuario
+* you have to add the id_fk to the end or start
+* ejm: model_id_fk | id_fk_model
 */
-@TableProperties(miConstraint = "not null. foreign key('name of the fk') references `name of the table`(name of the pk) on delete cascade on update cascade", miType = "int")
+@TableProperties(
+    miConstraint = "not null. foreign key('name of the fk') references `name of the table`(name of the pk) on delete cascade on update cascade",
+    miType = "int"
+)
 private int user_id_fk;
 
 ```
