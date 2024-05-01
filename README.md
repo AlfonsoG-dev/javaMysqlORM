@@ -1,4 +1,4 @@
-# Java MYSQL ORMor fk 
+# Java MYSQL ORM 
 >- An ORM like app in java.
 >- creates SQL sentences for MYSQL databases using java classes as models.
 >>- i try to replicate an ORM functionality in java for MYSQL.
