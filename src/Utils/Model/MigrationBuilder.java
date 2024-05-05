@@ -1,9 +1,12 @@
-package Utils;
+package Utils.Model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import Model.ModelMethods;
+
+import Utils.Query.QueryBuilder;
+import Utils.Query.QueryUtils;
 
 /**
  * clase para crear las sentencias sql de migracion de datos según el modelo
@@ -18,6 +21,9 @@ public class MigrationBuilder extends QueryBuilder {
      */
     private QueryUtils queryUtil;
     /**
+     */
+    private ModelUtils modelUtils;
+    /**
      * metodo constructor
      * @param nTableName: nombre de la tabla que se utiliza para la creación de la query
      */
@@ -25,6 +31,7 @@ public class MigrationBuilder extends QueryBuilder {
         super(nTableName);
         tableName = nTableName;
         queryUtil = new QueryUtils();
+        modelUtils = new ModelUtils();
     }
     /**
      * crear la base de datos si no existe
@@ -50,11 +57,11 @@ public class MigrationBuilder extends QueryBuilder {
      */
     public String createTableQuery(ModelMethods model, String type) {
         String typeColumn = "", modelInit = model.initModel();
-        String[] columns = queryUtil.getModelColumns(
+        String[] columns = modelUtils.getModelColumns(
                 modelInit,
                 true
         ).split(",");
-        String[] types = queryUtil.getModelType(
+        String[] types = modelUtils.getModelTypes(
                 modelInit,
                 true
         ).split(",");
@@ -136,16 +143,16 @@ public class MigrationBuilder extends QueryBuilder {
     public String createAddColumnQuery(String modelProperties, String refModelProperties, String refTable,
             boolean includePKFK , ResultSet rst) throws SQLException {
         StringBuffer 
-            addColumns = queryUtil.compareColumnName(modelProperties, rst).get("agregar"),
+            addColumns = modelUtils.compareColumnName(modelProperties, rst).get("add"),
             sql        = new StringBuffer();
         if(!addColumns.isEmpty()) {
-            String columns = queryUtil.getModelColumns(addColumns.toString(), includePKFK);
+            String columns = modelUtils.getModelColumns(addColumns.toString(), includePKFK);
             String[] 
                 cleanColumns = queryUtil.cleanValues(columns, 1).split(","),
-                modelTypes   = queryUtil.getModelType(modelProperties, includePKFK).split(","),
-                modelColumns = queryUtil.getModelColumns(modelProperties, includePKFK).split(",");
+                modelTypes   = modelUtils.getModelTypes(modelProperties, includePKFK).split(","),
+                modelColumns = modelUtils.getModelColumns(modelProperties, includePKFK).split(",");
             for(String k: cleanColumns) {
-                int indexType              = queryUtil.searchColumnType(modelProperties, k);
+                int indexType              = modelUtils.getColumnType(modelProperties, k);
                 String clearTypes          = indexType < modelTypes.length ?
                     modelTypes[indexType].replace("'", "") : "null";
                 String clearModelColumns  = indexType < modelColumns.length ?
@@ -190,7 +197,7 @@ public class MigrationBuilder extends QueryBuilder {
      */
     public String createRenameColumnQuery(String modelProperties, ResultSet rst) throws SQLException {
         StringBuffer 
-            renameColumns = queryUtil.compareColumnName(modelProperties, rst).get("rename"),
+            renameColumns = modelUtils.compareColumnName(modelProperties, rst).get("rename"),
             sql           = new StringBuffer();
         if(!renameColumns.isEmpty()) {
             String[] keys = renameColumns.toString().split(", ");
@@ -217,12 +224,12 @@ public class MigrationBuilder extends QueryBuilder {
     public String createChangeTypeQuery(String modelProperties, boolean includePKFK,ResultSet rst) 
             throws SQLException {
             StringBuffer 
-                renameTypes = queryUtil.compareColumnType(modelProperties, rst).get("rename"),
+                renameTypes = modelUtils.compareColumnType(modelProperties, rst).get("rename"),
                 sql = new StringBuffer();
         if(!renameTypes.isEmpty()) {
             String[] 
                 types        = renameTypes.toString().split(", "),
-                modelColumns = queryUtil.getModelColumns(modelProperties, includePKFK).split(",");
+                modelColumns = modelUtils.getModelColumns(modelProperties, includePKFK).split(",");
             for(String t: types) {
                 String type = t.split(":")[0];
                 int index   = Integer.parseInt(t.split(":")[1]);
@@ -250,7 +257,7 @@ public class MigrationBuilder extends QueryBuilder {
     public String createDeleteColumnQuery(String modelProperties, boolean includePKFK, ResultSet rst)
             throws SQLException {
         StringBuffer 
-            deleteColumns = queryUtil.compareColumnName(modelProperties, rst).get("eliminar"),
+            deleteColumns = modelUtils.compareColumnName(modelProperties, rst).get("delete"),
             sql = new StringBuffer();
         if(!deleteColumns.isEmpty()) {
             String[] columns = deleteColumns.toString().split(", ");
@@ -286,7 +293,7 @@ public class MigrationBuilder extends QueryBuilder {
      */
     public String getPkFKConstraintQuery(String addColumns, String refModelProperties, String refTable)
             throws SQLException {
-        String refpk     = queryUtil.getPkFk(refModelProperties).get("pk");
+        String refpk     = modelUtils.getPkFk(refModelProperties).get("pk");
         StringBuffer sql = new StringBuffer();
         String[] columns = addColumns.split(",");
         for(String k: columns) {

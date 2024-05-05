@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import Model.ModelBuilderMethods;
 import Model.ModelMethods;
 
-import Utils.QueryUtils;
+import Utils.Query.QueryUtils;
 import Utils.Formats.ParamValue;
 
 /**

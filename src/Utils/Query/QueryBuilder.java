@@ -1,7 +1,8 @@
-package Utils;
+package Utils.Query;
 
 import Model.ModelMethods;
 import Utils.Formats.ParamValue;
+import Utils.Model.ModelUtils;
 
 /**
  * record con los métodos para crear las queries para las consultas sql
@@ -13,6 +14,9 @@ public class QueryBuilder {
      */
     private static QueryUtils queryUtil;
     /**
+     */
+    private ModelUtils modelUtils;
+    /**
      * nombre de la tabla en base de datos
      */
     private String tbName;
@@ -22,6 +26,7 @@ public class QueryBuilder {
      */
     public QueryBuilder(String nTableName) {
         queryUtil = new QueryUtils();
+        modelUtils = new ModelUtils();
         tbName    = nTableName;
     }
     private String validationOrden(String validate) {
@@ -185,8 +190,8 @@ public class QueryBuilder {
     private String[] insertData(String modelData) {
         String[] 
             build   = new String[2],
-            types   = queryUtil.getModelType(modelData, true).split(","),
-            columns = queryUtil.getModelColumns(modelData, true).split(",");
+            types   = modelUtils.getModelTypes(modelData, true).split(","),
+            columns = modelUtils.getModelColumns(modelData, true).split(",");
         StringBuffer 
             type   = new StringBuffer(),
             column = new StringBuffer();
@@ -278,7 +283,7 @@ public class QueryBuilder {
                 primary.getAllProperties(),
                 this.tbName
             ),
-            pkfk         = queryUtil.innerJoinConditional(
+            pkfk         = queryUtil.getInnerJoinConditional(
                 primary.getAllProperties(),
                 foreign.getAllProperties(),
                 this.tbName,

@@ -2,7 +2,7 @@ package Samples.Models;
 
 import Model.ModelMethods;
 import Mundo.TableProperties;
-import Utils.ModelMetadata;
+import Utils.Model.ModelMetadata;
 
 public class Model implements ModelMethods {
 

@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Model.ModelMethods;
-import Utils.QueryBuilder;
-import Utils.QueryUtils;
+
+import Utils.Query.QueryBuilder;
+import Utils.Query.QueryUtils;
+import Utils.Model.ModelUtils;
 import Utils.Formats.ParamValue;
 
 /**
@@ -35,6 +37,10 @@ public class QueryExecution {
      * clase con las herramientas para crear las querys
      */
     private QueryUtils queryUtil;
+    /**
+     *
+     */
+    private ModelUtils modelUtils;
 
     //constructor
 
@@ -46,6 +52,7 @@ public class QueryExecution {
         table        = tbName;
         queryBuilder = new QueryBuilder(tbName);
         queryUtil    = new QueryUtils();
+        modelUtils   = new ModelUtils();
         cursor       = miConector;
     }
     /**
@@ -312,7 +319,7 @@ public class QueryExecution {
     public int executeInsertPreparedInsert(PreparedStatement pstm, ModelMethods model) throws SQLException {
         String sql = queryBuilder.createPreparedInsert(model);
         pstm = cursor.prepareStatement(sql);
-        String[] fields = queryUtil.getModelType(model.getAllProperties(), true).split(",");
+        String[] fields = modelUtils.getModelTypes(model.getAllProperties(), true).split(",");
         for(int i=0; i<fields.length; ++i) {
             pstm.setString((i+1), fields[i].trim().replace("'", ""));
         }
@@ -418,7 +425,7 @@ public class QueryExecution {
         String 
             sql = queryBuilder.createPreparedUpdate(model, condition, type),
             valCondition = queryUtil.getValueOfCondition(condition),
-            modelValues  = queryUtil.getModelType(model.getAllProperties(), true);
+            modelValues  = modelUtils.getModelTypes(model.getAllProperties(), true);
         pstm = cursor.prepareStatement(sql);
         String[] 
             setValues = modelValues.split(","),

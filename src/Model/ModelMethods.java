@@ -1,6 +1,6 @@
 package Model;
 
-import Utils.ModelMetadata;
+import Utils.Model.ModelMetadata;
 
 /**
  * interface con el método que retorna las propiedades de la clase

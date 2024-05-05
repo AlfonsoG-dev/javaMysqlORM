@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import Model.ModelMethods;
-import Utils.MigrationBuilder;
+import Utils.Model.MigrationBuilder;
 
 /**
  * clase para la ejecución de la migración del modelo
