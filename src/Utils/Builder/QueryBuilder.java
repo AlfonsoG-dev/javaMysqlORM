@@ -1,35 +1,42 @@
-package Utils.Query;
+package Utils.Builder;
 
 import Model.ModelMethods;
+
+import Utils.Query.QueryUtils;
 import Utils.Formats.ParamValue;
 import Utils.Model.ModelUtils;
 
 /**
- * record con los métodos para crear las queries para las consultas sql
- * @param tb_name: nombre de la tabla en la cual se ejecutan las sentencias sql
- * */
+ * record class with helper methods for building sql queries
+ */
 public class QueryBuilder {
     /**
-     * utilidades para las querys
+     * query utils for sql statement
      */
     private static QueryUtils queryUtil;
     /**
+     * model utils for sql statements
      */
     private ModelUtils modelUtils;
     /**
-     * nombre de la tabla en base de datos
+     * table name
      */
     private String tbName;
     /**
-     * metodo constructor
-     * @param nTableName: nombre de la tabla que se utiliza para la creación de la query
+     * {@link java.lang.reflect.Constructor}
+     * @param nTableName: table name
      */
     public QueryBuilder(String nTableName) {
         queryUtil = new QueryUtils();
         modelUtils = new ModelUtils();
         tbName    = nTableName;
     }
-    private String validationOrden(String validate) {
+    /**
+     * validate if the sql is orderer with ASC | DESC 
+     * @param validate: the sql query to validate
+     * @return the validated query
+     */
+    protected String validationOrden(String validate) {
         String v = "";
         if(validate.toUpperCase().contains("ASC") || validate.toUpperCase().contains("DESC")) {
             v = validate;
@@ -68,51 +75,80 @@ public class QueryBuilder {
         return sql.toString();
     }
     /**
-     * crea la query para la sentencia de FindOne
-     * @param condition: condition: las columnas a buscar por key, value
-     * @param type: tipo de condicion para la sentencia sql
-     * @return: el usuario buscado
+     * create the sql query using prepared statements 
+     * @param condition: where clause condition
+     * @param type: logic type for where clause
+     * @return the sql query
      */
     public String createPreparedFindQuery(ParamValue condition, String type) {
-        String whereClause = "";
+        StringBuffer
+            sql = new StringBuffer(),
+            whereClause = new StringBuffer();
         if(condition != null && !condition.getCombination().isEmpty()) {
-            whereClause = " WHERE " + queryUtil.getPrepareConditional(condition, type);
+            whereClause.append(" WHERE ");
+            whereClause.append(queryUtil.getPrepareConditional(condition, type));
         }
-        return "SELECT *" + " FROM "+ tbName + whereClause;
+        if(!whereClause.isEmpty()) {
+            sql.append("SELECT *");
+            sql.append(" FROM ");
+            sql.append(tbName);
+            sql.append(whereClause);
+        }
+        return sql.toString();
     }
     /**
-     * crea la query para la sentencia FindByColumnName
-     * @param condition: las columnas a buscar por key, value
-     * @param type: tipo de condicion para la sentencia sql
-     * @return: el usuario buscado
+     * create a sql query to select using columns
+     * @param condition: where clause condition
+     * @param type: logic type for where clause
+     * @return a sql query
      */
     public String createFindByColumnQuery(ParamValue condition, String type) {
-        String whereClause = "";
+        StringBuffer
+            sql = new StringBuffer(),
+            whereClause = new StringBuffer();
         if(condition != null && !condition.getCombination().isEmpty()) {
-            whereClause = " WHERE " + queryUtil.getNormalConditional(condition.getCombination(), type);
+            whereClause.append(" WHERE ");
+            whereClause.append(queryUtil.getNormalConditional(condition, type));
         }
-        return "SELECT *" + " FROM " + tbName + whereClause;
+        if(!whereClause.isEmpty()) {
+            sql.append("SELECT *");
+            sql.append(" FROM ");
+            sql.append(tbName);
+            sql.append(whereClause);
+        }
+        return sql.toString();
     }
     /**
-     * crea la query para la sentencia GetValueOfColumnName
-     * @param condition: los valores de condicion
-     * @param column: los valores a retornar
-     * @param type: tipo de condicion para la sentencia sql
-     * @return la sentencia sql con los valores a retornar y los valores de condicion
+     * create a sql query to select using column value
+     * @param condition: where clause condition
+     * @param column: the column to select
+     * @param type: logic type for where clause
+     * @return the sql query
      */
     public String createFindColumnValueQuery(ParamValue condition, String columns, String type) {
-        String whereClause = "";
+        StringBuffer 
+            sql = new StringBuffer(),
+            whereClause = new StringBuffer();
         if(condition != null && !condition.getCombination().isEmpty()) {
-            whereClause = " WHERE " + queryUtil.getNormalConditional(condition.getCombination(), type);
+            whereClause.append(" WHERE ");
+            whereClause.append(queryUtil.getNormalConditional(condition, type));
         }
-        return "SELECT "+ columns + " FROM " + tbName + whereClause;
+        if(!whereClause.isEmpty()) {
+            sql.append("SELECT ");
+            sql.append(columns);
+            sql.append(" FROM ");
+            sql.append(tbName);
+            sql.append(whereClause);
+        }
+        return sql.toString();
     }
     /**
      * crea la query para la buscar un registro dentro de varias posibilidades
+     * create a sql query to select using IN operator
      * @param returnColumns: columns to return
      * @param conditionalColumns: columns to search in condition
      * @param condition: type of condition in ('', '')
-     * @return la sentencia sql para buscar dentro de una lista de datos
+     * @return the sql query
      */
     public String createFindInQuery(String returnColumns, String conditionalColumns, String condition,
             String type) {
@@ -147,11 +183,11 @@ public class QueryBuilder {
         return sql;
     }
     /**
-     * crea la query para buscar un registro usando un patron
-     * @param pattern: patrón a buscar
-     * @param columns: columnas con los datos
-     * @param type: tipo de condicion para la sentencia sql
-     * @return la sentencia sql para buscar por patrón
+     * create a sql query to select using patterns
+     * @param pattern: the search pattern
+     * @param conditions: the where clause condition
+     * @param type: logic type for where clause
+     * @return the sql query
      */
     public String createFindPatternQuery(String pattern, String[] conditions, String type) {
         String whereClause = "";
@@ -162,32 +198,30 @@ public class QueryBuilder {
                     type
             );
         }
-        return "SELECT * FROM "  + this.tbName + whereClause;
+        return "SELECT * FROM " + tbName + whereClause;
     }
     /**
-     * crea la query para buscar el min o max de la tabla.
-     * select min(column) as alias_name from table where condition;
-     * <br> pre: </br> utilizando columna tipo varchar el resultado es en orden alfabetico, de lo contrario 
-     * se ordena numericamente
+     * create a sql query to find using min max.
      * @param columns: 'min: nombre, max: password'
      * @param condition: condition for where clause
      * @param type: and or not
+     * @return the sql query
      */
     public String createFindMinMaxQuery(ParamValue columns, ParamValue condition, String type) {
         String 
             whereClause    = "",
             minMaxSelection = queryUtil.getMinMaxSelection(columns.getCombination());
         if(condition != null && !condition.getCombination().isEmpty()) {
-            whereClause = " WHERE " + queryUtil.getNormalConditional(condition.getCombination(), type);
+            whereClause = " WHERE " + queryUtil.getNormalConditional(condition, type);
         }
         return "SELECT " + minMaxSelection + " FROM " + tbName + whereClause;
     }
     /**
      * allows to build the insert statement query without PK and including FK
      * @param model: model with table creation data 
-     * @return an Array of string with the types and columns for the insert statement
+     * @return an Array of strings with the types and columns for the insert statement
      */
-    private String[] insertData(String modelData) {
+    protected String[] insertData(String modelData) {
         String[] 
             build   = new String[2],
             types   = modelUtils.getModelTypes(modelData, true).split(","),
@@ -209,9 +243,9 @@ public class QueryBuilder {
         return build;
     }
     /**
-     * crea la sentencia sql para el registro de datos
+     * create the sql query to insert statement
      * @param model: model with the data to insert
-     * @return la sentencia sql para registrar
+     * @return the sql query
      */
     public String createInsertRegisterQuery(ModelMethods model) {
         String 
@@ -227,11 +261,11 @@ public class QueryBuilder {
      * @param columns: model columns
      * @return a {@link String} with the question marks
      */
-    private String replaceColumForQuestionMark(String columns) {
-        String b = "";
+    protected String replaceColumForQuestionMark(String columns) {
+        StringBuffer b = new StringBuffer();
         String[] separate = columns.split(",");
         for(int i=0; i<separate.length; ++i) {
-            b += "?,";
+            b.append("?,");
         }
         return b.substring(0, b.length()-1);
     }
@@ -239,9 +273,9 @@ public class QueryBuilder {
      * create the sql query to insert using {@link PreparedStatement}
      * @param model: model with the data to insert
      * @param the sql insert statement
+     * @return the sql query
      */
     public String createPreparedInsert(ModelMethods model) {
-
         String 
             columns   = insertData(model.getAllProperties())[1],
             cColumns  = columns.substring(0, columns.length()-1),
@@ -264,13 +298,13 @@ public class QueryBuilder {
         return "INSERT INTO " + tbName + " (" + cColumns + ") VALUES (" + cTypes + ")";
     }
     /**
-     * crea la sentencia sql para el inner join
+     * creates the sql query for inner join
      * @param primary: model with the declaration of fk
      * @param foreign: foreign model of the relationship
      * @param foreignT: foreign table name
      * @param condition: condition for where clause
      * @param type: logic type for where clause
-     * @return la sentencia sql para inner join
+     * @return the sql query
      */
     public String createInnerJoinQuery(ModelMethods primary, ModelMethods foreign, String foreignT,
             ParamValue condition, String type) {
@@ -297,7 +331,7 @@ public class QueryBuilder {
                 " INNER JOIN " + foreignT + " ON " + pkfk;
         } else {
             String conditional = queryUtil.getNormalConditional(
-                    condition.getCombination(),
+                    condition,
                     type
             );
             sql =
@@ -309,23 +343,27 @@ public class QueryBuilder {
         return sql;
     }
     /** 
-     * crear la sentencia sql para modificar los datos
+     * creates the sql query to update data.
      * @param model: model with the data to insert
-     * @param condicional: propiedades para la condición de la sentencia sql
-     * @param type: tipo de condicion para la sentencia sql
-     * @return la sentencia sql para modificar
+     * @param condicional: conditional for where clause
+     * @param type: logic type for where clause
+     * @return the sql query
      */
     public String createModifyRegisterQuery(ModelMethods model, ParamValue condicional, String type) {
         String 
             whereClause     = "",
             cleanKeyValue = queryUtil.getAsignModelValues(model.getAllProperties());
         if(condicional != null && !condicional.getCombination().isEmpty()) {
-            whereClause = " WHERE " + queryUtil.getNormalConditional(condicional.getCombination(), type);
+            whereClause = " WHERE " + queryUtil.getNormalConditional(condicional, type);
         }
         return "UPDATE " + tbName + " SET " +  cleanKeyValue + whereClause;
    }
    /**
-    * creates the preparedUpdate statement
+    * creates the sql query to update data using prepared statement
+    * @param model: model with the data
+    * @param conditional: where clause condition
+    * @param type: logic type for where clause
+    * @return the sql query
     */
    public String createPreparedUpdate(ModelMethods model, ParamValue conditional, String type) {
        String 
@@ -334,23 +372,23 @@ public class QueryBuilder {
        return "UPDATE " + tbName + " SET " + pValues + " WHERE " + pConditional;
    }
    /**
-    * crear la sentencia sql para eliminar el registro
-    * @param condition: las columnas con los valores para el condicional
-    * @param type: tipo de condicion para la sentencia sql
-    * @return la sentencia sql
+    * creates the sql query to delete data.
+    * @param condition: where clause condition
+    * @param type: logic type for where clause
+    * @return the sql query
     **/
    public String createDeleteRegisterQuery(ParamValue condition, String type) {
        String whereClause = "";
        if(condition != null && !condition.getCombination().isEmpty()) {
-           whereClause = queryUtil.getNormalConditional(condition.getCombination(), type);
+           whereClause = queryUtil.getNormalConditional(condition, type);
        }
        return "DELETE FROM " + tbName + " WHERE " + whereClause;
    }
    /**
-    * delete statement query builder
+    * creates the sql query to detele data.
     * @param condition: where clause condition
     * @param type: logic type for where clause
-    * @return delete statement query
+    * @return the sql query
     */
    public String createPreparedDeleteQuery(ParamValue condition, String type) {
        String whereClause = "";

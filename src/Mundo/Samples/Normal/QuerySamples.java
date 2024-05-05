@@ -1,4 +1,4 @@
-package Samples.Normal;
+package Mundo.Samples.Normal;
 
 import java.sql.Connection;
 import java.util.ArrayList;

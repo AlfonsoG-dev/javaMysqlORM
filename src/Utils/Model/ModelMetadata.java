@@ -5,28 +5,31 @@ import java.util.ArrayList;
 
 
 /**
- * clase para obtener las propiedades del modelo
+ * class that has the model annotation values which represents, constraint and type of table
  */
 public class ModelMetadata {
     /**
-     * nombre del modelo
+     * model or table name
      */
     private String modelName;
     /**
-     * constructor
+     * {@link java.lang.reflect.Constructor}
+     * this one is created using model name as {@link String}
      */
     public ModelMetadata(String nModelName) {
         modelName = nModelName;
     }
+    /**
+     * {@link java.lang.reflect.Constructor}
+     * this one is created using class reflect
+     */
     public ModelMetadata(Class<?> model) {
         modelName = model.getName();
     }
     /**
-     * lista de campos de la clase
-     * <br> pre: </br> los campos de la clase deben ser `public`
-     * @param model: nombre de la clase
+     * list declare class fields.
      * @throws ClassNotFoundException: error al buscar la clase
-     * @return la lista de los campos de la clase
+     * @return list of class fields.
      */
     private Field[] getModelFiedls() throws ClassNotFoundException {
         Class<?> miClase = Class.forName(modelName);
@@ -34,9 +37,8 @@ public class ModelMetadata {
         return myFields;
     }
     /**
-     * generar las columnas del modelo en base a los campos del mismo
-     * @param model: nombre del modelo
-     * @return las columnas del modelo
+     * model columns are the attributes names
+     * @return columns or attributes names
      */
     private String getModelColumns() {
         StringBuffer resultado = new StringBuffer();
@@ -53,8 +55,7 @@ public class ModelMetadata {
         return resultado.substring(0, resultado.length()-2);
     }
     /**
-     * genera una lista de annotations del modelo
-     * @return la lista de annotations del modelo
+     * list of class annotations.
      */
     private ArrayList<Annotation[]> getModelAnnotations() {
         ArrayList<Annotation[]> resultado = new ArrayList<>();
@@ -72,11 +73,6 @@ public class ModelMetadata {
         }
         return resultado;
     }
-    /**
-     * genera un String con los datos de las annotations segun un tipo
-     * @param type: el tipo de annotations a generar
-     * @return un String con los datos de las annotations
-     */
     private String getAnnotationConstraint() {
         StringBuffer constraint = new StringBuffer();
         ArrayList<Annotation[]> misAnnotations = getModelAnnotations();
@@ -86,9 +82,7 @@ public class ModelMetadata {
         return constraint.substring(0, constraint.length()-5);
     }
     /**
-     * genera un String con el constraint de cada columna en orden
-     * <br> pre: </br> el orden en el que se crean los datos debe ser el mismo de las annotations
-     * @return un String con los constraint de cada columna
+     * constraint part of model annotations
      */
     private String getModelColumConstraint() {
         try {
@@ -113,9 +107,7 @@ public class ModelMetadata {
         }
     }
     /**
-     * genera un String con el tipo de dato de cada columna
-     * <br> pre: </br> el orden en el que se crean los datos debe ser el mismo de las annotations
-     * @return un String con el tipo de dato de cada columna
+     * type part of model annotations
      */
     private String getModelColumnType() {
         try {
@@ -145,8 +137,7 @@ public class ModelMetadata {
         }
     }
     /**
-     * genera un String con los datos combinados del modelo
-     * @return el string con los datos del modelo
+     * model column: type format.
      */
     public String getModelProperties() {
         StringBuffer build = new StringBuffer();

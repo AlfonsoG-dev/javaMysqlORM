@@ -1,4 +1,4 @@
-package Samples;
+package Mundo.Samples;
 
 import java.sql.Connection;
 

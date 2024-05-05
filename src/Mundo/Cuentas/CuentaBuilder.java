@@ -9,10 +9,7 @@ import Model.ModelBuilderMethods;
  */
 public class CuentaBuilder implements ModelBuilderMethods<Cuenta>{
     /**
-     * crea la cuenta con los datos del ResultSet
-     * @param rst: el resultado de la consulta sql
-     * @param capacity: tamaño de la lista de datos
-     * @return la cuenta creada con los datos
+     * creates an account using rst.
      */
     @Override
     public Cuenta createFromRST(ResultSet rst, int capacity) throws Exception {
@@ -31,9 +28,7 @@ public class CuentaBuilder implements ModelBuilderMethods<Cuenta>{
         return m;
     }
     /**
-     * crea la cuenta con los datos que llegan por parametro en forma de String
-     * @param datos: datos del usuario a crear
-     * @return la cuenta creada a partir de los daots
+     * creates an account using string
      */
     @Override
     public Cuenta createFromSTR(String datos) throws Exception {

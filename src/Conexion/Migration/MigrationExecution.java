@@ -6,26 +6,29 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import Model.ModelMethods;
-import Utils.Model.MigrationBuilder;
+import Utils.Builder.MigrationBuilder;
+import Utils.Formats.ParamValue;
 
 /**
- * clase para la ejecución de la migración del modelo
+ * class for execution of sql query
  */
 public class MigrationExecution {
     /**
-     * nombre de la tabla
+     * table name
      */
     private String tableName;
     /**
-     * operador de la base de datos
+     * {@link Connection} instance
      */
     private Connection cursor;
     /**
-     * clase que crea las sentencias sql para la migración
+     * migration sql query builder
      */
     private MigrationBuilder migrationBuilder;
     /**
-     * constructo
+     * {@link java.lang.reflect.Constructor}
+     * @param nTableName: table name
+     * @param miCursor: {@link Connection} instance
      */
     public MigrationExecution(String nTableName, Connection miCursor) {
         tableName        = nTableName;
@@ -33,11 +36,11 @@ public class MigrationExecution {
         cursor           = miCursor;
     }
     /**
-     * crea la base de datos si esta no existe
-     * @param DbName: nombre de la base de datos a crear
-     * @param stm: ejecutor de la sentencia sql
-     * @throws SQLException error al ejecutar la sentencia sql
-     * @return ejecutor de la sentencia
+     * execute create database query
+     * @param dbName: database schema name
+     * @param stm: {@link Statement}
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link Statement}
      */
     public Statement executeCreateDatabase(String dbName) throws SQLException {
         String sql    = migrationBuilder.createDataBaseQuery(dbName);
@@ -46,11 +49,11 @@ public class MigrationExecution {
         return stm;
     }
     /**
-     * seleccionar la base de datos
-     * @param DbName: nombre de la base de datos
-     * @param stm: ejecutor de la sentencia sql
-     * @throws SQLException: error al ejecutar la sentencia sql
-     * @return el ejecutor de la sentencia
+     * execute use or select database query.
+     * @param dbName: database schema name
+     * @param stm: {@link Statement}
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link Statement}
      */
     public Statement executeSelectDatabase(String dbName, Statement stm) throws SQLException {
         String sql = migrationBuilder.createSelectDatabase(dbName);
@@ -59,11 +62,11 @@ public class MigrationExecution {
         return stm;
     }
     /**
-     * crea la tabla si esta no existe
-     * @param model: modelo con los datos para crear la tabla
-     * @param stm: ejecutor de la sentencia sql
-     * @throws SQLException error al ejecutar la sentencia sql
-     * @return resultado de la ejecución de la sentencia sql
+     * execute create table query.
+     * @param model: model of table to create
+     * @param stm: {@link Statement}
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link Statement}
      */
     public Statement executeCreateTable(ModelMethods model, Statement stm) throws SQLException {
         String sql = migrationBuilder.createTableQuery(model, "n");
@@ -86,7 +89,14 @@ public class MigrationExecution {
         }
         return stm;
     }
-    public Statement executeAddDefaultConstraint(String options, Statement stm) throws Exception {
+    /**
+     * execute add default constraint query
+     * @param options: default constraint values
+     * @param stm: {@link Statement}
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link Statement}
+     */
+    public Statement executeAddDefaultConstraint(ParamValue options, Statement stm) throws Exception {
         String sql = migrationBuilder.getDefaultConstraintQuery(options);
         if(!sql.isEmpty()) {
             stm = cursor.createStatement();
@@ -94,6 +104,10 @@ public class MigrationExecution {
         }
         return stm;
     }
+    /**
+     * execute delete default constraint query
+     * @param columns: default constraint column name
+     */
     public Statement executeDropDefaultConstraint(String columns, Statement stm) throws SQLException {
         String sql = migrationBuilder.getDropDefaultConstraintQuery(columns);
         if(!sql.isEmpty()) {
@@ -102,6 +116,10 @@ public class MigrationExecution {
         }
         return stm;
     }
+    /**
+     * execute drop index query
+     * @param columns: index name
+     */
     public Statement executeDropIndex(String columns, Statement stm) throws SQLException {
         String sql = migrationBuilder.createDropIndexQuery(columns);
         if(!sql.isEmpty()) {
@@ -124,10 +142,7 @@ public class MigrationExecution {
         return stm;
     }
     /**
-     * ejecuta la sentencia para mostrar los datos de la tabla
-     * @param stm: ejecutor de la sentencias sql
-     * @return resultado de la ejecución
-     * @throws SQLException error al ejecutar
+     * execute show table query.
      */
     public ResultSet executeShowTableData(Statement stm) throws SQLException {
         String sql    = "show columns from " + this.tableName;
@@ -136,11 +151,7 @@ public class MigrationExecution {
         return rst;
     }
     /**
-     * agrega las columnas del modelo a la tabla
-     * @param model: modelo con las columnas para la tabla
-     * @param stm: ejecutor de la sentencia sql
-     * @throws SQLException error al ejecutar la sentencia sql
-     * @return el ejecutor de la sentencia
+     * execute add table column from model
      */
     public Statement executeAddColumn(ModelMethods model, ModelMethods refModel, String refTable,
             boolean includePKFK, Statement stm) throws SQLException {
@@ -194,11 +205,7 @@ public class MigrationExecution {
         return stm;
     }
     /**
-     * renombra una columna de la tabla según el modelo
-     * @param model: modelo con la columna a renombrar
-     * @param stm: ejecutor de la sentencia sql
-     * @throws SQLException: error al ejecutar la sentencia sql
-     * @return el ejecutor de la sentencia
+     * execute rename column from model
      */
     public Statement exceuteRenameColumn(ModelMethods model, Statement stm) throws SQLException {
         ResultSet rst = executeShowTableData(stm);
@@ -210,11 +217,7 @@ public class MigrationExecution {
         return stm;
     }
     /**
-     * modifica el tipo de dato una columna de la tabla con el que esta presente en el modelo
-     * @param model: modelo con el tipo a modificar
-     * @param stm: ejecutor de la sentencia sql
-     * @throws SQLException: error al ejecutar la sentencia sql
-     * @return el ejecutor de la sentencia
+     * execute change table column type from model
      */
     public Statement executeChangeColumnType(ModelMethods model, boolean includePKFK, Statement stm)
             throws SQLException {
@@ -227,11 +230,7 @@ public class MigrationExecution {
         return stm;
     }
     /**
-     * elimina una columna de la tabla según el modelo
-     * @param model: modelo con las columnas
-     * @param stm: ejecutor de la sentencia sql
-     * @throws SQLException: error al ejecutar la sentencia sql
-     * @return el ejecutor de la sentencia
+     * delete table column from model.
      */
     public Statement executeDeleteColumn(ModelMethods model, boolean includePKFK, Statement stm) 
             throws SQLException {

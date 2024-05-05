@@ -6,18 +6,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import Model.ModelMethods;
+import Utils.Formats.ParamValue;
 
 /**
- * clase para la migración del modelo 
+ * class for migration operations
  */
 public class MigrationDAO {
 
     /**
-     * ejecutor de la sentencia sql
+     * sql query execution for migration queries
      */
     private MigrationExecution migrationExecution;
     /**
-     * database Connection cursor
+     * {@link Connection} instance
      */
     private Connection cursor;
     /**
@@ -25,7 +26,7 @@ public class MigrationDAO {
      */
     private String tableName;
     /**
-     * constructor
+     * {@link java.lang.reflect.Constructor}
      */
     public MigrationDAO(String nTableName, Connection miCursor) {
         cursor             = miCursor;
@@ -33,16 +34,16 @@ public class MigrationDAO {
         migrationExecution = new MigrationExecution(tableName, cursor);
     }
     /**
-     * crea la base de datos
-     * @param DbName: nombre de la base de datos
-     * @return true si la base de datos fue creada false de lo contrario
+     * create a database schema
+     * @param DbName
+     * @return true if its created, false otherwise
      */
-    public boolean createDataBase(String DbName) {
+    public boolean createDataBase(String dbName) {
         Statement stm     = null;
         ResultSet rst     = null;
         boolean isCreated = false;
         try {
-            stm = migrationExecution.executeCreateDatabase(DbName);
+            stm = migrationExecution.executeCreateDatabase(dbName);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 System.out.println("[ INFO ]:  database has been created");
@@ -71,16 +72,16 @@ public class MigrationDAO {
         return isCreated;
     }
     /**
-     * seleccionar una base de datos
-     * @param DbName: nombre de la base de datos
-     * @return true si se selecciona la base de datos, false de lo contrario
+     * use or select a database
+     * @param dbName: database name
+     * @return true if its selected, false otherwise
      */
-    public boolean selecDatabase(String DbName) {
+    public boolean selecDatabase(String dbName) {
         Statement stm     = null;
         ResultSet rst     = null;
         boolean isSelected = false;
         try {
-            stm = migrationExecution.executeSelectDatabase(DbName, stm);
+            stm = migrationExecution.executeSelectDatabase(dbName, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 isSelected = true;
@@ -109,9 +110,9 @@ public class MigrationDAO {
         return isSelected;
     }
     /**
-     * crea la tabla si esta no existe
-     * @param model: modelo con los datos para crear la tabla
-     * @return true si creo la tabla de lo contrario false
+     * create table operation
+     * @param model: modelo to create
+     * @return true if its created, false otherwise
      */
     public boolean createTable(ModelMethods model) {
         Statement stm     = null;
@@ -184,6 +185,11 @@ public class MigrationDAO {
         }
         return isCreated;
     }
+    /**
+     * delete index operation
+     * @param columns: index column name
+     * @return true if its deleted, false otherwise
+     */
     public boolean dropIndex(String columns) {
         boolean isDeleted = false;
         Statement stm = null;
@@ -261,6 +267,9 @@ public class MigrationDAO {
         }
         return isCreated;
     }
+    /**
+     * helper function to print some data
+     */
     protected void printTableData(ResultSet rst) throws SQLException {
         int cols = rst.getMetaData().getColumnCount();
         while(rst.next()) {
@@ -270,9 +279,8 @@ public class MigrationDAO {
         }
     }
     /**
-     * muestra los datos de la tabla
-     * @param model: modelo con los datos
-     * @return resultado de la consulta
+     * show table data.
+     * @return true if the table can show data, false otherwise
      */
     public boolean showTableData() {
         Statement stm     = null;
@@ -308,20 +316,23 @@ public class MigrationDAO {
         return isShowing;
     }
     /**
-     * agrega las columnas que no estan presentes en la tabla pero si en el modelo
-     * @param model: modelo con las columnas a agregar
-     * @return true si se agrega de lo contrario false
+     * add columns using model as reference
+     * @param primaryM: model with the fk declaration of foreignM pk
+     * @param foreignM: model with the pk reference in primaryM fk
+     * @param foreignT: foreign table name
+     * @param includePKFK: true or false to include pk or fk
+     * @return true if the columns are added, false otherwise
      */
-    public boolean addColumn(ModelMethods localModel, ModelMethods refModel, String refTable,
+    public boolean addColumn(ModelMethods primaryM, ModelMethods foreignM, String foreignT,
             boolean includePKFK) {
         Statement stm     = null;
         ResultSet rst     = null;
         boolean isAdded = false;
         try {
             stm = migrationExecution.executeAddColumn(
-                    localModel,
-                    refModel,
-                    refTable,
+                    primaryM,
+                    foreignM,
+                    foreignT,
                     includePKFK,
                     stm
             );
@@ -353,8 +364,11 @@ public class MigrationDAO {
         return isAdded;
     }
     /**
+     * add a default constraint.
+     * @param options: default constraint value
+     * @return true if its added, false otherwise
      */
-    public boolean addDefaultConstraint(String options) {
+    public boolean addDefaultConstraint(ParamValue options) {
         boolean isAdded = false;
         Statement stm = null;
         ResultSet rst = null;
@@ -386,6 +400,11 @@ public class MigrationDAO {
         }
         return isAdded;
     }
+    /**
+     * delete a default constraint
+     * @param columns: default constraint column name
+     * @return true if its deleted, false otherwise
+     */
     public boolean dropDefaultConstraint(String columns) {
         boolean isDeleted = false;
         Statement stm = null;
@@ -551,9 +570,9 @@ public class MigrationDAO {
         return isDeleted;
     }
     /**
-     * renombrar una columna de la tabla según el modelo
-     * @param model: modelo con las columnas a renombrar
-     * @return true si cambio el nombre de lo contrario false;
+     * rename column operation.
+     * @param model: model to delete
+     * @return true if its deleted, false otherwise
      */
     public boolean renameColumn(ModelMethods model) {
         Statement stm     = null;
@@ -589,9 +608,10 @@ public class MigrationDAO {
         return isRenamed;
     }
     /**
-     * modificar el tipo de dato de la columna según el modelo
-     * @param model: modelo con el tipo de dato a modificar
-     * @return true si cambio el nombre de lo contrario false
+     * change the column type operation.
+     * @param model: model with the new type
+     * @param includePKFK: true or false to include pk & fk
+     * @return true if its changed
      */
     public boolean changeType(ModelMethods model, boolean includePKFK) {
         Statement stm     = null;
@@ -627,9 +647,10 @@ public class MigrationDAO {
         return isChanged;
     }
     /**
-     * eliminar una columna de la tabla según el modelo
-     * @param model: modelo al que le falta una columna que es la que se elimina
-     * @return true si se elimina la columna false de lo contrario
+     * delete a column operation.
+     * @param model: model to delete
+     * @param includePKFK: true or false to include pk & fk
+     * @return true if its deleted, false otherwise
      */
     public boolean deleteColumn(ModelMethods model, boolean includePKFK) {
         Statement stm     = null;

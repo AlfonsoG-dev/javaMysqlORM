@@ -7,8 +7,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 /**
- * interface para la creación del constraint de las columnas del modelo
- * <br> pre: </br> el constraint se aplica al modelo, se debe crear una interface `Constraint` por modelo
+ * interface class that represents the table constraint and table type for implementation in model
  */
 public @interface TableProperties {
     public String miConstraint();   

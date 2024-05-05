@@ -3,19 +3,17 @@ package Model;
 import Utils.Model.ModelMetadata;
 
 /**
- * interface con el método que retorna las propiedades de la clase
+ * interface  used to getModelValues & model properties
  * */
 public interface ModelMethods {
 
     /**
-     * crea un String con las propiedades de la clase 
-     * @return String con las propiedades ordenadas
+     * model values when using an instance.
     */
     public String getAllProperties();
 
     /**
-     * crea un HashMap de Strings con las propiedades del modelo de base de datos
-     * @return HashMap con el modelo de la base de datos
+     * model properties when using as table model reference.
      */
     public default String initModel() {
         ModelMetadata metadata = new ModelMetadata(this.getClass());

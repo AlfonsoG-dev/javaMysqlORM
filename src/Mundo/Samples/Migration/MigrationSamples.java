@@ -1,9 +1,10 @@
-package Samples.Migration;
+package Mundo.Samples.Migration;
 
 import java.sql.Connection;
 
 import Conexion.Migration.MigrationDAO;
 import Model.ModelMethods;
+import Utils.Formats.ParamValue;
 
 public class MigrationSamples {
     private Connection cursor;
@@ -70,7 +71,10 @@ public class MigrationSamples {
      * options = column: value, column: value
      */
     public void sampleAddDefaultConstraint() {
-        String options = "rol: testing, email: test@gmail.com";
+        String[]
+            cols = {"rol", "email"},
+            val = {"testing", "test@gmail.com"};
+        ParamValue options = new ParamValue(cols, val);
         myDAO.addDefaultConstraint(options);
     }
     /**

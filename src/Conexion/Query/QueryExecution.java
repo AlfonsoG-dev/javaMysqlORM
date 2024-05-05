@@ -10,43 +10,42 @@ import java.util.List;
 
 import Model.ModelMethods;
 
-import Utils.Query.QueryBuilder;
+import Utils.Builder.QueryBuilder;
 import Utils.Query.QueryUtils;
 import Utils.Model.ModelUtils;
 import Utils.Formats.ParamValue;
 
 /**
- * clase para crear la ejecución de las sentencias sql
+ * class for sql query execution
  * */
 public class QueryExecution {
     /**
-     * instancia del this.cursor de mysql
-     * es único, constante e inmutable
+     * connection instance for sql statement execution
      * */
     private Connection cursor;
     /**
-     * nombre de la tabla en donde se ejecutan las sentencias sql
-     * no puede ser null ni Empty
+     * table name
      * */
     private String table;
     /**
-     * record que crea las sentencias sql
+     * sql query builder
      * */
     private QueryBuilder queryBuilder;
     /**
-     * clase con las herramientas para crear las querys
+     * sql query utils or helper
      */
     private QueryUtils queryUtil;
     /**
-     *
+     * model utils or helper
      */
     private ModelUtils modelUtils;
 
     //constructor
 
     /**
-     * constructor de la clase
-     * @param tb_name: nombre de la tabla; tb_name != null && tb_name != ""
+     * {@link java.lang.reflect.Constructor}
+     * @param tbName: table name
+     * @param miConector: {@link Connection} instance
      */
     public QueryExecution(String tbName, Connection miConector) {
         table        = tbName;
@@ -62,7 +61,7 @@ public class QueryExecution {
      * @throws SQLException: error while tring to check view creation
      * @return 1 if is created, 0 if not and -1 if nothing happens
      */
-    private int isViewCreated(String viewName) throws SQLException {
+    protected int isViewCreated(String viewName) throws SQLException {
         int res       = -1;
         ResultSet rst = cursor.getMetaData().getTables(
                 null,
@@ -85,7 +84,7 @@ public class QueryExecution {
      * @param stm: execute the sql statement
      * @param sql: row string with the sql statement
      * @throws SQLException: error of the execution
-     * @return the result of the execution
+     * @return {@link ResultSet}
      */
     public ResultSet executeMyQuery(Statement stm, String sql) throws SQLException {
         ResultSet rst = stm.executeQuery(sql);
@@ -139,10 +138,10 @@ public class QueryExecution {
         return isViewCreated(viewName);
     }
     /**
-     * ejecuta el contador de resultados
-     * @param pstm: ejecutor de sentencias sql
-     * @throws SQLException error al ejecutar
-     * @return {@link ResultSet} de la ejecución
+     * execute the sql count query
+     * @param pstm: execute instance
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link ResultSet}
     */
     public ResultSet executeCountData(PreparedStatement pstm) throws SQLException {
         String sql    = "select id_pk from " + table;
@@ -151,10 +150,10 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * show table data
-     * @param stm: ejecutor de la sentencias sql
-     * @throws SQLException error al ejecutar
-     * @return {@link ResultSet} de la ejecución
+     * execute sql show table data query
+     * @param stm: execute instance
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link ResultSet}
      */
     public ResultSet executeShowTableData(Statement stm) throws SQLException {
         String sql    = "show columns from " + this.table;
@@ -163,10 +162,10 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * ejecuta la lectura de datos
-     * @param pstm: ejecutor de sentencias sql
-     * @throws SQLException error al ejecutar
-     * @return {@link ResultSet} de la ejecución
+     * execute sql select query
+     * @param pstm: execute instance
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link ResultSet}
     */
     public ResultSet executeReadAll(PreparedStatement pstm, String order, String group, int limit) throws SQLException {
         String sql    = queryBuilder.readAllQuery(order, group, limit);
@@ -176,11 +175,12 @@ public class QueryExecution {
     }
     /**
      * ejecuta la busqueda de 1 resultado por id
-     * @param condition: id del registro buscado
-     * @param type: tipo de condicion para la setencia sql
-     * @param pstm: ejecutor de sentencia sql
-     * @throws SQLException error de la ejecución
-     * @return {@link ResultSet} de la ejecución
+     * execute sql select using {@link PreparedStatement} 
+     * @param condition: where clause condition
+     * @param type: logiv type for where clause
+     * @param pstm: execute instance
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link ResultSet}
     */
     public ResultSet executePreparedFind(PreparedStatement pstm, ParamValue condition,
             String type) throws SQLException {
@@ -196,13 +196,12 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * ejecuta la busqueda por nombre de columna
-     * puede recibir 1 o varias columnas con el valor
-     * @param condition: nombre y valor de columna: "nombre: test, email: test@test"
-     * @param type: tipo de condicion para la setencia sql
-     * @param stm: ejecutor de sentencia sql
-     * @throws SQLException error de la ejecución
-     * @return {@link ResultSet} de la ejecución
+     * execute sql select by column name query 
+     * @param condition: where clause condition
+     * @param type: logic type for where clause
+     * @param stm: execute instance
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link ResultSet}
     */
     public ResultSet executeFindByColumnName(Statement stm, ParamValue condition,
             String type) throws SQLException {
@@ -212,14 +211,14 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * ejecuta la busqueda dentro de una serie de datos o una sentencia sql tipo SELECT.
-     * @param stm: ejecutor de sentencias sql
-     * @param returnColumns: columns to return
-     * @param conditionalColumns: columns for the conditional
-     * @param condition: conditional
-     * @param type: and or not
-     * @throws SQLException: sql exception
-     * @return {@link ResultSet} of the execution
+     * execute select IN query.
+     * @param stm: execute instance
+     * @param returnColumns: searched column
+     * @param conditionalColumns: conditional columns for where clause
+     * @param condition: condition for where clause
+     * @param type: logic type for where clause
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link ResultSet}
      */
     public ResultSet executeFindIn(Statement stm, String returnColumns, String conditionalColumns,
             String condition, String type)  throws SQLException {
@@ -234,13 +233,13 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * ejecuta la busqueda retornando min or max
-     * @param stm: ejecutor de sentencias sql
+     * execute sql select min max query
+     * @param stm: execute instance
      * @param columns: 'min: nombre, max: password'
      * @param condition: condition for where clause
      * @param type: and or not
-     * @throws SQLException: error de ejecución
-     * @return {@link ResultSet} of the execution
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link ResultSet}
      */
     public ResultSet executeFindMinMax(Statement stm, ParamValue columns, ParamValue condition,
             String type) throws SQLException {
@@ -254,13 +253,13 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * busca los datos utilizando regex o patrones
-     * @param stm: ejecutor de sentencias sql
-     * @param pattern: regex o patron a buscar
-     * @param condition: columnas a comparar con el patron
-     * @param type: and or not
-     * @throws SQLException: error de ejecución
-     * @return the {@link ResultSet} of the execution
+     * execute sql select pattern.
+     * @param stm: execute instance
+     * @param pattern: regex or pattern to search
+     * @param condition: condition for where clause
+     * @param type: logic type for where clause
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link ResultSet}
      */
     public ResultSet executeFindPattern(Statement stm, String pattern, String condition,
             String type) throws SQLException {
@@ -274,15 +273,13 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * ejecuta la busqueda por columna y valor y retorna el valor de las columnas seleccionadas
-     * puede recibir 1 o varias columnas con el valor
-     * puede retornar 1 o varios valores de la columna seleccionada
-     * @param condition: nombre y valor de la columna: "nombre: test, email: test@test"
-     * @param column: columna a conocer el valor: "id, rol"
-     * @param type: tipo de condicion para la setencia sql
-     * @param stm: ejecutor de sentencia sql
-     * @throws SQLException error de la ejecución
-     * @return {@link ResultSet} de la ejecución
+     * execute sql select value of column query
+     * @param stm: execute instance
+     * @param condition: "nombre: test, email: test@test"
+     * @param column: searched column
+     * @param type: logic type for where clause
+     * @throws SQLException: error while trying to execute the statement
+     * @return {@link ResultSet}
     */
     public ResultSet executeGetValueOfColumnName(Statement stm, ParamValue condition, String columns,
             String type) throws SQLException {
@@ -296,11 +293,10 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * ejecuta el registro de un nuevo elemento 
-     * solo puede registrar 1 elemento a la vez
-     * @param stm: ejecutor de sentencia sql
-     * @param model: elemento a registrar
-     * @throws SQLException error de la ejecución
+     * execute sql insert query.
+     * @param stm: execute instance
+     * @param model: model data
+     * @throws SQLException: error while trying to execute the statement
      * @return row count or '0' when nothing is returned
     */
     public int executeInsertNewRegister(Statement stm, ModelMethods model) throws SQLException {
@@ -368,15 +364,15 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * ejecuta la consulta tipo inner join
-     * @param stm: ejecutor de sentencias sql
-     * @param primary: model with the declaration of fk
-     * @param foreign: foreign model of the relationship
-     * @param foreignT: foreign model table name
+     * execute sql inner join query.
+     * @param stm: execute instance
+     * @param primary: invoke model with fk of foreign pk
+     * @param foreign: foreign model with pk of primary fk
+     * @param foreignT: foreign table name
      * @param condition: where condition clause
      * @param type: logic type for where clause
-     * @throws SQLException error al ejecutar la sentencia sql
-     * @return el {@link ResultSet} de la ejecución
+     * @throws SQLException: error while trying to execute the statement 
+     * @return {@link ResultSet}
      */
     public ResultSet executeInnerJoin(Statement stm, ModelMethods primary, ModelMethods foreign,
             String foreignT, ParamValue condition, String type) throws SQLException {
@@ -392,13 +388,12 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * ejecuta la modificación de 1 registro
-     * puede modificar cualquier valor valido del registro
-     * @param stm: ejecutor de la sentencia sql
+     * execute sql update query.
+     * @param stm: execute instance
      * @param model: model with the updated data
-     * @param conditions: condiciones de query; "nombre: test, email: test"
-     * @param type: tipo de condicion para la setencia sql
-     * @throws SQLException error de la ejecución
+     * @param conditions: where clause condition
+     * @param type: logic type for where clause
+     * @throws SQLException: error while trying to execute the statement
      * @return the row count of the statement or '0' when return nothing 
     */
     public int executeUpdateRegister(Statement stm, ModelMethods model, ParamValue conditions, String type)
@@ -413,7 +408,7 @@ public class QueryExecution {
         return retorno;
     }
     /**
-     * @param pstm: execute the sql sentences
+     * @param pstm: execute instance
      * @param model: model with the data to update
      * @param condition: where clause condition
      * @param type: logic type for where clause
@@ -445,12 +440,11 @@ public class QueryExecution {
         return pstm.executeUpdate();
     }
     /**
-     * ejecuta la eliminación de un registro
-     * puede eliminar varios registros según las condition
-     * @param stm: ejecutor de la sentencia sql
-     * @param condition: opciones de condición: "nombre: test, email: test@test"
-     * @param type: tipo de condicion para la setencia sql
-     * @throws SQLException error al ejecutar
+     * execute sql delete query.
+     * @param stm: execute instance
+     * @param condition: where clause condition
+     * @param type: logic type for where clause
+     * @throws SQLException: error while trying to execute the statement
      * @return the row count or '0' when nothing is returned
     */
     public int executeEliminarRegistro(Statement stm, ParamValue condition, String type)
@@ -461,7 +455,7 @@ public class QueryExecution {
         return result;
     }
     /**
-     * delete statement execution
+     * execute sql delete query.
      * @param condition: where clause condition
      * @param type: logic type for where clause
      * @return row count or '0' when nothing is returned

@@ -120,7 +120,9 @@ public record QueryUtils() {
         return cleanByLogicType(type, build.toString());
     }
     /**
-     * creates the preparedUpdate values combination with question mark: name=?
+     * get the update set values with question mark for the prepared update statement
+     * @param modelData: model data
+     * @return the set values
     */
     public String getPreparedUpdateValues(String modelData) {
         String[] modelColumns = modelUtils.getModelColumns(
@@ -138,9 +140,9 @@ public record QueryUtils() {
      * @param condition: the condition value
      * @return the condition for where clause
      */
-    public String getNormalConditional(String condition, String type) {
+    public String getNormalConditional(ParamValue condition, String type) {
         StringBuffer build = new StringBuffer();
-        String[] properties = condition.split(",");
+        String[] properties = condition.getCombination().split(",");
         for(String p: properties) {
             if(type.toLowerCase().equals("not")) {
                 build.append("not ");

@@ -1,4 +1,4 @@
-package Samples.Models;
+package Mundo.Samples.Models;
 
 import Model.ModelMethods;
 import Mundo.TableProperties;

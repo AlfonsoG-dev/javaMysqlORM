@@ -1,31 +1,33 @@
-package Utils.Model;
+package Utils.Builder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import Model.ModelMethods;
 
-import Utils.Query.QueryBuilder;
 import Utils.Query.QueryUtils;
+import Utils.Formats.ParamValue;
+import Utils.Model.ModelUtils;
 
 /**
- * clase para crear las sentencias sql de migracion de datos según el modelo
+ * class for sql query migration building.
  */
 public class MigrationBuilder extends QueryBuilder {
     /**
-     * la tabla en base de datos
+     * table name
      */
     private String tableName;
     /**
-     * utilidades para query
+     * query utils
      */
     private QueryUtils queryUtil;
     /**
+     * model utils
      */
     private ModelUtils modelUtils;
     /**
-     * metodo constructor
-     * @param nTableName: nombre de la tabla que se utiliza para la creación de la query
+     * {@link java.lang.reflect.Constructor}
+     * @param nTableName: table name
      */
     public MigrationBuilder(String nTableName) {
         super(nTableName);
@@ -34,26 +36,26 @@ public class MigrationBuilder extends QueryBuilder {
         modelUtils = new ModelUtils();
     }
     /**
-     * crear la base de datos si no existe
-     * @param DbName: nombre de la base de datos
-     * @return la sentencia sql para crear la base de datos
+     * create the database schema.
+     * @param dbName: database schema name.
+     * @return the sql query.
      */
     public String createDataBaseQuery(String dbName) {
         return "CREATE DATABASE IF NOT EXISTS " + dbName;
     }
     /**
-     * seleccionar la base de datos a utilizar
-     * @param DbName: nombre de la base de datos a utilizar
-     * @return la sentencia sql para cambiar de base de datos
+     * select or use a database schema.
+     * @param dbName: database schema to use.
+     * @return the sql query
      */
     public String createSelectDatabase(String dbName) {
         return "USE " + dbName;
     }
     /**
-     * crear la tabla de datos si no existe
-     * @param model: modelo con los datos de las columnas y typo de dato para la tabla
-     * @param type: temporary or normal
-     * @return la sentencia sql para crear la tabla de datos
+     * create table from model query.
+     * @param model: model with the table data
+     * @param type: n = normal, t = temporary
+     * @return the sql query.
      */
     public String createTableQuery(ModelMethods model, String type) {
         String typeColumn = "", modelInit = model.initModel();
@@ -111,6 +113,11 @@ public class MigrationBuilder extends QueryBuilder {
         }
         return sql.toString();
     }
+    /**
+     * creates the sql delete index query.
+     * @param columns: index name
+     * @return the sql query
+     */
     public String createDropIndexQuery(String columns) {
         String sql = "";
         if(columns.contains(",")) {
@@ -126,33 +133,35 @@ public class MigrationBuilder extends QueryBuilder {
         return createAlterTableQuery(sql);
     }
     /**
-     * crear la sentencia para alterar la tabla
-     * @param AlterOperation: tipo de operacíon a realizar
-     * @return sentencia para alterar la tabla
+     * creates the alter table query.
+     * @param AlterOperation: sql alter operations
+     * @return the sql query
      */
-    private String createAlterTableQuery(String alterOperations) {
+    protected String createAlterTableQuery(String alterOperations) {
         return "ALTER TABLE " + this.tableName + " " + alterOperations;
     }
     /**
-     * crea la sentencia sql para agregar una columna a la tabla
-     * @param model_properties: propiedades del modelo
-     * @param rst: resultado de la consulta sql
-     * @throws SQLException: error de la sentencia sql
-     * @return la sentencia sql para agregar una columna a la tabla
+     * created sql add column query.
+     * @param primaryM: primary model data with the fk of foreignM pk
+     * @param foreignM: foreign model data with the pk of primaryM fk
+     * @param foreignT: foreign table name
+     * @param rst: {@link ResultSet}
+     * @throws SQLException: error while trying to execute the statement
+     * @return the sql query
      */
-    public String createAddColumnQuery(String modelProperties, String refModelProperties, String refTable,
+    public String createAddColumnQuery(String primaryM, String foreignM, String foreignT,
             boolean includePKFK , ResultSet rst) throws SQLException {
         StringBuffer 
-            addColumns = modelUtils.compareColumnName(modelProperties, rst).get("add"),
+            addColumns = modelUtils.compareColumnName(primaryM, rst).get("add"),
             sql        = new StringBuffer();
         if(!addColumns.isEmpty()) {
             String columns = modelUtils.getModelColumns(addColumns.toString(), includePKFK);
             String[] 
                 cleanColumns = queryUtil.cleanValues(columns, 1).split(","),
-                modelTypes   = modelUtils.getModelTypes(modelProperties, includePKFK).split(","),
-                modelColumns = modelUtils.getModelColumns(modelProperties, includePKFK).split(",");
+                modelTypes   = modelUtils.getModelTypes(primaryM, includePKFK).split(","),
+                modelColumns = modelUtils.getModelColumns(primaryM, includePKFK).split(",");
             for(String k: cleanColumns) {
-                int indexType              = modelUtils.getColumnType(modelProperties, k);
+                int indexType              = modelUtils.getColumnType(primaryM, k);
                 String clearTypes          = indexType < modelTypes.length ?
                     modelTypes[indexType].replace("'", "") : "null";
                 String clearModelColumns  = indexType < modelColumns.length ?
@@ -167,8 +176,8 @@ public class MigrationBuilder extends QueryBuilder {
                     sql.append(
                             getPkFKConstraintQuery(
                                 addColumns.toString(),
-                                refModelProperties,
-                                refTable
+                                foreignM,
+                                foreignT
                             )
                     );
                 }
@@ -189,15 +198,15 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
-     * crea la sentencia sql para renombrar las columnas de la tabla
-     * @param model_properties: propiedades del modelo
-     * @param rst: resultado de la consulta sql
-     * @throws SQLException: error de la sentencia sql
-     * @return la sentencia sql para renombrar columnas
+     * create sql rename column query.
+     * @param modelData
+     * @param rst: {@link ResultSet}
+     * @throws SQLException: error while trying to execute the statement
+     * @return the sql query
      */
-    public String createRenameColumnQuery(String modelProperties, ResultSet rst) throws SQLException {
+    public String createRenameColumnQuery(String modelData, ResultSet rst) throws SQLException {
         StringBuffer 
-            renameColumns = modelUtils.compareColumnName(modelProperties, rst).get("rename"),
+            renameColumns = modelUtils.compareColumnName(modelData, rst).get("rename"),
             sql           = new StringBuffer();
         if(!renameColumns.isEmpty()) {
             String[] keys = renameColumns.toString().split(", ");
@@ -218,18 +227,22 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
-     * crea la sentencia sql para modificar el tipo de dato de una columna
-     * @param model_properties: propiedades del modelo
+     * create sql change type query.
+     * @param modelData
+     * @param includePKFK: true or false to incluclude pk or fk
+     * @param rst: {@link ResultSet}
+     * @throws SQLException: error while trying to execute the statement
+     * @return the sql query.
      */
-    public String createChangeTypeQuery(String modelProperties, boolean includePKFK,ResultSet rst) 
+    public String createChangeTypeQuery(String modelData, boolean includePKFK, ResultSet rst) 
             throws SQLException {
             StringBuffer 
-                renameTypes = modelUtils.compareColumnType(modelProperties, rst).get("rename"),
+                renameTypes = modelUtils.compareColumnType(modelData, rst).get("rename"),
                 sql = new StringBuffer();
         if(!renameTypes.isEmpty()) {
             String[] 
                 types        = renameTypes.toString().split(", "),
-                modelColumns = modelUtils.getModelColumns(modelProperties, includePKFK).split(",");
+                modelColumns = modelUtils.getModelColumns(modelData, includePKFK).split(",");
             for(String t: types) {
                 String type = t.split(":")[0];
                 int index   = Integer.parseInt(t.split(":")[1]);
@@ -248,16 +261,17 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
-     * crea la sentencia sql para eliminar una columna de la tabla
-     * @param model_properties: propiedades del modelo
-     * @param rst: resultado de la consulta sql
-     * @throws SQLException: error de la sentencia sql
-     * @return la sentencia sql para eliminar columnas
+     * create sql delete column query.
+     * @param modelData
+     * @param includePKFK: true or false to include pk && fk
+     * @param rst: {@link ResultSet}
+     * @throws SQLException: error while trying to execute the statement
+     * @return the sql query
      */
-    public String createDeleteColumnQuery(String modelProperties, boolean includePKFK, ResultSet rst)
+    public String createDeleteColumnQuery(String modelData, boolean includePKFK, ResultSet rst)
             throws SQLException {
         StringBuffer 
-            deleteColumns = modelUtils.compareColumnName(modelProperties, rst).get("delete"),
+            deleteColumns = modelUtils.compareColumnName(modelData, rst).get("delete"),
             sql = new StringBuffer();
         if(!deleteColumns.isEmpty()) {
             String[] columns = deleteColumns.toString().split(", ");
@@ -283,17 +297,14 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
-     * crea la sentencia sql para agregar constraint  de la pk o fk
-     * @param model_properties: propiedades del modelo
-     * @param ref_model: propiedades del modelo de referencia
-     * @param rst: resultado de la consulta sql
-     * @param ref_table: nombre de la tabla de referencia
-     * @throws SQLException error de la consulta sql
-     * @return la sentencia sql para agregar constraint de la pk o fk
+     * create sql add pk or fk constraint query.
+     * @param addColumns: the column with pk or fk
+     * @param foreignM: foreign model data
+     * @param foreignT: foreign table name
+     * @return the sql query
      */
-    public String getPkFKConstraintQuery(String addColumns, String refModelProperties, String refTable)
-            throws SQLException {
-        String refpk     = modelUtils.getPkFk(refModelProperties).get("pk");
+    public String getPkFKConstraintQuery(String addColumns, String foreignM, String foreignT) {
+        String refpk     = modelUtils.getPkFk(foreignM).get("pk");
         StringBuffer sql = new StringBuffer();
         String[] columns = addColumns.split(",");
         for(String k: columns) {
@@ -305,7 +316,7 @@ public class MigrationBuilder extends QueryBuilder {
             if(k.contains("fk") == true) {
                 sql.append(
                         "ADD CONSTRAINT " + k + " FOREIGN KEY(" + k +") REFERENCES " +
-                        refTable + "(" + refpk + ") ON DELETE CASCADE ON UPDATE CASCADE, "
+                        foreignT + "(" + refpk + ") ON DELETE CASCADE ON UPDATE CASCADE, "
                 );
             }
         }
@@ -319,19 +330,20 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
-     * @param options: column: value
-     * @return the default constraint query
+     * create sql add default constrint query.
+     * @param options: default constraint value
+     * @return the sql query
      */
-    public String getDefaultConstraintQuery(String options) throws Exception {
+    public String getDefaultConstraintQuery(ParamValue options) throws Exception {
         StringBuffer sql = new StringBuffer();
-        if(!options.contains(":")) {
+        if(!options.getCombination().contains(":")) {
             throw new Exception(
                     "[ ERROR ]: default options must have !column: value¡ format"
             );
         }
         sql.append(" ALTER ");
-        if(options.contains(",")) {
-            String[] others = options.trim().split(",");
+        if(options.getCombination().contains(",")) {
+            String[] others = options.getCombination().trim().split(",");
             String b = "";
             for(String o: others) {
                 String[] spaces = o.trim().split(":");
@@ -342,7 +354,7 @@ public class MigrationBuilder extends QueryBuilder {
             }
             sql.append(queryUtil.cleanValues(b, 2));
         } else {
-            String[] spaces = options.trim().split(":");
+            String[] spaces = options.getCombination().trim().split(":");
             sql.append(spaces[0].trim());
             sql.append(" SET DEFAULT '");
             sql.append(spaces[1].trim());
@@ -350,6 +362,11 @@ public class MigrationBuilder extends QueryBuilder {
         }
         return createAlterTableQuery(sql.toString());
     }
+    /**
+     * create sql delete default constraint query.
+     * @param columns: default column name
+     * @return the sql query
+     */
     public String getDropDefaultConstraintQuery(String columns) {
         StringBuffer sql = new StringBuffer();
         sql.append("ALTER ");
@@ -368,6 +385,7 @@ public class MigrationBuilder extends QueryBuilder {
         return createAlterTableQuery(sql.toString());
     }
     /**
+     * create sql add check constraint query.
      * @param options: columns for constraint. ejm -> edad: 18, ciudad: pasto.
      * @param constraint: constraint operations -> <=, =, >=.
      * @param constraintName: name for the constraint
@@ -403,8 +421,9 @@ public class MigrationBuilder extends QueryBuilder {
         return createAlterTableQuery(sql).trim() + ")";
     }
     /**
+     * create sql delete check constraint query.
      * @param checkName: name of the check to drop
-     * @return the delete check query
+     * @return the sql query
      */
     public String getDeleteCheckQuery(String checkName) {
         String sql = "";
@@ -420,16 +439,16 @@ public class MigrationBuilder extends QueryBuilder {
         return createAlterTableQuery(sql);
     }
     /**
-     * crea la sentencia sql para eliminar el constraint de la pk o fk
+     * create sql delete constraint query.
      * @param model_properties: propiedades del modelo
      * @param rst: resultado de la consulta sql
      * @throws SQLException: error de la consulta sql
      * @return la sentencia sql para eliminar el constraint de la pk o fk
      */
-    public String createDeleteConstraintQuery(String deleteColumns, boolean includePKFK) throws SQLException {
+    public String createDeleteConstraintQuery(String columns, boolean includePKFK) throws SQLException {
         StringBuffer sql = new StringBuffer();
-         if(deleteColumns != "" && deleteColumns != null) {
-             String k1   = deleteColumns.split(", ")[0];
+         if(columns != "" && columns != null) {
+             String k1   = columns.split(", ")[0];
              String[] k2 = k1.split(":");
              if(k2[0].contains("pk")) {
                  sql.append("DROP PRIMARY KEY , ");

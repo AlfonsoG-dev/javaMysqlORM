@@ -15,32 +15,33 @@ import Utils.Query.QueryUtils;
 import Utils.Formats.ParamValue;
 
 /**
- * clase para realizar el DAO de las consultas sql según el modelo
+ * class to use the database operations.
  */
 public class QueryDAO<T> {
     /**
-     * auxiliar para la ejecución de las querys
+     * sql query | statement execution.
      */
     private QueryExecution queryExecution;
     /**
-     * builder interface to build the objects
+     * model builder class.
      */
     private ModelBuilderMethods<T> modelBuilderMethods;
     /**
-     * herramientas para la creacion de las querys
+     * sql query helper or utils.
      */
     private QueryUtils queryUtil;
     /**
-     * local Connection cursor
+     * {@link Connection} instance
      */
     private Connection cursor;
     /**
-     * local table name
+     * table name
      */
     private String tbName;
     /**
-     * Data Acces Object of GenericObject
-     * inicializa el conector de mysql
+     * {@link java.lang.reflect.Constructor}
+     * @param miConector: {@link Connection} instance
+     * @param builder: model builder instance
      */
     public QueryDAO(String tableName, Connection miConector, ModelBuilderMethods<T> builder) {
         tbName              = tableName;
@@ -58,6 +59,7 @@ public class QueryDAO<T> {
     }
     /**
      * disconnect the cursor connection
+     * <br> pre: </br> the connection is != null
      */
     public void disconnectConnection() {
         try {
@@ -68,7 +70,8 @@ public class QueryDAO<T> {
         }
     }
     /**
-     * busca y retorna el valor de la sentencia.
+     * uses the given string to create a statement.
+     * <br> pre: </br> used only for SELECT statements
      * @param sql: row query statement
      * @return value of column name
      */
@@ -114,7 +117,8 @@ public class QueryDAO<T> {
         return result;
     }
     /**
-     * INSERT UPDATE DELETE statements.
+     * uses the given string as sql statement.
+     * <br> pre: </br> used only for INSERT UPDATE DELETE statements.
      * @param sql: row query statement
      * @return true if row count is > 0 othewise false
      */
@@ -216,8 +220,8 @@ public class QueryDAO<T> {
         return isDeleted;
     }
     /**
-     * se utiliza para dar la cantidad de datos en la tabla.
-     * @return cantidad de datos
+     * count table data.
+     * @return data count.
      */
     public int countData() {
         int count              = 0;
@@ -255,8 +259,11 @@ public class QueryDAO<T> {
         return count;
     }
     /**
-     * crea una lista de registros con los datos de la bd.
-     * @return lista de registros
+     * creates a list of model from table data.
+     * @param order: ASC | DESC
+     * @param group: column to use for GROUP BY
+     * @param limit: the number of object per request
+     * @return a list of models.
      */
     public ArrayList<T> readAll(String order, String group, int limit) {
         PreparedStatement pstm  = null;
@@ -336,10 +343,10 @@ public class QueryDAO<T> {
         return buscado;
     }
     /**
-     * busca el registro por cualquier nombre de columna.
-     * @param condition: las opciones de busqueda
-     * @param type: tipo de condicion para la setencia sql
-     * @return el registro buscado
+     * search using column name.
+     * @param condition: where clause condition
+     * @param type: logic type for where clause
+     * @return the search model instance 
      */
     public T findByColumnName(ParamValue condition, String type) {
         T buscado     = null;
@@ -377,9 +384,7 @@ public class QueryDAO<T> {
         return buscado;
     }
     /**
-     * busca el registro entre una serie de valores o una sentencia sql tipo SELECT.
-     * <br> pre: </br> select * from cuenta where user_id_fk in (select id_pk from user where nombre='admin'); 
-     * select * from cuenta where id_pk in ('0', '2'); 
+     * search using IN operation.
      * @param returnColumns: columns to return in selection
      * @param conditionalColumns: column to search
      * @param condition: condition for the search
@@ -438,7 +443,7 @@ public class QueryDAO<T> {
         return buscado;
     }
     /**
-     * busca los datos con regex o patrones.
+     * search using regex or pattern.
      * @param pattern: regex o patron a buscar
      * @param condition: columnas a comparar con el patron
      * @param type: and or not
@@ -539,7 +544,7 @@ public class QueryDAO<T> {
         return buscado.substring(0, buscado.length()-2);
     }
     /**
-     * busca y retorna el valor de la columna o columnas.
+     * search for the value of the given column. 
      * @param condition: column name
      * @param column: las columnas a buscar el valor
      * @param type: tipo de condicion para la setencia sql
@@ -655,11 +660,11 @@ public class QueryDAO<T> {
         return result;
     }
     /**
-     * ingresar un registro de GenericObjects.
+     * inserts a new value to the table.
      * @param model: model with the data to insert
      * @param condition: condición para buscar el registro
      * @param type: tipo de condicion para la setencia sql
-     * @return true si se registra de lo contrario false
+     * @return true if its inserted, false otherwise
      */
     public boolean insertNewRegister(ModelMethods model, ParamValue condition, String type) {
         boolean isInserted  = false;
@@ -835,11 +840,11 @@ public class QueryDAO<T> {
         return isInserted;
     }
     /**
-     * modificar 1 registro de la base de datos.
+     * update database data.
      * @param model: model with the updated data
      * @param conditions: columna con su valor para el condicional
      * @param type: tipo de condicion para la setencia sql
-     * @return true si se modifican los datos de lo contrario false
+     * @return true if its updated, flase otherwise
      **/
     public boolean updateRegister(ModelMethods model, ParamValue conditions, String type) {
         boolean isUpdated = false;
@@ -889,6 +894,7 @@ public class QueryDAO<T> {
         return isUpdated;
     }
     /**
+     * prepared update version.
      * @param model: the model with the data to update
      * @param condition: where clause condition
      * @param type: logic type for where clause
@@ -940,10 +946,10 @@ public class QueryDAO<T> {
         return isUpdated;
     }
     /**
-     * eliminar un registro por cualquier columna valida de la bd.
+     * delete a table register.
      * @param condition: columna con el valor para el condicional
      * @param type: tipo de condicion para la setencia sql
-     * @return true si elimina de lo contrario false
+     * @return true if its deleted, flase otherwise
      * */
     public boolean deleteRegister(ParamValue condition, String type) {
         boolean isDeleted = false;

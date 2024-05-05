@@ -5,11 +5,7 @@ import java.sql.SQLException;
 
 public interface ModelBuilderMethods<T>{
     /**
-     * validar los datos del resultado de la consulta sql
-     * @param rst: resultados de la consulta sql
-     * @param capacity: tamaño de la lista de resultados
-     * @throws SQLException: error al ejecutar la consulta sql
-     * @return la lista de resultados
+     * used to get the {@link ResultSet} data
      */
     public default String[] resultDataValidator(ResultSet rst, int capacity) throws SQLException {
         String[] data = new String[capacity + 1];
@@ -22,11 +18,7 @@ public interface ModelBuilderMethods<T>{
         return data;
     }
     /**
-     * crea el usuario con los datos del ResultSet
-     * @param rst: resultados de la consulta sql
-     * @param capacity: tamaño de la lista de resultados
-     * @throws SQLException: error el ejecutar la consulta sql
-     * @return el objeto T con los datos de la consulta sql
+     * creates an user from {@link ResultSet} data
      */
     public T createFromRST(ResultSet rst, int capacity) throws Exception;
     /**

@@ -8,10 +8,7 @@ import Model.ModelBuilderMethods;
  */
 public class UserBuilder implements ModelBuilderMethods<User>{
     /**
-     * crea el usuario con los datos del ResultSet
-     * @param rst: el resultado de la consulta sql
-     * @param capacity: tamaño de la lista de datos
-     * @return usuario creado con los datos
+     * creates user from rst
      */
     @Override
     public User createFromRST(ResultSet rst, int capacity) throws Exception {
@@ -29,9 +26,7 @@ public class UserBuilder implements ModelBuilderMethods<User>{
         return m;
     }
     /**
-     * crea el usuario con los datos que llegan por parametro en forma de String
-     * @param datos: datos del usuario a crear
-     * @return el usuario creado a partir de los daots
+     * creates user form string
      */
     @Override
     public User createFromSTR(String datos) throws Exception {
