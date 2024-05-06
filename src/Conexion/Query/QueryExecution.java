@@ -45,20 +45,20 @@ public class QueryExecution {
     /**
      * {@link java.lang.reflect.Constructor}
      * @param tbName: table name
-     * @param miConector: {@link Connection} instance
+     * @param cursor: {@link Connection} instance
      */
-    public QueryExecution(String tbName, Connection miConector) {
+    public QueryExecution(String tbName, Connection cursor) {
         table        = tbName;
         queryBuilder = new QueryBuilder(tbName);
         queryUtil    = new QueryUtils();
         modelUtils   = new ModelUtils();
-        cursor       = miConector;
+        this.cursor       = cursor;
     }
     /**
      * check if the view is created or not.
-     * <br> pre: </br> the view is aready created
+     * <br> pre: </br> the view is already created
      * @param viewName: the name of the view to check the creation
-     * @throws SQLException: error while tring to check view creation
+     * @throws SQLException: error while trim to check view creation
      * @return 1 if is created, 0 if not and -1 if nothing happens
      */
     protected int isViewCreated(String viewName) throws SQLException {
@@ -79,8 +79,8 @@ public class QueryExecution {
         return res;
     }
     /**
-     * execute an sql query usign only select statements
-     * <br> pre: </br> INSER, UPDATE, DELETE are not supported
+     * execute an sql query using only select statements
+     * <br> pre: </br> INSERT, UPDATE, DELETE are not supported
      * @param stm: execute the sql statement
      * @param sql: row string with the sql statement
      * @throws SQLException: error of the execution
@@ -91,7 +91,7 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * execute an sql query to INSER, UPDATE or DELETE statement
+     * execute an sql query to INSERT, UPDATE or DELETE statement
      * @param stm: execute the sql statement
      * @param sql: row string with the sql statement
      * @throws SQLException: error of the execution
@@ -174,10 +174,9 @@ public class QueryExecution {
         return rst;
     }
     /**
-     * ejecuta la busqueda de 1 resultado por id
      * execute sql select using {@link PreparedStatement} 
      * @param condition: where clause condition
-     * @param type: logiv type for where clause
+     * @param type: logic type for where clause
      * @param pstm: execute instance
      * @throws SQLException: error while trying to execute the statement
      * @return {@link ResultSet}
@@ -235,7 +234,7 @@ public class QueryExecution {
     /**
      * execute sql select min max query
      * @param stm: execute instance
-     * @param columns: 'min: nombre, max: password'
+     * @param columns: 'min: name, max: password'
      * @param condition: condition for where clause
      * @param type: and or not
      * @throws SQLException: error while trying to execute the statement
@@ -275,7 +274,7 @@ public class QueryExecution {
     /**
      * execute sql select value of column query
      * @param stm: execute instance
-     * @param condition: "nombre: test, email: test@test"
+     * @param condition: "name: test, email: test@test"
      * @param column: searched column
      * @param type: logic type for where clause
      * @throws SQLException: error while trying to execute the statement
@@ -404,8 +403,8 @@ public class QueryExecution {
                 conditions,
                 type
         );
-        int retorno = stm.executeUpdate(sql);
-        return retorno;
+        int rst = stm.executeUpdate(sql);
+        return rst;
     }
     /**
      * @param pstm: execute instance
@@ -426,16 +425,16 @@ public class QueryExecution {
             setValues = modelValues.split(","),
             conditionValues   = valCondition.split(",");
         // set the condition values
-        List<String> vals = new ArrayList<>();
+        List<String> val = new ArrayList<>();
         for(String s: setValues) {
-            vals.add(s.replace("'", ""));
+            val.add(s.replace("'", ""));
         }
         for(String s: conditionValues) {
-            vals.add(s);
+            val.add(s);
         }
         // set the update values
-        for(int i=0; i<vals.size(); ++i) {
-            pstm.setString((i+1), vals.get(i));
+        for(int i=0; i<val.size(); ++i) {
+            pstm.setString((i+1), val.get(i));
         }
         return pstm.executeUpdate();
     }
@@ -447,7 +446,7 @@ public class QueryExecution {
      * @throws SQLException: error while trying to execute the statement
      * @return the row count or '0' when nothing is returned
     */
-    public int executeEliminarRegistro(Statement stm, ParamValue condition, String type)
+    public int executeDeleteRegister(Statement stm, ParamValue condition, String type)
             throws SQLException {
         stm        = cursor.createStatement();
         String sql = queryBuilder.createDeleteRegisterQuery(condition, type);

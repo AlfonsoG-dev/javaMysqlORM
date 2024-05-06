@@ -36,7 +36,7 @@ public class QueryBuilder {
      * @param validate: the sql query to validate
      * @return the validated query
      */
-    protected String validationOrden(String validate) {
+    protected String validationOrder(String validate) {
         String v = "";
         if(validate.toUpperCase().contains("ASC") || validate.toUpperCase().contains("DESC")) {
             v = validate;
@@ -45,8 +45,8 @@ public class QueryBuilder {
     }
     /**
      * create the read all data query.
-     * @param order: nombre: ASC | DESC
-     * @param group:  nombre: ASC | DESC
+     * @param order: name: ASC | DESC
+     * @param group:  name: ASC | DESC
      * @param limit: the number of objects to get
      * @return the read all data query
      */
@@ -59,14 +59,14 @@ public class QueryBuilder {
             sql.append(" ORDER BY ");
             sql.append(separate[0]);
             sql.append(" ");
-            sql.append(validationOrden(separate[1]));
+            sql.append(validationOrder(separate[1]));
         }
         if(!group.isEmpty()) {
             sql.append(" GROUP BY ");
             String[] separate = group.trim().split(":");
             sql.append(separate[0]);
             sql.append(" ");
-            sql.append(validationOrden(separate[1]));
+            sql.append(validationOrder(separate[1]));
         } 
         if(limit > 0) {
             sql.append(" LIMIT ");
@@ -143,7 +143,6 @@ public class QueryBuilder {
         return sql.toString();
     }
     /**
-     * crea la query para la buscar un registro dentro de varias posibilidades
      * create a sql query to select using IN operator
      * @param returnColumns: columns to return
      * @param conditionalColumns: columns to search in condition
@@ -202,7 +201,7 @@ public class QueryBuilder {
     }
     /**
      * create a sql query to find using min max.
-     * @param columns: 'min: nombre, max: password'
+     * @param columns: 'min: name, max: password'
      * @param condition: condition for where clause
      * @param type: and or not
      * @return the sql query
@@ -309,15 +308,15 @@ public class QueryBuilder {
     public String createInnerJoinQuery(ModelMethods primary, ModelMethods foreign, String foreignT,
             ParamValue condition, String type) {
         String 
-            refNombres   = queryUtil.asignTableNameToColumns(
+            foreignV   = queryUtil.assignTableNameToColumns(
                 foreign.getAllProperties(),
                 foreignT
             ),
-            localNombres = queryUtil.asignTableNameToColumns(
+            primaryV = queryUtil.assignTableNameToColumns(
                 primary.getAllProperties(),
                 this.tbName
             ),
-            pkfk         = queryUtil.getInnerJoinConditional(
+            keys = queryUtil.getInnerJoinConditional(
                 primary.getAllProperties(),
                 foreign.getAllProperties(),
                 this.tbName,
@@ -326,35 +325,35 @@ public class QueryBuilder {
             sql          = "";
         if(condition == null || condition.getCombination().isEmpty()) {
             sql =
-                "SELECT " + localNombres + ", " +
-                refNombres + " FROM " + this.tbName +
-                " INNER JOIN " + foreignT + " ON " + pkfk;
+                "SELECT " + primaryV + ", " +
+                foreignV + " FROM " + this.tbName +
+                " INNER JOIN " + foreignT + " ON " + keys;
         } else {
             String conditional = queryUtil.getNormalConditional(
                     condition,
                     type
             );
             sql =
-                "SELECT " + localNombres + ", " +
-                refNombres + " FROM " + this.tbName +
+                "SELECT " + primaryV + ", " +
+                foreignV + " FROM " + this.tbName +
                 " INNER JOIN " + foreignT + " ON " +
-                pkfk + " WHERE " + conditional;
+                keys + " WHERE " + conditional;
         }
         return sql;
     }
     /** 
      * creates the sql query to update data.
      * @param model: model with the data to insert
-     * @param condicional: conditional for where clause
+     * @param condition: conditional for where clause
      * @param type: logic type for where clause
      * @return the sql query
      */
-    public String createModifyRegisterQuery(ModelMethods model, ParamValue condicional, String type) {
+    public String createModifyRegisterQuery(ModelMethods model, ParamValue condition, String type) {
         String 
             whereClause     = "",
-            cleanKeyValue = queryUtil.getAsignModelValues(model.getAllProperties());
-        if(condicional != null && !condicional.getCombination().isEmpty()) {
-            whereClause = " WHERE " + queryUtil.getNormalConditional(condicional, type);
+            cleanKeyValue = queryUtil.getAssignModelValues(model.getAllProperties());
+        if(condition != null && !condition.getCombination().isEmpty()) {
+            whereClause = " WHERE " + queryUtil.getNormalConditional(condition, type);
         }
         return "UPDATE " + tbName + " SET " +  cleanKeyValue + whereClause;
    }
@@ -385,7 +384,7 @@ public class QueryBuilder {
        return "DELETE FROM " + tbName + " WHERE " + whereClause;
    }
    /**
-    * creates the sql query to detele data.
+    * creates the sql query to delete data.
     * @param condition: where clause condition
     * @param type: logic type for where clause
     * @return the sql query

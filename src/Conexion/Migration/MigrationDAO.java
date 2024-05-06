@@ -76,7 +76,7 @@ public class MigrationDAO {
      * @param dbName: database name
      * @return true if its selected, false otherwise
      */
-    public boolean selecDatabase(String dbName) {
+    public boolean selectDatabase(String dbName) {
         Statement stm     = null;
         ResultSet rst     = null;
         boolean isSelected = false;
@@ -85,7 +85,7 @@ public class MigrationDAO {
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 isSelected = true;
-                System.out.println("[ INFO ]: se selecciona la base de datos");
+                System.out.println("[ INFO ]: database selected");
             }
         } catch(Exception e) {
             System.err.println(e);
@@ -111,7 +111,7 @@ public class MigrationDAO {
     }
     /**
      * create table operation
-     * @param model: modelo to create
+     * @param model: model to create
      * @return true if its created, false otherwise
      */
     public boolean createTable(ModelMethods model) {
@@ -320,11 +320,11 @@ public class MigrationDAO {
      * @param primaryM: model with the fk declaration of foreignM pk
      * @param foreignM: model with the pk reference in primaryM fk
      * @param foreignT: foreign table name
-     * @param includePKFK: true or false to include pk or fk
+     * @param includeKeys: true or false to include pk or fk
      * @return true if the columns are added, false otherwise
      */
     public boolean addColumn(ModelMethods primaryM, ModelMethods foreignM, String foreignT,
-            boolean includePKFK) {
+            boolean includeKeys) {
         Statement stm     = null;
         ResultSet rst     = null;
         boolean isAdded = false;
@@ -333,7 +333,7 @@ public class MigrationDAO {
                     primaryM,
                     foreignM,
                     foreignT,
-                    includePKFK,
+                    includeKeys,
                     stm
             );
             rst = stm.getGeneratedKeys();
@@ -412,7 +412,7 @@ public class MigrationDAO {
         try {
             rst = migrationExecution.executeDropDefaultConstraint(columns, stm).getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
-                System.out.println("[ INFO ]: default constriant has been deleted");
+                System.out.println("[ INFO ]: default constraint has been deleted");
                 isDeleted = true;
             }
         } catch(Exception e) {
@@ -439,13 +439,13 @@ public class MigrationDAO {
     }
     /**
      * add constraint mainly for CHECK validation
-     * @param options: columns for constraint. ejm -> edad: 18, ciudad: pasto.
+     * @param options: columns for constraint.
      * @param constraint: constraint operations -> <=, =, >=.
      * @param constraintName: name for the constraint
      * @param type: logic type for constraint operation.
      * @return true if its added, false otherwise
      */
-    public boolean addCheckContraint(String[] options, String[] constraint, String constraintName,
+    public boolean addCheckConstraint(String[] options, String[] constraint, String constraintName,
             String type) {
         boolean isAdded = false;
         Statement stm = null;
@@ -500,7 +500,7 @@ public class MigrationDAO {
         try {
             boolean isDeleted = dropCheckConstraint(checkName);
             if(isDeleted == true) {
-                isUpdated = addCheckContraint(options, constraint, checkName, type);
+                isUpdated = addCheckConstraint(options, constraint, checkName, type);
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -531,7 +531,7 @@ public class MigrationDAO {
     }
     /**
      * delete a check constraint given its name.
-     * @param checkName: check contraint name
+     * @param checkName: check constraint name
      * @return true if its deleted, false otherwise
      */
     public boolean dropCheckConstraint(String checkName) {
@@ -579,7 +579,7 @@ public class MigrationDAO {
         ResultSet rst     = null;
         boolean isRenamed = false;
         try {
-            stm = migrationExecution.exceuteRenameColumn(model, stm);
+            stm = migrationExecution.executeRenameColumn(model, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 isRenamed = true;
@@ -610,15 +610,15 @@ public class MigrationDAO {
     /**
      * change the column type operation.
      * @param model: model with the new type
-     * @param includePKFK: true or false to include pk & fk
+     * @param includeKeys: true or false to include pk & fk
      * @return true if its changed
      */
-    public boolean changeType(ModelMethods model, boolean includePKFK) {
+    public boolean changeType(ModelMethods model, boolean includeKeys) {
         Statement stm     = null;
         ResultSet rst     = null;
         boolean isChanged = false;
         try {
-            stm = migrationExecution.executeChangeColumnType(model, includePKFK, stm);
+            stm = migrationExecution.executeChangeColumnType(model, includeKeys, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 isChanged = true;
@@ -649,15 +649,15 @@ public class MigrationDAO {
     /**
      * delete a column operation.
      * @param model: model to delete
-     * @param includePKFK: true or false to include pk & fk
+     * @param includeKeys: true or false to include pk & fk
      * @return true if its deleted, false otherwise
      */
-    public boolean deleteColumn(ModelMethods model, boolean includePKFK) {
+    public boolean deleteColumn(ModelMethods model, boolean includeKeys) {
         Statement stm     = null;
         ResultSet rst     = null;
         boolean isDeleted = false;
         try {
-            stm = migrationExecution.executeDeleteColumn(model, includePKFK, stm);
+            stm = migrationExecution.executeDeleteColumn(model, includeKeys, stm);
             rst = stm.getGeneratedKeys();
             if(rst.getMetaData().getColumnCount() > 0) {
                 isDeleted = true;

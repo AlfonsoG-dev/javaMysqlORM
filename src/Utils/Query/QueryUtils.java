@@ -15,8 +15,8 @@ public record QueryUtils() {
     /**
      * trim the string for the given value
      * @param value: {@link String} to trim
-     * @param spaces: value of triming
-     * @return the {@link String} trimed
+     * @param spaces: value of trimming
+     * @return the {@link String} trimmed
     */
     public String cleanValues(String value, int spaces) {
         StringBuffer buffer = new StringBuffer(value);
@@ -45,16 +45,16 @@ public record QueryUtils() {
     /**
      * gets the query or {@link ResultSet} metadata colum count
      * @param metadata: query or {@link ResultSet} metadata
-     * @throws SQLException: execption while trying to execute
+     * @throws SQLException: exception while trying to execute
      * @return the column count
      */
     public int getMetadataNumColumns(ResultSetMetaData metadata) throws SQLException {
         return metadata.getColumnCount();
     }
     /**
-     * get the value of -> name: value
-     * @param condition: los valores a limpiar
-     * @return los valores limpios y combinados
+     * get the value of -> name: value.
+     * @param condition: where clause condition
+     * @return clean condition for where clause
      */
     public String getValueOfCondition(ParamValue condition) {
         String[] properties = condition.getCombination().split(", ");
@@ -67,7 +67,7 @@ public record QueryUtils() {
     }
     /**
      * combine min and max operators for each column after ':' in condition
-     * @param columns: 'min: nombre, max: password'
+     * @param columns: 'min: name, max: password'
      * @return min(column) as min_column, max(column) as max_column
      */
     public String getMinMaxSelection(String columns) {
@@ -215,29 +215,29 @@ public record QueryUtils() {
         return cleanByLogicType(type, build.toString());
     }
     /**
-     * assing the type to the column for the query statement
+     * assign the type to the column for the query statement
      * @return the model types or values
      */
-    public String getAsignModelValues(String modelData) {
+    public String getAssignModelValues(String modelData) {
         String[] data = modelData.split("\n");
-        StringBuffer assing = new StringBuffer();
+        StringBuffer assign = new StringBuffer();
         for(int i=1; i<data.length; ++i) {
             String 
                 key   = data[i].split(":")[0],
                 value = data[i].split(":")[1];
-            assing.append(key.trim());
-            assing.append("='");
-            assing.append(value.trim());
-            assing.append("', ");
+            assign.append(key.trim());
+            assign.append("='");
+            assign.append(value.trim());
+            assign.append("', ");
         }
-        return cleanValues(assing.toString(), 2);
+        return cleanValues(assign.toString(), 2);
     }
     /**
      * creates the query statement alias using table_name
      * @param tbName: table name to create alias
      * @return a {@link String} with query statement using alias
      */
-    public String asignTableNameToColumns(String modelData, String tbName) {
+    public String assignTableNameToColumns(String modelData, String tbName) {
         String[] data = modelData.split("\n");
         StringBuffer build = new StringBuffer();
         for(String d: data) {
@@ -259,7 +259,7 @@ public record QueryUtils() {
      * creates the pattern for select statement
      * @param pattern: pattern to search
      * @param condition: condition value
-     * @param type: logic type for where caluse
+     * @param type: logic type for where clause
      * @return the pattern
      */
     public String getPatternCondition(String pattern, String[] condition, String type) {
@@ -274,7 +274,7 @@ public record QueryUtils() {
         return cleanByLogicType(type, build.toString());
     }
     /**
-     * creates the inner join conditional for where caluse.
+     * creates the inner join conditional for where clause.
      * <br> pre: </br> the condition uses the pk from foreign model and fk from the invoke model
      * @param invokedM: model that has the fk that references the foreign model pk
      * @param foreignM: foreign model that has the pk references the invokedM model fk

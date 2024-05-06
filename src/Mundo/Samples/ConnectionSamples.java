@@ -3,7 +3,7 @@ package Mundo.Samples;
 import java.sql.Connection;
 
 import Conexion.Migration.MigrationDAO;
-import Conexion.Conector;
+import Conexion.Connector;
 import Config.DbConfig;
 import Model.ModelMethods;
 import Mundo.Cuentas.Cuenta;
@@ -21,7 +21,7 @@ public class ConnectionSamples {
         );
         try {
             // create the database schema
-            Connection con     = new Conector(mConfig).conectarMySQL();
+            Connection con     = new Connector(mConfig).mysqlConnection();
             MigrationDAO miDAO = new MigrationDAO("", con);
             miDAO.createDataBase(db_name);
             con.close();
@@ -46,7 +46,7 @@ public class ConnectionSamples {
     private final static void setDatabaseState() {
         try {
             DbConfig miConfig = InitDB("database_name");
-            Connection cursor = new Conector(miConfig).conectarMySQL();
+            Connection cursor = new Connector(miConfig).mysqlConnection();
             // use the default models
             InitTable(
                     "user",

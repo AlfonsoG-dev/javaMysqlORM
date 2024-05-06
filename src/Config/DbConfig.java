@@ -7,7 +7,6 @@ public record DbConfig(String database, String hostname, String port, String use
 
     /**
      * url for mysql connection
-     * @return la url de la conexión
      */
     public String getMysqlUrl() {
         String url = "jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.database;

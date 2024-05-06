@@ -154,13 +154,13 @@ public class MigrationExecution {
      * execute add table column from model
      */
     public Statement executeAddColumn(ModelMethods model, ModelMethods refModel, String refTable,
-            boolean includePKFK, Statement stm) throws SQLException {
+            boolean includeKeys, Statement stm) throws SQLException {
         ResultSet rst = executeShowTableData(stm);
         String sql    = migrationBuilder.createAddColumnQuery(
                 model.initModel(),
                 refModel.initModel(),
                 refTable,
-                includePKFK,
+                includeKeys,
                 rst
         );
         if(sql != "" || sql != null) {
@@ -170,8 +170,8 @@ public class MigrationExecution {
         return stm;
     }
     /**
-     * query execution for add constraint mainly for CHECK validation
-     * @param options: columns for constraint. ejm -> edad: 18, ciudad: pasto.
+     * query execution for add constraint mainly for CHECK validation.
+     * @param options: columns for constraint
      * @param constraint: constraint operations -> <=, =, >=.
      * @param constraintName: name for the constraint
      * @param type: logic type for constraint operation.
@@ -207,7 +207,7 @@ public class MigrationExecution {
     /**
      * execute rename column from model
      */
-    public Statement exceuteRenameColumn(ModelMethods model, Statement stm) throws SQLException {
+    public Statement executeRenameColumn(ModelMethods model, Statement stm) throws SQLException {
         ResultSet rst = executeShowTableData(stm);
         String sql    = migrationBuilder.createRenameColumnQuery(model.initModel(), rst);
         if(sql != "" || sql != null) {
@@ -219,10 +219,10 @@ public class MigrationExecution {
     /**
      * execute change table column type from model
      */
-    public Statement executeChangeColumnType(ModelMethods model, boolean includePKFK, Statement stm)
+    public Statement executeChangeColumnType(ModelMethods model, boolean includeKeys, Statement stm)
             throws SQLException {
         ResultSet rst = executeShowTableData(stm);
-        String sql    = migrationBuilder.createChangeTypeQuery(model.initModel(), includePKFK, rst);
+        String sql    = migrationBuilder.createChangeTypeQuery(model.initModel(), includeKeys, rst);
         if(sql != "" || sql != null) {
             stm = cursor.createStatement();
             stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
@@ -232,12 +232,12 @@ public class MigrationExecution {
     /**
      * delete table column from model.
      */
-    public Statement executeDeleteColumn(ModelMethods model, boolean includePKFK, Statement stm) 
+    public Statement executeDeleteColumn(ModelMethods model, boolean includeKeys, Statement stm) 
             throws SQLException {
         ResultSet rst = executeShowTableData(stm);
         String sql    = migrationBuilder.createDeleteColumnQuery(
                 model.initModel(),
-                includePKFK,
+                includeKeys,
                 rst
         );
         if(sql != "" || sql != null) {

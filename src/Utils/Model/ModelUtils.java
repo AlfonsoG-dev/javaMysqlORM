@@ -13,8 +13,8 @@ public record ModelUtils() {
      *
      * trim the string for the given value
      * @param value: {@link String} to trim
-     * @param spaces: value of triming
-     * @return the {@link String} trimed
+     * @param spaces: value of trimming
+     * @return the {@link String} trimmed
     */
     public String cleanValues(String value, int spaces) {
         StringBuffer buffer = new StringBuffer(value);
@@ -27,10 +27,10 @@ public record ModelUtils() {
     /**
      * gets the model column from model data
      * @param modelData: the model data
-     * @param includePKFK: true or false to include PK or FK
+     * @param includeKeys: true or false to include PK or FK
      * @return the model columns
      */
-    public String getModelColumns(String modelData, boolean includePKFK) {
+    public String getModelColumns(String modelData, boolean includeKeys) {
         String[] data = modelData.split("\n");
         StringBuffer
             colName = new StringBuffer(),
@@ -42,7 +42,7 @@ public record ModelUtils() {
             }
         }
         String[] cols = colName.toString().split(",");
-        if(includePKFK == false) {
+        if(includeKeys == false) {
             for(int i=1; i<cols.length; ++i) {
                 modelCol.append(cols[i].stripIndent() + ",");
             }
@@ -110,9 +110,9 @@ public record ModelUtils() {
     }
     /**
      * get the table data
-     * @param rst: resultado de la consulta a la bd
+     * @param rst: {@link ResultSet}
      * @throws SQLException: error while trying to execute
-     * @return la lista de columnas de la tabla
+     * @return {@link HashMap} with table data
      */
     public HashMap<String, List<String>> getTableData(ResultSet rst) throws SQLException {
         HashMap<String, List<String>> tableData = new HashMap<>();
@@ -133,13 +133,13 @@ public record ModelUtils() {
     /**
      * get the model types or rows
      * @param modelData: model data
-     * @param includePKFK: true or false to include pk or fk
+     * @param includeKeys: true or false to include pk or fk
      * @return the model types or rows
      */
-    public String getModelTypes(String modelData, boolean includePKFK) {
+    public String getModelTypes(String modelData, boolean includeKeys) {
         String[] data   = modelData.split("\n");
         StringBuffer types = new StringBuffer();
-        if(includePKFK == false) {
+        if(includeKeys == false) {
             for(int i = 1; i < data.length; i++) {
                 StringBuffer type = new StringBuffer(data[i].split(":")[1].trim());
                 if(!type.isEmpty()) {
@@ -187,28 +187,28 @@ public record ModelUtils() {
      * @return a {@link HashMap} with pk or fk
      */
     public HashMap<String, String> getPkFk(String modelData) {
-        HashMap<String, String> pkfk = new HashMap<String, String>();
+        HashMap<String, String> keys = new HashMap<String, String>();
         String[] data = modelData.split("\n");
         for(String d: data) {
             String key = d.split(":")[0];
             if(key.contains("id_pk") || key.contains("pk")) {
-                pkfk.put("pk", key);
+                keys.put("pk", key);
             }
             if(key.contains("id_fk") || key.contains("fk")) {
-                pkfk.put("fk", key);
+                keys.put("fk", key);
             }
         }
-        return pkfk;
+        return keys;
     }
     /**
      * populate a {@link HashMap} with fields to rename, add & delete
      * @param modelCols: model columns
      * @param tableCols: table columns
-     * @param comparations: {@link HashMap} to populate
+     * @param comparators: {@link HashMap} to populate
      * @return the {@link Thread} of execution
      */
     protected Thread compareProperties(List<String> modelCols, List<String> tableCols,
-            HashMap<String, StringBuffer> comparations) {
+            HashMap<String, StringBuffer> comparators) {
         Thread t = new Thread(new Runnable() {
             public void run() {
                 if(modelCols.size() == tableCols.size()) {
@@ -221,7 +221,7 @@ public record ModelUtils() {
                             rename.append(", ");
                         }
                     }
-                    comparations.put("rename", rename);
+                    comparators.put("rename", rename);
                 }
                 else if(modelCols.size() > tableCols.size()) {
                     StringBuffer add = new StringBuffer();
@@ -231,7 +231,7 @@ public record ModelUtils() {
                             add.append(", ");
                         }
                     }
-                    comparations.put("add", add);
+                    comparators.put("add", add);
                 }
                 else if(tableCols.size() > modelCols.size()) {
                     StringBuffer delete = new StringBuffer();
@@ -243,7 +243,7 @@ public record ModelUtils() {
                             delete.append(", ");
                         }
                     }
-                    comparations.put("delete", delete);
+                    comparators.put("delete", delete);
                 }
             }
         });
@@ -272,18 +272,18 @@ public record ModelUtils() {
      */
     public HashMap<String, StringBuffer> compareColumnName(String modelData, ResultSet rst)
             throws SQLException {
-        HashMap<String, StringBuffer> comparations = new HashMap<>();
+        HashMap<String, StringBuffer> comparators = new HashMap<>();
         List<String> 
             modelCols = getModelColumnList(getModelColumns(modelData, true)),
             tableCols = getTableData(rst).get("columns");
-        Thread t = compareProperties(modelCols, tableCols, comparations);
+        Thread t = compareProperties(modelCols, tableCols, comparators);
         try {
             t.start();
             t.join();
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
-        return comparations;
+        return comparators;
     }
     /**
      * compare the model type with the table row to find which one to modify.
@@ -294,7 +294,7 @@ public record ModelUtils() {
      */
     public HashMap<String, StringBuffer> compareColumnType(String modelData, ResultSet rst)
             throws SQLException {
-        HashMap<String, StringBuffer> resultado = new HashMap<>();
+        HashMap<String, StringBuffer> result = new HashMap<>();
         List<String> 
             modelTypes = getModelColumnList(
                     getModelTypes(modelData, true)
@@ -311,8 +311,8 @@ public record ModelUtils() {
                     rename.append(", ");
                 }
             }
-            resultado.put("rename", rename);
+            result.put("rename", rename);
         }
-        return resultado;
+        return result;
     }
 }

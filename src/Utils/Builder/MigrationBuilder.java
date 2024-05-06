@@ -150,16 +150,16 @@ public class MigrationBuilder extends QueryBuilder {
      * @return the sql query
      */
     public String createAddColumnQuery(String primaryM, String foreignM, String foreignT,
-            boolean includePKFK , ResultSet rst) throws SQLException {
+            boolean includeKeys , ResultSet rst) throws SQLException {
         StringBuffer 
             addColumns = modelUtils.compareColumnName(primaryM, rst).get("add"),
             sql        = new StringBuffer();
         if(!addColumns.isEmpty()) {
-            String columns = modelUtils.getModelColumns(addColumns.toString(), includePKFK);
+            String columns = modelUtils.getModelColumns(addColumns.toString(), includeKeys);
             String[] 
                 cleanColumns = queryUtil.cleanValues(columns, 1).split(","),
-                modelTypes   = modelUtils.getModelTypes(primaryM, includePKFK).split(","),
-                modelColumns = modelUtils.getModelColumns(primaryM, includePKFK).split(",");
+                modelTypes   = modelUtils.getModelTypes(primaryM, includeKeys).split(","),
+                modelColumns = modelUtils.getModelColumns(primaryM, includeKeys).split(",");
             for(String k: cleanColumns) {
                 int indexType              = modelUtils.getColumnType(primaryM, k);
                 String clearTypes          = indexType < modelTypes.length ?
@@ -172,7 +172,7 @@ public class MigrationBuilder extends QueryBuilder {
                 sql.append(
                         "ADD COLUMN " + k + " " + clearTypes + " AFTER " + clearModelColumns + ", "
                 );
-                if(includePKFK == true) {
+                if(includeKeys == true) {
                     sql.append(
                             getPkFKConstraintQuery(
                                 addColumns.toString(),
@@ -188,7 +188,7 @@ public class MigrationBuilder extends QueryBuilder {
             clearSql = "",
             res      = "";
         if(!sql.isEmpty()) {
-            if(includePKFK == true) {
+            if(includeKeys == true) {
                 clearSql = queryUtil.cleanValues(sql.toString(), 2);
             } else {
                 clearSql = queryUtil.cleanValues(sql.toString(), 0);
@@ -229,12 +229,12 @@ public class MigrationBuilder extends QueryBuilder {
     /**
      * create sql change type query.
      * @param modelData
-     * @param includePKFK: true or false to incluclude pk or fk
+     * @param include keys: true or false to include pk or fk
      * @param rst: {@link ResultSet}
      * @throws SQLException: error while trying to execute the statement
      * @return the sql query.
      */
-    public String createChangeTypeQuery(String modelData, boolean includePKFK, ResultSet rst) 
+    public String createChangeTypeQuery(String modelData, boolean includeKeys, ResultSet rst) 
             throws SQLException {
             StringBuffer 
                 renameTypes = modelUtils.compareColumnType(modelData, rst).get("rename"),
@@ -242,7 +242,7 @@ public class MigrationBuilder extends QueryBuilder {
         if(!renameTypes.isEmpty()) {
             String[] 
                 types        = renameTypes.toString().split(", "),
-                modelColumns = modelUtils.getModelColumns(modelData, includePKFK).split(",");
+                modelColumns = modelUtils.getModelColumns(modelData, includeKeys).split(",");
             for(String t: types) {
                 String type = t.split(":")[0];
                 int index   = Integer.parseInt(t.split(":")[1]);
@@ -263,12 +263,12 @@ public class MigrationBuilder extends QueryBuilder {
     /**
      * create sql delete column query.
      * @param modelData
-     * @param includePKFK: true or false to include pk && fk
+     * @param includeKeys: true or false to include pk && fk
      * @param rst: {@link ResultSet}
      * @throws SQLException: error while trying to execute the statement
      * @return the sql query
      */
-    public String createDeleteColumnQuery(String modelData, boolean includePKFK, ResultSet rst)
+    public String createDeleteColumnQuery(String modelData, boolean includeKeys, ResultSet rst)
             throws SQLException {
         StringBuffer 
             deleteColumns = modelUtils.compareColumnName(modelData, rst).get("delete"),
@@ -276,15 +276,15 @@ public class MigrationBuilder extends QueryBuilder {
         if(!deleteColumns.isEmpty()) {
             String[] columns = deleteColumns.toString().split(", ");
             for(String k: columns) {
-                String[] datos = k.split(":");
-                if(datos[0].contains("fk")) {
+                String[] data = k.split(":");
+                if(data[0].contains("fk")) {
                     sql.append(
                             createDeleteConstraintQuery(
                             deleteColumns.toString(),
-                            includePKFK) + "DROP COLUMN " + datos[0] + ", "
+                            includeKeys) + "DROP COLUMN " + data[0] + ", "
                     );
                 } else {
-                    sql.append("DROP COLUMN "  + datos[0] + ", ");
+                    sql.append("DROP COLUMN "  + data[0] + ", ");
                 }
             }
         }
@@ -304,7 +304,7 @@ public class MigrationBuilder extends QueryBuilder {
      * @return the sql query
      */
     public String getPkFKConstraintQuery(String addColumns, String foreignM, String foreignT) {
-        String refpk     = modelUtils.getPkFk(foreignM).get("pk");
+        String fk = modelUtils.getPkFk(foreignM).get("pk");
         StringBuffer sql = new StringBuffer();
         String[] columns = addColumns.split(",");
         for(String k: columns) {
@@ -316,7 +316,7 @@ public class MigrationBuilder extends QueryBuilder {
             if(k.contains("fk") == true) {
                 sql.append(
                         "ADD CONSTRAINT " + k + " FOREIGN KEY(" + k +") REFERENCES " +
-                        foreignT + "(" + refpk + ") ON DELETE CASCADE ON UPDATE CASCADE, "
+                        foreignT + "(" + fk + ") ON DELETE CASCADE ON UPDATE CASCADE, "
                 );
             }
         }
@@ -330,7 +330,7 @@ public class MigrationBuilder extends QueryBuilder {
         return res;
     }
     /**
-     * create sql add default constrint query.
+     * create sql add default constraint query.
      * @param options: default constraint value
      * @return the sql query
      */
@@ -386,18 +386,16 @@ public class MigrationBuilder extends QueryBuilder {
     }
     /**
      * create sql add check constraint query.
-     * @param options: columns for constraint. ejm -> edad: 18, ciudad: pasto.
+     * @param options: columns for constraint. ejm -> years: 18, city: pasto.
      * @param constraint: constraint operations -> <=, =, >=.
      * @param constraintName: name for the constraint
      * @param type: logic type for constraint operation.
-     * edad: 18 => edad > 18 | edad = 18 | edad < 18
-     * ciudad: pasto => ciudad = 'pasto'
      * @return the sql query or an empty value.
      */
     public String getCheckQuery(String[] options, String[] constraint, String checkName, String type) {
         String sql = "";
         // ALTER TABLE Persons
-        // ADD CONSTRAINT CHK_PersonAge CHECK (Age>=18 AND City='Sandnes');
+        // ADD CONSTRAINT CHK_PersonAge CHECK (Age>=18 AND City='Sadness');
         // ADD CONSTRAINT CHK_rol CHECK (rol IN ('', ''))
         if(options.length == constraint.length) {
             sql = "ADD CONSTRAINT " + checkName + " CHECK (";
@@ -414,7 +412,7 @@ public class MigrationBuilder extends QueryBuilder {
                         sql = queryUtil.cleanByLogicType(type, sql);
                     }
                 } else {
-                    System.err.println("[ ERROR ]: while trying to create addCheckContraint");
+                    System.err.println("[ ERROR ]: while trying to create getCheckQuery");
                 }
             }
         }
@@ -440,12 +438,11 @@ public class MigrationBuilder extends QueryBuilder {
     }
     /**
      * create sql delete constraint query.
-     * @param model_properties: propiedades del modelo
-     * @param rst: resultado de la consulta sql
-     * @throws SQLException: error de la consulta sql
-     * @return la sentencia sql para eliminar el constraint de la pk o fk
+     * @param columns: column name to of constraint
+     * @param includeKeys: true or false to include pk & fk
+     * @return the sql query
      */
-    public String createDeleteConstraintQuery(String columns, boolean includePKFK) throws SQLException {
+    public String createDeleteConstraintQuery(String columns, boolean includeKeys) throws SQLException {
         StringBuffer sql = new StringBuffer();
          if(columns != "" && columns != null) {
              String k1   = columns.split(", ")[0];

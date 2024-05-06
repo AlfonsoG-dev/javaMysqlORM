@@ -6,28 +6,18 @@ import java.sql.SQLException;
 import Config.DbConfig;
 
 /**
- * clase para crear la conexión según el driver
+ * class for database connection
  */
-public class Conector {
+public class Connector {
 
-    // driver de MySQL
-    private final static String mysql_driver      = "com.mysql.cj.jdbc.Driver";
+    private final static String mysql_driver = "com.mysql.cj.jdbc.Driver";
 
-    // record con los datos de la conexión
     private DbConfig miConfig;
 
-    /**
-     * inicializa la conexión a la base de datos
-     * @param nConfig: configuración para la conexión a la base de datos
-     */
-    public Conector(DbConfig nConfig) {
+    public Connector(DbConfig nConfig) {
         miConfig = nConfig;
     }
-    /**
-     * crea la conexión a la base de datos en mysql
-     * @return conexión de la base de datos
-     */
-    public Connection conectarMySQL() {
+    public Connection mysqlConnection() {
         Connection conn = null;
         try {
             Class.forName(mysql_driver);

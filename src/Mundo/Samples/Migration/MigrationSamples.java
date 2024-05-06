@@ -91,7 +91,7 @@ public class MigrationSamples {
         String
             checkname = "check_edad",
             type = "and";
-        myDAO.addCheckContraint(options, constraint, checkname, type);
+        myDAO.addCheckConstraint(options, constraint, checkname, type);
     }
     public void sampleUpdateCheckConstraint() {
         String[] 

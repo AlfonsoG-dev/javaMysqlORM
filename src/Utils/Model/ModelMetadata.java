@@ -28,12 +28,12 @@ public class ModelMetadata {
     }
     /**
      * list declare class fields.
-     * @throws ClassNotFoundException: error al buscar la clase
+     * @throws ClassNotFoundException: error while trying to get class for name
      * @return list of class fields.
      */
-    private Field[] getModelFiedls() throws ClassNotFoundException {
-        Class<?> miClase = Class.forName(modelName);
-        Field[] myFields = miClase.getDeclaredFields();
+    private Field[] getModelFields() throws ClassNotFoundException {
+        Class<?> myClass = Class.forName(modelName);
+        Field[] myFields = myClass.getDeclaredFields();
         return myFields;
     }
     /**
@@ -41,37 +41,37 @@ public class ModelMetadata {
      * @return columns or attributes names
      */
     private String getModelColumns() {
-        StringBuffer resultado = new StringBuffer();
+        StringBuffer rest = new StringBuffer();
         try {
-            Field[] myFields = getModelFiedls();
+            Field[] myFields = getModelFields();
             if(myFields.length > 0) {
                 for(Field f: myFields) {
-                    resultado.append(f.getName() + ", ");
+                    rest.append(f.getName() + ", ");
                 }
             }
         } catch(ClassNotFoundException e) {
             System.err.println(e);
         }
-        return resultado.substring(0, resultado.length()-2);
+        return rest.substring(0, rest.length()-2);
     }
     /**
      * list of class annotations.
      */
     private ArrayList<Annotation[]> getModelAnnotations() {
-        ArrayList<Annotation[]> resultado = new ArrayList<>();
+        ArrayList<Annotation[]> rest = new ArrayList<>();
         try {
-            Field[] myFields = getModelFiedls();
+            Field[] myFields = getModelFields();
             if(myFields.length > 0) {
                 for(Field f: myFields) {
                     if(f.getAnnotations().length > 0) {
-                        resultado.add(f.getAnnotations());
+                        rest.add(f.getAnnotations());
                     }
                 }
             }
         } catch(ClassNotFoundException e) {
             System.err.println(e);
         }
-        return resultado;
+        return rest;
     }
     private String getAnnotationConstraint() {
         StringBuffer constraint = new StringBuffer();
@@ -87,20 +87,20 @@ public class ModelMetadata {
     private String getModelColumConstraint() {
         try {
             String[] myConstraint = getAnnotationConstraint().split(" and ");
-            StringBuffer datos = new StringBuffer();
+            StringBuffer data = new StringBuffer();
             for(String c: myConstraint) {
                 String[] f = c.split(".miConstraint");
                 for(String i: f) {
                     String[] ci = i.split(", ");
                     if(ci[0].startsWith("\"") || ci[0].endsWith("\"")) {
-                        datos.append(ci[0]);
+                        data.append(ci[0]);
                     }
                 }
             }
             String 
-                restDatos  = datos.toString().replace("=", ", "),
-                cleanDatos = restDatos.substring(2, restDatos.length());
-            return cleanDatos;
+                restData  = data.toString().replace("=", ", "),
+                cleanData = restData.substring(2, restData.length());
+            return cleanData;
         } catch(Exception e) {
             System.err.println(e);
             return "";
@@ -112,7 +112,7 @@ public class ModelMetadata {
     private String getModelColumnType() {
         try {
             String[] myConstraint = getAnnotationConstraint().split(" and ");
-            StringBuffer datos = new StringBuffer();
+            StringBuffer data = new StringBuffer();
             for(String c: myConstraint) {
                 String[] f = c.split(".miConstraint");
                 for(String i: f) {
@@ -121,16 +121,16 @@ public class ModelMetadata {
                         String[] mt = t.split("miType=");
                         if(mt.length == 2) {
                             if(mt[1].startsWith("\"") || mt[1].endsWith(")")) {
-                                datos.append(mt[1]);
+                                data.append(mt[1]);
                             }
                         }
                     }
                 }
             }
             String 
-                restDatos  = datos.toString().replace("\")", "\", "),
-                cleanDatos = restDatos.substring(0, restDatos.length()-2);
-            return cleanDatos;
+                restData  = data.toString().replace("\")", "\", "),
+                cleanData = restData.substring(0, restData.length()-2);
+            return cleanData;
         } catch(Exception e) {
             System.err.println(e);
             return "";
