@@ -7,15 +7,28 @@ public class ParamValue {
 
     private String column;
     private String value;
+    private String type;
     private String[] columns; 
     private String[] values;
+    /**
+     */
+    public ParamValue(String column, String value, String type) {
+        this.column = column;
+        this.value = value;
+        this.type = type;
+    }
     public ParamValue(String column, String value) {
         this.column = column;
         this.value = value;
     }
     /**
-     * <br>: pre: </br> columns & values share the same length & share the same order
+     * <br>: pre: </br> columns and values share the same length and order
      */
+    public ParamValue(String[] columns, String[] values, String type) {
+        this.columns = columns;
+        this.values = values;
+        this.type = type;
+    }
     public ParamValue(String[] columns, String[] values) {
         this.columns = columns;
         this.values = values;
@@ -26,6 +39,9 @@ public class ParamValue {
     }
     public String getValue() {
         return value;
+    }
+    public String getType() {
+        return type;
     }
 
     public String[] getColumns() {
@@ -40,9 +56,12 @@ public class ParamValue {
                 (getValues() != null && getValues().length > 0) &&
                 (getColumns().length == getValues().length)) {
             int length = getColumns().length;
-            String h = "";
+            StringBuffer h = new StringBuffer();
             for(int i=0; i<length; ++i) {
-                h += getColumns()[i] + ": " + getValues()[i] + ", ";
+                h.append(getColumns()[i]);
+                h.append(": ");
+                h.append(getValues()[i]);
+                h.append(", ");
             }
             b.append(h.substring(0, h.length()-2));
         } else if(!getColumn().isEmpty() && !getValue().isEmpty()) {

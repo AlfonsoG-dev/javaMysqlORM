@@ -42,18 +42,16 @@ public class QuerySamples<T> {
     public void sampleCreateView()  {
         String
             viewName      = "my_view_name",
-            columns       = "nombre, email",
-            type          = "or";
+            columns       = "nombre, email";
         String[]
             cols = {"nombre", "rol"},
             vals = {"test", "admin"};
-        ParamValue condition = new ParamValue(cols, vals);
+        ParamValue condition = new ParamValue(cols, vals, "or");
 
         boolean isCreated = myDAO.createView(
                 viewName,
                 condition,
-                columns,
-                type
+                columns
         );
 
         if(isCreated) {
@@ -87,18 +85,16 @@ public class QuerySamples<T> {
     }
 
     public void samplePreparedFind() {
-        String type = "and";
-        ParamValue condition = new ParamValue("nombre", "test");
-        T myObject       = myDAO.preparedFind(condition, type);
+        ParamValue condition = new ParamValue("nombre", "test", "and");
+        T myObject       = myDAO.preparedFind(condition);
         if(myObject != null) {
             System.out.println(myObject.getClass().getName());
         }
     }
 
     public void sampleFindByColumnName() {
-        String type = "and";
-        ParamValue condition = new ParamValue("nombre", "test");
-        T myObject       = myDAO.findByColumnName(condition, type);
+        ParamValue condition = new ParamValue("nombre", "test", "and");
+        T myObject       = myDAO.findByColumnName(condition);
         if(myObject != null) {
             System.out.println(myObject.getClass().getName());
         }
@@ -134,83 +130,70 @@ public class QuerySamples<T> {
     }
 
     public void sampleGetMinMax() {
-        String type      = "and";
         String[]
             cols = {"max", "min"},
             vals = {"create_at", "nombre"};
         ParamValue columns = new ParamValue(cols, vals);
-        ParamValue condition = new ParamValue("nombre", "test");
+        ParamValue condition = new ParamValue("nombre", "test", "and");
         String result = myDAO.getMinMax(
                 columns,
-                condition,
-                type
+                condition
         );
         System.out.println(result);
     }
 
     public void sampleGetValueOfColumn() {
-        String
-            columns   = "nombre, email, rol, create_at",
-            type      = "or";
+        String columns   = "nombre, email, rol, create_at";
         String[]
             cols = {"nombre", "rol"},
             vals = {"admin", "admin"};
-        ParamValue condition = new ParamValue(cols, vals);
+        ParamValue condition = new ParamValue(cols, vals, "or");
         String result = myDAO.getValueOfColumnName(
                 condition,
-                columns,
-                type
+                columns
         );
         System.out.println(result);
     }
     public void sampleInnerJoin(ModelMethods primary, ModelMethods foreign) {
-        String
-            foreignT     = "foreign_table_name",
-            type         = "or";
-        ParamValue condition = new ParamValue("nombre", "test");
+        String foreignT     = "foreign_table_name";
+        ParamValue condition = new ParamValue("nombre", "test", "or");
         String result    = myDAO.innerJoin(
                 primary,
                 foreign,
                 foreignT,
-                condition,
-                type
+                condition
         );
         System.out.println(result);
     }
 
     public void sampleInsertNewRegister(ModelMethods model) {
-        String type           = "or";
-        ParamValue condition = new ParamValue("nombre", "test");
+        ParamValue condition = new ParamValue("nombre", "test", "or");
         boolean isInserted = myDAO.insertNewRegister(
                 model,
-                condition,
-                type
+                condition
         );
         if(isInserted) {
             System.out.println("inserted");
         }
     }
     public void samplePreparedInsert(ModelMethods model) {
-        String type = "or";
-        ParamValue condition = new ParamValue("nombre", "test");
-        myDAO.preparedInsert(model, condition, type);
+        ParamValue condition = new ParamValue("nombre", "test", "or");
+        myDAO.preparedInsert(model, condition);
     }
 
     public void sampleInsertByColumns() {
         // options: column: value
         // condition: column: value
-        String type        = "and";
         String[]
             opCols = {"nombre", "email", "password"},
             opVals = {"test", "test@gmail.com", "123asd"},
             coCols = {"nombre", "email"},
             coVals = {"test", "test@gmail.com"};
-        ParamValue condition = new ParamValue(coCols, coVals);
+        ParamValue condition = new ParamValue(coCols, coVals, "and");
         ParamValue options = new ParamValue(opCols, opVals);
         boolean isInserted = myDAO.insertByColumns(
                 options,
-                condition,
-                type
+                condition
         );
         if(isInserted) {
             System.out.println("inserted");
@@ -220,18 +203,16 @@ public class QuerySamples<T> {
         String 
             sourceTable    = "source_table_name",
             targetTable    = "target_table_name",
-            columns        = "nombre, email, rol",
-            type           = "or";
+            columns        = "nombre, email, rol";
         String[]
             cols = {"nombre", "rol"},
             vals = {"admin", "admin"};
-        ParamValue condition = new ParamValue(cols, vals);
+        ParamValue condition = new ParamValue(cols, vals, "and");
         boolean isInserted = myDAO.insertIntoSelect(
                 sourceTable,
                 targetTable,
                 condition,
-                columns,
-                type
+                columns
         );
         if(isInserted) {
             System.out.println("inserted");
@@ -239,37 +220,32 @@ public class QuerySamples<T> {
     }
 
     public void sampleUpdateRegister(ModelMethods updatedModel) {
-        String type          = "and";
-        ParamValue condition = new ParamValue("nombre", "test");
+        ParamValue condition = new ParamValue("nombre", "test", "and");
         boolean isUpdated = myDAO.updateRegister(
                 updatedModel,
-                condition,
-                type
+                condition
         );
         if(isUpdated) {
             System.out.println("updated");
         }
     }
     public void samplePreaparedUpdate(ModelMethods updateModel) {
-        String type = "and";
-        ParamValue condition = new ParamValue("nombre", "test");
-        myDAO.preparedUpdate(updateModel, condition, type);
+        ParamValue condition = new ParamValue("nombre", "test", "and");
+        myDAO.preparedUpdate(updateModel, condition);
     }
     public void sampleDeleteRegister() {
-        String type          = "or";
         String[]
             cols = {"nombre", "rol"},
             vals = {"test", "admin"};
-        ParamValue condition = new ParamValue(cols, vals);
-        boolean isDeleted = myDAO.deleteRegister(condition, type);
+        ParamValue condition = new ParamValue(cols, vals, "or");
+        boolean isDeleted = myDAO.deleteRegister(condition);
         if(isDeleted) {
             System.out.println("deleted");
         }
     }
     public void samplePreaparedDelete() {
-        String type = "and";
-        ParamValue condition = new ParamValue("nombre", "test");
-        myDAO.preparedDelete(condition, type);
+        ParamValue condition = new ParamValue("nombre", "test", "and");
+        myDAO.preparedDelete(condition);
     }
 
 }

@@ -151,10 +151,9 @@ public class QueryDAO<T> {
      * @param viewName: name of the view to create
      * @param condition: condition for selection
      * @param columns: the columns to select for the view
-     * @param type: type logic for where clause
      * @return true if its created, otherwise false
      */
-    public boolean createView(String viewName, ParamValue condition, String columns, String type) {
+    public boolean createView(String viewName, ParamValue condition, String columns) {
         boolean isCreate  = false;
         Statement stm     = null;
         try {
@@ -162,8 +161,7 @@ public class QueryDAO<T> {
                     stm,
                     viewName,
                     condition,
-                    columns,
-                    type
+                    columns
             );
             if(rst == 1) {
                 System.out.println("[ INFO ]: anyExecution successfully completed");
@@ -304,15 +302,14 @@ public class QueryDAO<T> {
     /**
      * search using {@link PreparedStatement}.
      * @param condition: where clause condition
-     * @param type: and or not
      * @return the searched object
      */
-    public T preparedFind(ParamValue condition, String type) {
+    public T preparedFind(ParamValue condition) {
         T searched              = null;
         PreparedStatement pstm = null;
         ResultSet rst          = null;
         try {
-            rst        = queryExecution.executePreparedFind(pstm, condition, type);
+            rst        = queryExecution.executePreparedFind(pstm, condition);
             int length = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 searched = modelBuilderMethods.createFromRST(rst, length);
@@ -345,15 +342,14 @@ public class QueryDAO<T> {
     /**
      * search using column name.
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @return the search model instance 
      */
-    public T findByColumnName(ParamValue condition, String type) {
+    public T findByColumnName(ParamValue condition) {
         T searched     = null;
         Statement stm = null;
         ResultSet rst = null;
         try {
-            rst        = queryExecution.executeFindByColumnName(stm, condition, type);
+            rst        = queryExecution.executeFindByColumnName(stm, condition);
             int length = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 searched = modelBuilderMethods.createFromRST(rst, length);
@@ -493,10 +489,9 @@ public class QueryDAO<T> {
      * get the min or max of each of the given columns.
      * @param columns: 'min: name, max: password'
      * @param condition: condition for where clause
-     * @param type: and or not
      * @return the min or max object data
      */
-    public String getMinMax(ParamValue columns, ParamValue condition, String type) {
+    public String getMinMax(ParamValue columns, ParamValue condition) {
         String searched = null;
         Statement stm  = null;
         ResultSet rst  = null;
@@ -504,8 +499,7 @@ public class QueryDAO<T> {
             rst     = queryExecution.executeFindMinMax(
                     stm,
                     columns,
-                    condition,
-                    type
+                    condition
             );
             int len = 0;
             if(columns == null || columns.getCombination().isEmpty()) {
@@ -547,10 +541,9 @@ public class QueryDAO<T> {
      * search for the value of the given column. 
      * @param condition: column name
      * @param column: columns to search
-     * @param type: logic type for where clause
      * @return value of column name
      */
-    public String getValueOfColumnName(ParamValue condition, String columns, String type) {
+    public String getValueOfColumnName(ParamValue condition, String columns) {
         String result = "";
         Statement stm = null;
         ResultSet rst = null;
@@ -558,8 +551,7 @@ public class QueryDAO<T> {
             rst     = queryExecution.executeGetValueOfColumnName(
                     stm,
                     condition,
-                    columns,
-                    type
+                    columns
             );
             int len = 0;
             if(columns == null || columns.isEmpty() == true) {
@@ -607,11 +599,10 @@ public class QueryDAO<T> {
      * @param foreign: model with the pk field for the relationship 
      * @param foreignT: foreign table name
      * @param condition: condition for where clause
-     * @param type: logic type for where clause
      * @return a string with the format -> source_name: source_password, reference_name: reference_password
      */
-    public String innerJoin(ModelMethods primary, ModelMethods foreign, String foreignT, ParamValue condition, 
-            String type) {
+    public String innerJoin(ModelMethods primary, ModelMethods foreign, String foreignT, ParamValue condition) 
+    {
         String result = "";
         Statement stm = null;
         ResultSet rst = null;
@@ -621,8 +612,7 @@ public class QueryDAO<T> {
                     primary,
                     foreign,
                     foreignT,
-                    condition,
-                    type
+                    condition
             );
             while(rst.next()) {
                 result += tbName + "->" + rst.getString(tbName + "nombre") + ": " +
@@ -663,10 +653,9 @@ public class QueryDAO<T> {
      * inserts a new value to the table.
      * @param model: model with the data to insert
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @return true if its inserted, false otherwise
      */
-    public boolean insertNewRegister(ModelMethods model, ParamValue condition, String type) {
+    public boolean insertNewRegister(ModelMethods model, ParamValue condition) {
         boolean isInserted  = false;
         Statement stm       = null;
         try {
@@ -676,7 +665,7 @@ public class QueryDAO<T> {
                 );
             }
             cursor.beginRequest();
-            T searched = findByColumnName(condition, type);
+            T searched = findByColumnName(condition);
             if(searched == null) {
                 cursor.endRequest();
                 int rst = queryExecution.executeInsertNewRegister(stm, model);
@@ -711,10 +700,9 @@ public class QueryDAO<T> {
      * insert register using {@link PreparedStatement}
      * @param model: model to insert
      * @param condition: where clause condition
-     * @param type: logic type for where clause condition
      * @return true if its inserted, false otherwise
      */
-    public boolean preparedInsert(ModelMethods model, ParamValue condition, String type) {
+    public boolean preparedInsert(ModelMethods model, ParamValue condition) {
         boolean isInserted = false;
         PreparedStatement pstm = null;
         try {
@@ -723,7 +711,7 @@ public class QueryDAO<T> {
                         "[ ERROR ]: model cannot be [ NULL ]"
                 );
             }
-            T searched = findByColumnName(condition, type);
+            T searched = findByColumnName(condition);
             if(searched == null) {
                 int rst = queryExecution.executeInsertPreparedInsert(pstm, model);
                 if(rst >0 ) {
@@ -755,14 +743,13 @@ public class QueryDAO<T> {
      * insert register using options like {@link String} sentence
      * @param options: the data to insert
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @return true if its inserted, false otherwise
      */
-    public boolean insertByColumns(ParamValue options, ParamValue condition, String type) {
+    public boolean insertByColumns(ParamValue options, ParamValue condition) {
         Statement stm = null;
         boolean isInserted = false;
         try {
-            T searched = findByColumnName(condition, type);
+            T searched = findByColumnName(condition);
             if(searched == null) {
                 int rst = queryExecution.executeInsertByColumns(stm, options);
                 if(rst > 0) {
@@ -798,11 +785,9 @@ public class QueryDAO<T> {
      * @param targetT: target table 
      * @param condition: condition for where clause
      * @param columns: columns to return
-     * @param type: logic operator for where clause
      * @return true if the {@link sourceT} is copied to {@link targetT}, false otherwise
      */
-    public boolean insertIntoSelect(String sourceT, String targetT, ParamValue condition, String columns, 
-            String type) {
+    public boolean insertIntoSelect(String sourceT, String targetT, ParamValue condition, String columns) {
         boolean isInserted = false;
         Statement stm      = null;
         try {
@@ -811,8 +796,7 @@ public class QueryDAO<T> {
                     sourceT,
                     targetT,
                     condition,
-                    columns,
-                    type
+                    columns
             );
             if(rst > 0) {
                 isInserted = true;
@@ -843,10 +827,9 @@ public class QueryDAO<T> {
      * update database data.
      * @param model: model with the updated data
      * @param conditions: where clause condition
-     * @param type: logic type for where clause
      * @return true if its updated, false otherwise
      **/
-    public boolean updateRegister(ModelMethods model, ParamValue conditions, String type) {
+    public boolean updateRegister(ModelMethods model, ParamValue conditions) {
         boolean isUpdated = false;
         Statement stm      = null;
         try {
@@ -856,14 +839,13 @@ public class QueryDAO<T> {
                 );
             }
             cursor.beginRequest();
-            T searched = findByColumnName(conditions, type);
+            T searched = findByColumnName(conditions);
             if(searched != null) {
                 cursor.endRequest();
                 int result = queryExecution.executeUpdateRegister(
                         stm,
                         model,
-                        conditions,
-                        type
+                        conditions
                 );
                 if(result > 0) {
                     isUpdated = true;
@@ -897,10 +879,9 @@ public class QueryDAO<T> {
      * prepared update version.
      * @param model: the model with the data to update
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @return true if the data is updated, false otherwise
      */
-    public boolean preparedUpdate(ModelMethods model, ParamValue condition, String type) {
+    public boolean preparedUpdate(ModelMethods model, ParamValue condition) {
         boolean isUpdated = false;
         PreparedStatement pstm = null;
         try {
@@ -910,14 +891,13 @@ public class QueryDAO<T> {
                 );
             }
             cursor.beginRequest();
-            T searched = findByColumnName(condition, type);
+            T searched = findByColumnName(condition);
             if(searched != null) {
                 cursor.endRequest();
                 int result = queryExecution.executePreparedUpdate(
                         pstm,
                         model,
-                        condition,
-                        type
+                        condition
                 );
                 if(result > 0) {
                     isUpdated = true;
@@ -948,21 +928,19 @@ public class QueryDAO<T> {
     /**
      * delete a table register.
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @return true if its deleted, false otherwise
      * */
-    public boolean deleteRegister(ParamValue condition, String type) {
+    public boolean deleteRegister(ParamValue condition) {
         boolean isDeleted = false;
         Statement stm    = null;
         try {
             cursor.beginRequest();
-            T searched = findByColumnName(condition, type);
+            T searched = findByColumnName(condition);
             if(searched != null) {
                 cursor.endRequest();
                 int rst = queryExecution.executeDeleteRegister(
                         stm,
-                        condition,
-                        type
+                        condition
                 );
                 if(rst > 0) {
                     isDeleted = true;
@@ -994,19 +972,17 @@ public class QueryDAO<T> {
     /**
      * delete operation using {@link PreparedStatement}
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @return true if the data is deleted, false otherwise
      */
-    public boolean preparedDelete(ParamValue condition, String type) {
+    public boolean preparedDelete(ParamValue condition) {
         boolean isDeleted = false;
         PreparedStatement pstm = null;
         try {
-            T searched = findByColumnName(condition, type);
+            T searched = findByColumnName(condition);
             if(searched != null) {
                 int rst = queryExecution.executePreparedDelete(
                         pstm,
-                        condition,
-                        type
+                        condition
                 );
                 if(rst > 0) {
                     isDeleted = true;

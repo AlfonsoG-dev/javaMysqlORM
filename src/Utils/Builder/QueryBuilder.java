@@ -80,20 +80,16 @@ public class QueryBuilder {
      * @param type: logic type for where clause
      * @return the sql query
      */
-    public String createPreparedFindQuery(ParamValue condition, String type) {
+    public String createPreparedFindQuery(ParamValue condition) {
         StringBuffer
             sql = new StringBuffer(),
             whereClause = new StringBuffer();
-        if(condition != null && !condition.getCombination().isEmpty()) {
-            whereClause.append(" WHERE ");
-            whereClause.append(queryUtil.getPrepareConditional(condition, type));
-        }
-        if(!whereClause.isEmpty()) {
-            sql.append("SELECT *");
-            sql.append(" FROM ");
-            sql.append(tbName);
-            sql.append(whereClause);
-        }
+        whereClause.append(" WHERE ");
+        whereClause.append(queryUtil.getPrepareConditional(condition));
+        sql.append("SELECT *");
+        sql.append(" FROM ");
+        sql.append(tbName);
+        sql.append(whereClause);
         return sql.toString();
     }
     /**
@@ -102,20 +98,16 @@ public class QueryBuilder {
      * @param type: logic type for where clause
      * @return a sql query
      */
-    public String createFindByColumnQuery(ParamValue condition, String type) {
+    public String createFindByColumnQuery(ParamValue condition) {
         StringBuffer
             sql = new StringBuffer(),
             whereClause = new StringBuffer();
-        if(condition != null && !condition.getCombination().isEmpty()) {
-            whereClause.append(" WHERE ");
-            whereClause.append(queryUtil.getNormalConditional(condition, type));
-        }
-        if(!whereClause.isEmpty()) {
-            sql.append("SELECT *");
-            sql.append(" FROM ");
-            sql.append(tbName);
-            sql.append(whereClause);
-        }
+        whereClause.append(" WHERE ");
+        whereClause.append(queryUtil.getNormalConditional(condition));
+        sql.append("SELECT *");
+        sql.append(" FROM ");
+        sql.append(tbName);
+        sql.append(whereClause);
         return sql.toString();
     }
     /**
@@ -125,21 +117,17 @@ public class QueryBuilder {
      * @param type: logic type for where clause
      * @return the sql query
      */
-    public String createFindColumnValueQuery(ParamValue condition, String columns, String type) {
+    public String createFindColumnValueQuery(ParamValue condition, String columns) {
         StringBuffer 
             sql = new StringBuffer(),
             whereClause = new StringBuffer();
-        if(condition != null && !condition.getCombination().isEmpty()) {
-            whereClause.append(" WHERE ");
-            whereClause.append(queryUtil.getNormalConditional(condition, type));
-        }
-        if(!whereClause.isEmpty()) {
-            sql.append("SELECT ");
-            sql.append(columns);
-            sql.append(" FROM ");
-            sql.append(tbName);
-            sql.append(whereClause);
-        }
+        whereClause.append(" WHERE ");
+        whereClause.append(queryUtil.getNormalConditional(condition));
+        sql.append("SELECT ");
+        sql.append(columns);
+        sql.append(" FROM ");
+        sql.append(tbName);
+        sql.append(whereClause);
         return sql.toString();
     }
     /**
@@ -206,13 +194,11 @@ public class QueryBuilder {
      * @param type: and or not
      * @return the sql query
      */
-    public String createFindMinMaxQuery(ParamValue columns, ParamValue condition, String type) {
+    public String createFindMinMaxQuery(ParamValue columns, ParamValue condition) {
         String 
             whereClause    = "",
             minMaxSelection = queryUtil.getMinMaxSelection(columns.getCombination());
-        if(condition != null && !condition.getCombination().isEmpty()) {
-            whereClause = " WHERE " + queryUtil.getNormalConditional(condition, type);
-        }
+        whereClause = " WHERE " + queryUtil.getNormalConditional(condition);
         return "SELECT " + minMaxSelection + " FROM " + tbName + whereClause;
     }
     /**
@@ -306,7 +292,8 @@ public class QueryBuilder {
      * @return the sql query
      */
     public String createInnerJoinQuery(ModelMethods primary, ModelMethods foreign, String foreignT,
-            ParamValue condition, String type) {
+            ParamValue condition) {
+        StringBuffer sql = new StringBuffer();
         String 
             foreignV   = queryUtil.assignTableNameToColumns(
                 foreign.getAllProperties(),
@@ -322,24 +309,21 @@ public class QueryBuilder {
                 this.tbName,
                 foreignT
             ),
-            sql          = "";
-        if(condition == null || condition.getCombination().isEmpty()) {
-            sql =
-                "SELECT " + primaryV + ", " +
-                foreignV + " FROM " + this.tbName +
-                " INNER JOIN " + foreignT + " ON " + keys;
-        } else {
-            String conditional = queryUtil.getNormalConditional(
-                    condition,
-                    type
-            );
-            sql =
-                "SELECT " + primaryV + ", " +
-                foreignV + " FROM " + this.tbName +
-                " INNER JOIN " + foreignT + " ON " +
-                keys + " WHERE " + conditional;
-        }
-        return sql;
+            conditional = queryUtil.getNormalConditional(condition);
+
+        sql.append("SELECT ");
+        sql.append(primaryV);
+        sql.append(", ");
+        sql.append(foreignV);
+        sql.append(" FROM ");
+        sql.append(tbName);
+        sql.append(" INNER JOIN ");
+        sql.append(foreignT);
+        sql.append(" ON ");
+        sql.append(keys);
+        sql.append(" WHERE ");
+        sql.append(conditional);
+        return sql.toString();
     }
     /** 
      * creates the sql query to update data.
@@ -348,13 +332,11 @@ public class QueryBuilder {
      * @param type: logic type for where clause
      * @return the sql query
      */
-    public String createModifyRegisterQuery(ModelMethods model, ParamValue condition, String type) {
+    public String createModifyRegisterQuery(ModelMethods model, ParamValue condition) {
         String 
             whereClause     = "",
             cleanKeyValue = queryUtil.getAssignModelValues(model.getAllProperties());
-        if(condition != null && !condition.getCombination().isEmpty()) {
-            whereClause = " WHERE " + queryUtil.getNormalConditional(condition, type);
-        }
+        whereClause = " WHERE " + queryUtil.getNormalConditional(condition);
         return "UPDATE " + tbName + " SET " +  cleanKeyValue + whereClause;
    }
    /**
@@ -364,10 +346,10 @@ public class QueryBuilder {
     * @param type: logic type for where clause
     * @return the sql query
     */
-   public String createPreparedUpdate(ModelMethods model, ParamValue conditional, String type) {
+   public String createPreparedUpdate(ModelMethods model, ParamValue condition) {
        String 
            pValues = queryUtil.getPreparedUpdateValues(model.getAllProperties()),
-           pConditional = queryUtil.getPrepareConditional(conditional, type);
+           pConditional = queryUtil.getPrepareConditional(condition);
        return "UPDATE " + tbName + " SET " + pValues + " WHERE " + pConditional;
    }
    /**
@@ -376,10 +358,10 @@ public class QueryBuilder {
     * @param type: logic type for where clause
     * @return the sql query
     **/
-   public String createDeleteRegisterQuery(ParamValue condition, String type) {
+   public String createDeleteRegisterQuery(ParamValue condition) {
        String whereClause = "";
        if(condition != null && !condition.getCombination().isEmpty()) {
-           whereClause = queryUtil.getNormalConditional(condition, type);
+           whereClause = queryUtil.getNormalConditional(condition);
        }
        return "DELETE FROM " + tbName + " WHERE " + whereClause;
    }
@@ -389,11 +371,8 @@ public class QueryBuilder {
     * @param type: logic type for where clause
     * @return the sql query
     */
-   public String createPreparedDeleteQuery(ParamValue condition, String type) {
-       String whereClause = "";
-       if(condition != null && !condition.getCombination().isEmpty()) {
-           whereClause = queryUtil.getPrepareConditional(condition, type);
-       }
+   public String createPreparedDeleteQuery(ParamValue condition) {
+       String whereClause = queryUtil.getPrepareConditional(condition);
        return "DELETE FROM " + tbName + " WHERE " + whereClause;
    }
 }

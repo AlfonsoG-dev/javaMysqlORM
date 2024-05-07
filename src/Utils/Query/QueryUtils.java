@@ -100,9 +100,12 @@ public record QueryUtils() {
      * @param type: logic operator type: and, or, not
      * @return the condition for where clause
      */
-    public String getPrepareConditional(ParamValue condition, String type) {
+    public String getPrepareConditional(ParamValue params) {
         StringBuffer build = new StringBuffer();
-        String[] properties = condition.getCombination().split(",");
+        String
+            condition = params.getCombination(),
+            type = params.getType();
+        String[] properties = condition.split(",");
         for(String p: properties) {
             if(type.toLowerCase().equals("not")) {
                 build.append("not ");
@@ -140,9 +143,12 @@ public record QueryUtils() {
      * @param condition: the condition value
      * @return the condition for where clause
      */
-    public String getNormalConditional(ParamValue condition, String type) {
+    public String getNormalConditional(ParamValue params) {
         StringBuffer build = new StringBuffer();
-        String[] properties = condition.getCombination().split(",");
+        String 
+            condition = params.getCombination(),
+            type = params.getType();
+        String[] properties = condition.split(",");
         for(String p: properties) {
             if(type.toLowerCase().equals("not")) {
                 build.append("not ");

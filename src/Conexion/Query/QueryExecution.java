@@ -108,18 +108,16 @@ public class QueryExecution {
      * @param viewName: name of the view to create
      * @param condition: condition for selection
      * @param columns: the columns to select for the view
-     * @param type: type logic for where clause
      * @throws SQLException: error of the execution
      * @return 1 if is created, 0 if is not created and -1 if nothing happens
      */
-    public int executeCreateView(Statement stm, String viewName, ParamValue condition, String columns,
-            String type) throws SQLException {
+    public int executeCreateView(Statement stm, String viewName, ParamValue condition, String columns)
+            throws SQLException {
         stm              = cursor.createStatement();
         String
             selectSQL = queryBuilder.createFindColumnValueQuery(
                 condition,
-                columns,
-                type
+                columns
             ),
             viewSQL   = "create view " + viewName + " as " + selectSQL;
         stm.executeUpdate(viewSQL);
@@ -167,7 +165,8 @@ public class QueryExecution {
      * @throws SQLException: error while trying to execute the statement
      * @return {@link ResultSet}
     */
-    public ResultSet executeReadAll(PreparedStatement pstm, String order, String group, int limit) throws SQLException {
+    public ResultSet executeReadAll(PreparedStatement pstm, String order, String group, int limit)
+            throws SQLException {
         String sql    = queryBuilder.readAllQuery(order, group, limit);
         pstm          = cursor.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
@@ -176,15 +175,13 @@ public class QueryExecution {
     /**
      * execute sql select using {@link PreparedStatement} 
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @param pstm: execute instance
      * @throws SQLException: error while trying to execute the statement
      * @return {@link ResultSet}
     */
-    public ResultSet executePreparedFind(PreparedStatement pstm, ParamValue condition,
-            String type) throws SQLException {
+    public ResultSet executePreparedFind(PreparedStatement pstm, ParamValue condition) throws SQLException {
         String 
-            sql         = queryBuilder.createPreparedFindQuery(condition, type),
+            sql         = queryBuilder.createPreparedFindQuery(condition),
             val         = queryUtil.getValueOfCondition(condition);
         pstm            = cursor.prepareStatement(sql);
         String[] fields = val.split(",");
@@ -197,15 +194,13 @@ public class QueryExecution {
     /**
      * execute sql select by column name query 
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @param stm: execute instance
      * @throws SQLException: error while trying to execute the statement
      * @return {@link ResultSet}
     */
-    public ResultSet executeFindByColumnName(Statement stm, ParamValue condition,
-            String type) throws SQLException {
+    public ResultSet executeFindByColumnName(Statement stm, ParamValue condition) throws SQLException {
         stm           = cursor.createStatement();
-        String sql    = queryBuilder.createFindByColumnQuery(condition, type);
+        String sql    = queryBuilder.createFindByColumnQuery(condition);
         ResultSet rst = stm.executeQuery(sql);
         return rst;
     }
@@ -236,17 +231,15 @@ public class QueryExecution {
      * @param stm: execute instance
      * @param columns: 'min: name, max: password'
      * @param condition: condition for where clause
-     * @param type: and or not
      * @throws SQLException: error while trying to execute the statement
      * @return {@link ResultSet}
      */
-    public ResultSet executeFindMinMax(Statement stm, ParamValue columns, ParamValue condition,
-            String type) throws SQLException {
+    public ResultSet executeFindMinMax(Statement stm, ParamValue columns, ParamValue condition)
+            throws SQLException {
         stm           = cursor.createStatement();
         String sql    = queryBuilder.createFindMinMaxQuery(
                 columns,
-                condition,
-                type
+                condition
         );
         ResultSet rst = stm.executeQuery(sql);
         return rst;
@@ -276,17 +269,15 @@ public class QueryExecution {
      * @param stm: execute instance
      * @param condition: "name: test, email: test@test"
      * @param column: searched column
-     * @param type: logic type for where clause
      * @throws SQLException: error while trying to execute the statement
      * @return {@link ResultSet}
     */
-    public ResultSet executeGetValueOfColumnName(Statement stm, ParamValue condition, String columns,
-            String type) throws SQLException {
+    public ResultSet executeGetValueOfColumnName(Statement stm, ParamValue condition, String columns)
+            throws SQLException {
         stm           = cursor.createStatement();
         String sql    = queryBuilder.createFindColumnValueQuery(
                 condition,
-                columns,
-                type
+                columns
         );
         ResultSet rst = stm.executeQuery(sql);
         return rst;
@@ -342,21 +333,20 @@ public class QueryExecution {
      * @param targetT: target table 
      * @param condition: condition for where clause
      * @param columns: columns to return
-     * @param type: logic operator for where clause
      * @throws SQLException: error while trying to execute
      * @return the row count or 0 when nothing is returned
      */
     public int executeInsertIntoSelect(Statement stm, String sourceT, String targetT, ParamValue condition, 
-            String columns, String type) throws SQLException {
+            String columns) throws SQLException {
         stm           = cursor.createStatement();
         String 
             sql       = "",
             selectSQL = "";
         if(columns == null || columns == "") {
-            selectSQL = new QueryBuilder(sourceT).createFindByColumnQuery(condition, type);
+            selectSQL = new QueryBuilder(sourceT).createFindByColumnQuery(condition);
             sql       = "insert into " + targetT + " " + selectSQL;
         } else {
-            selectSQL = new QueryBuilder(sourceT).createFindColumnValueQuery(condition, columns, type);
+            selectSQL = new QueryBuilder(sourceT).createFindColumnValueQuery(condition, columns);
             sql       = "insert into " + targetT + " (" + columns + ")" + selectSQL;
         }
         int rst       = stm.executeUpdate(sql);
@@ -369,18 +359,16 @@ public class QueryExecution {
      * @param foreign: foreign model with pk of primary fk
      * @param foreignT: foreign table name
      * @param condition: where condition clause
-     * @param type: logic type for where clause
      * @throws SQLException: error while trying to execute the statement 
      * @return {@link ResultSet}
      */
     public ResultSet executeInnerJoin(Statement stm, ModelMethods primary, ModelMethods foreign,
-            String foreignT, ParamValue condition, String type) throws SQLException {
+            String foreignT, ParamValue condition) throws SQLException {
         String sql    = queryBuilder.createInnerJoinQuery(
                 primary,
                 foreign,
                 foreignT,
-                condition,
-                type
+                condition
         );
         stm           = cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);
@@ -391,17 +379,15 @@ public class QueryExecution {
      * @param stm: execute instance
      * @param model: model with the updated data
      * @param conditions: where clause condition
-     * @param type: logic type for where clause
      * @throws SQLException: error while trying to execute the statement
      * @return the row count of the statement or '0' when return nothing 
     */
-    public int executeUpdateRegister(Statement stm, ModelMethods model, ParamValue conditions, String type)
+    public int executeUpdateRegister(Statement stm, ModelMethods model, ParamValue conditions)
             throws SQLException {
         stm         = cursor.createStatement();
         String sql  = queryBuilder.createModifyRegisterQuery(
                 model,
-                conditions,
-                type
+                conditions
         );
         int rst = stm.executeUpdate(sql);
         return rst;
@@ -410,14 +396,13 @@ public class QueryExecution {
      * @param pstm: execute instance
      * @param model: model with the data to update
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @throws SQLException: error while trying to update
      * @return row count or '0' when nothing is returned
      */
-    public int executePreparedUpdate(PreparedStatement pstm, ModelMethods model, ParamValue condition,
-            String type) throws SQLException {
+    public int executePreparedUpdate(PreparedStatement pstm, ModelMethods model, ParamValue condition)
+            throws SQLException {
         String 
-            sql = queryBuilder.createPreparedUpdate(model, condition, type),
+            sql = queryBuilder.createPreparedUpdate(model, condition),
             valCondition = queryUtil.getValueOfCondition(condition),
             modelValues  = modelUtils.getModelTypes(model.getAllProperties(), true);
         pstm = cursor.prepareStatement(sql);
@@ -442,29 +427,27 @@ public class QueryExecution {
      * execute sql delete query.
      * @param stm: execute instance
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @throws SQLException: error while trying to execute the statement
      * @return the row count or '0' when nothing is returned
     */
-    public int executeDeleteRegister(Statement stm, ParamValue condition, String type)
+    public int executeDeleteRegister(Statement stm, ParamValue condition)
             throws SQLException {
         stm        = cursor.createStatement();
-        String sql = queryBuilder.createDeleteRegisterQuery(condition, type);
+        String sql = queryBuilder.createDeleteRegisterQuery(condition);
         int result = stm.executeUpdate(sql);
         return result;
     }
     /**
      * execute sql delete query.
      * @param condition: where clause condition
-     * @param type: logic type for where clause
      * @return row count or '0' when nothing is returned
      */
-    public int executePreparedDelete(PreparedStatement pstm, ParamValue condition, String type) 
+    public int executePreparedDelete(PreparedStatement pstm, ParamValue condition) 
         throws SQLException {
 
         String 
             values = queryUtil.getValueOfCondition(condition),
-            sql = queryBuilder.createPreparedDeleteQuery(condition, type);
+            sql = queryBuilder.createPreparedDeleteQuery(condition);
         pstm = cursor.prepareStatement(sql);
         String[] fields = values.split(",");
         for(int i=0; i<fields.length; ++i) {
