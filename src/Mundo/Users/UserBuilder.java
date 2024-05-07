@@ -12,17 +12,16 @@ public class UserBuilder implements ModelBuilderMethods<User>{
      */
     @Override
     public User createFromRST(ResultSet rst, int capacity) throws Exception {
-        Object[] data = resultDataValidator(rst, capacity);
-        Class<?> c = User.class;
-        User m = (User) c.getConstructor(
-                int.class,
-                String.class,
-                String.class,
-                String.class,
-                String.class,
-                String.class,
-                String.class
-        ).newInstance(data);
+        String[] data = resultDataValidator(rst, capacity);
+        User m = new User(
+                Integer.parseInt(data[1]),
+                data[2],
+                data[3],
+                data[4],
+                data[5],
+                data[6],
+                data[7]
+        );
         return m;
     }
     /**
@@ -30,17 +29,16 @@ public class UserBuilder implements ModelBuilderMethods<User>{
      */
     @Override
     public User createFromSTR(String datos) throws Exception {
-        Object[] validate = datos.split(",");
-        Class<?> c = User.class;
-        User m = (User) c.getConstructor(
-                int.class,
-                String.class,
-                String.class,
-                String.class,
-                String.class,
-                String.class,
-                String.class
-        ).newInstance(validate);
+        String[] data = datos.split(",");
+        User m = new User(
+                Integer.parseInt(data[0]),
+                data[1],
+                data[2],
+                data[3],
+                data[4],
+                data[5],
+                data[6]
+        );
         return m;
     }
 }
