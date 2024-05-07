@@ -75,10 +75,7 @@ public class QuerySamples<T> {
     }
 
     public void sampleReadAll() {
-        String
-            order = "nombre: ASC",
-            group = "email: DESC";
-        ArrayList<T> myList = myDAO.readAll(order, group, 10);
+        ArrayList<T> myList = myDAO.readAll();
         myList
             .parallelStream()
             .forEach(e -> System.out.println("element: " + e));

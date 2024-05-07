@@ -263,12 +263,12 @@ public class QueryDAO<T> {
      * @param limit: the number of object per request
      * @return a list of models.
      */
-    public ArrayList<T> readAll(String order, String group, int limit) {
+    public ArrayList<T> readAll() {
         PreparedStatement pstm  = null;
         ResultSet rst           = null;
         ArrayList<T> results = new ArrayList<T>();
         try {
-            rst        = queryExecution.executeReadAll(pstm, order, group, limit);
+            rst        = queryExecution.executeReadAll(pstm);
             int length = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 results.add(modelBuilderMethods.createFromRST(rst, length));

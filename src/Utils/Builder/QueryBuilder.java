@@ -50,28 +50,10 @@ public class QueryBuilder {
      * @param limit: the number of objects to get
      * @return the read all data query
      */
-    public String readAllQuery(String order, String group, int limit) {
+    public String readAllQuery() {
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT * FROM ");
         sql.append(tbName);
-        if(!order.isEmpty()) {
-            String[] separate = order.trim().split(":");
-            sql.append(" ORDER BY ");
-            sql.append(separate[0]);
-            sql.append(" ");
-            sql.append(validationOrder(separate[1]));
-        }
-        if(!group.isEmpty()) {
-            sql.append(" GROUP BY ");
-            String[] separate = group.trim().split(":");
-            sql.append(separate[0]);
-            sql.append(" ");
-            sql.append(validationOrder(separate[1]));
-        } 
-        if(limit > 0) {
-            sql.append(" LIMIT ");
-            sql.append(limit);
-        }
         return sql.toString();
     }
     /**
