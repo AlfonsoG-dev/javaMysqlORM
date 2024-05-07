@@ -197,7 +197,7 @@ public class QueryBuilder {
     public String createFindMinMaxQuery(ParamValue columns, ParamValue condition) {
         String 
             whereClause    = "",
-            minMaxSelection = queryUtil.getMinMaxSelection(columns.getCombination());
+            minMaxSelection = queryUtil.getMinMaxSelection(columns);
         whereClause = " WHERE " + queryUtil.getNormalConditional(condition);
         return "SELECT " + minMaxSelection + " FROM " + tbName + whereClause;
     }
@@ -359,10 +359,7 @@ public class QueryBuilder {
     * @return the sql query
     **/
    public String createDeleteRegisterQuery(ParamValue condition) {
-       String whereClause = "";
-       if(condition != null && !condition.getCombination().isEmpty()) {
-           whereClause = queryUtil.getNormalConditional(condition);
-       }
+       String whereClause = queryUtil.getNormalConditional(condition);
        return "DELETE FROM " + tbName + " WHERE " + whereClause;
    }
    /**

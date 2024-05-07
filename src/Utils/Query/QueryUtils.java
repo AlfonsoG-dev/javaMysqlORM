@@ -57,11 +57,15 @@ public record QueryUtils() {
      * @return clean condition for where clause
      */
     public String getValueOfCondition(ParamValue condition) {
-        String[] properties = condition.getCombination().split(", ");
         StringBuffer val = new StringBuffer();
-        for(String p: properties) {
-            val.append(p.split(":")[1].trim());
-            val.append(",");
+        try {
+            String[] properties = condition.getCombination().split(", ");
+            for(String p: properties) {
+                val.append(p.split(":")[1].trim());
+                val.append(",");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
         return cleanValues(val.toString(), 1);
     }
@@ -70,26 +74,30 @@ public record QueryUtils() {
      * @param columns: 'min: name, max: password'
      * @return min(column) as min_column, max(column) as max_column
      */
-    public String getMinMaxSelection(String columns) {
+    public String getMinMaxSelection(ParamValue columns) {
         StringBuffer build = new StringBuffer();
-        String[] properties = columns.split(",");
-        for(String v: properties) {
-            StringBuffer 
-                minMax = new StringBuffer(v.split(":")[0].trim()),
-                value  = new StringBuffer(v.split(":")[1].trim());
-            if(minMax.indexOf("min") != -1) {
-                build.append( "min(");
-                build.append(value);
-                build.append(") as min_");
-                build.append(value);
-                build.append(", ");
-            } else if(minMax.indexOf("max") != -1) {
-                build.append("max(");
-                build.append(value);
-                build.append(") as max_");
-                build.append(value);
-                build.append(", ");
+        try {
+            String[] properties = columns.getCombination().split(",");
+            for(String v: properties) {
+                StringBuffer 
+                    minMax = new StringBuffer(v.split(":")[0].trim()),
+                           value  = new StringBuffer(v.split(":")[1].trim());
+                if(minMax.indexOf("min") != -1) {
+                    build.append( "min(");
+                    build.append(value);
+                    build.append(") as min_");
+                    build.append(value);
+                    build.append(", ");
+                } else if(minMax.indexOf("max") != -1) {
+                    build.append("max(");
+                    build.append(value);
+                    build.append(") as max_");
+                    build.append(value);
+                    build.append(", ");
+                }
             }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
         return cleanValues(build.toString(), 2);
     }
@@ -102,25 +110,32 @@ public record QueryUtils() {
      */
     public String getPrepareConditional(ParamValue params) {
         StringBuffer build = new StringBuffer();
-        String
-            condition = params.getCombination(),
-            type = params.getType();
-        String[] properties = condition.split(",");
-        for(String p: properties) {
-            if(type.toLowerCase().equals("not")) {
-                build.append("not ");
-                build.append(p.split(":")[0]);
-                build.append("=");
-                build.append("?");
-                build.append(" and");
-            } else {
-                build.append(p.split(":")[0]);
-                build.append("=");
-                build.append("? ");
-                build.append(type);
+        try {
+            String
+                condition = params.getCombination(),
+                type = params.getType();
+            String[] properties = condition.split(",");
+            for(String p: properties) {
+                if(type.toLowerCase().equals("not")) {
+                    build.append("not ");
+                    build.append(p.split(":")[0]);
+                    build.append("=");
+                    build.append("?");
+                    build.append(" and");
+                } else {
+                    build.append(p.split(":")[0]);
+                    build.append("=");
+                    build.append("? ");
+                    build.append(type);
+                }
             }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
-        return cleanByLogicType(type, build.toString());
+        return cleanByLogicType(
+                params.getType(),
+                build.toString()
+        );
     }
     /**
      * get the update set values with question mark for the prepared update statement
@@ -145,26 +160,34 @@ public record QueryUtils() {
      */
     public String getNormalConditional(ParamValue params) {
         StringBuffer build = new StringBuffer();
-        String 
-            condition = params.getCombination(),
-            type = params.getType();
-        String[] properties = condition.split(",");
-        for(String p: properties) {
-            if(type.toLowerCase().equals("not")) {
-                build.append("not ");
-                build.append(p.split(":")[0]);
-                build.append("='");
-                build.append(p.split(":")[1].trim());
-                build.append("' and");
-            } else {
-                build.append(p.split(":")[0]);
-                build.append("='");
-                build.append(p.split(":")[1].trim());
-                build.append("' ");
-                build.append(type);
+        try {
+
+            String 
+                condition = params.getCombination(),
+                type = params.getType();
+            String[] properties = condition.split(",");
+            for(String p: properties) {
+                if(type.toLowerCase().equals("not")) {
+                    build.append("not ");
+                    build.append(p.split(":")[0]);
+                    build.append("='");
+                    build.append(p.split(":")[1].trim());
+                    build.append("' and");
+                } else {
+                    build.append(p.split(":")[0]);
+                    build.append("='");
+                    build.append(p.split(":")[1].trim());
+                    build.append("' ");
+                    build.append(type);
+                }
             }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
-        return cleanByLogicType(type, build.toString());
+        return cleanByLogicType(
+                params.getType(),
+                build.toString()
+        );
     }
     /**
      * creates the in conditional for where clause
