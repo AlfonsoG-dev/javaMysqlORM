@@ -45,15 +45,42 @@ public class QueryBuilder {
     }
     /**
      * create the read all data query.
-     * @param order: name: ASC | DESC
-     * @param group:  name: ASC | DESC
-     * @param limit: the number of objects to get
+        String[]
+            columns = {"order", "limit"},
+            rows = {"name:acs", "10"};
+     *@param params: order: name: ASC | DESC, group:  name: ASC | DESC and limit
      * @return the read all data query
      */
-    public String readAllQuery() {
+    public String readAllQuery(ParamValue params) {
         StringBuffer sql = new StringBuffer();
+        String[]
+            columns = params.getColumns(),
+            rows = params.getValues();
+        int length = columns.length;
         sql.append("SELECT * FROM ");
         sql.append(tbName);
+        for(int i=0; i<length; ++i) {
+            if(columns[i].toLowerCase().contains("order")) {
+                sql.append(" ORDER BY ");
+                if(rows[i].contains(":")) {
+                    String[] v = rows[i].split(":");
+                    sql.append(v[0]);
+                    if(v.length == 2) {
+                        sql.append(" ");
+                        sql.append(validationOrder( v[1].toUpperCase()));
+                    }
+                } else {
+                    sql.append(rows[i]);
+                }
+            } else if(columns[i].toLowerCase().contains("group")) {
+                sql.append(" GROUP BY ");
+                sql.append(rows[i]);
+            }
+            if(columns[i].toLowerCase().contains("limit")) {
+                sql.append(" LIMIT ");
+                sql.append(rows[i]);
+            }
+        }
         return sql.toString();
     }
     /**

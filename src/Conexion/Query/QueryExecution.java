@@ -165,8 +165,8 @@ public class QueryExecution {
      * @throws SQLException: error while trying to execute the statement
      * @return {@link ResultSet}
     */
-    public ResultSet executeReadAll(PreparedStatement pstm) throws SQLException {
-        String sql    = queryBuilder.readAllQuery();
+    public ResultSet executeReadAll(PreparedStatement pstm, ParamValue params) throws SQLException {
+        String sql    = queryBuilder.readAllQuery(params);
         pstm          = cursor.prepareStatement(sql);
         ResultSet rst = pstm.executeQuery();
         return rst;
