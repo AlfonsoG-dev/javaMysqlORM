@@ -258,17 +258,15 @@ public class QueryDAO<T> {
     }
     /**
      * creates a list of model from table data.
-     * @param order: ASC | DESC
-     * @param group: column to use for GROUP BY
-     * @param limit: the number of object per request
+     * @param params: order: ASC | DESC, group: column to use for GROUP BY and limit
      * @return a list of models.
      */
-    public ArrayList<T> readAll() {
+    public ArrayList<T> readAll(ParamValue params) {
         PreparedStatement pstm  = null;
         ResultSet rst           = null;
         ArrayList<T> results = new ArrayList<T>();
         try {
-            rst        = queryExecution.executeReadAll(pstm);
+            rst        = queryExecution.executeReadAll(pstm, params);
             int length = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 results.add(modelBuilderMethods.createFromRST(rst, length));

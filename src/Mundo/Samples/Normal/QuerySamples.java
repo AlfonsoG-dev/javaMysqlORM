@@ -75,7 +75,11 @@ public class QuerySamples<T> {
     }
 
     public void sampleReadAll() {
-        ArrayList<T> myList = myDAO.readAll();
+        String[]
+            columns = {"order", "limit"},
+            rows = {"name:ASC", "5"};
+        ParamValue params = new ParamValue(columns, rows);
+        ArrayList<T> myList = myDAO.readAll(params);
         myList
             .parallelStream()
             .forEach(e -> System.out.println("element: " + e));
