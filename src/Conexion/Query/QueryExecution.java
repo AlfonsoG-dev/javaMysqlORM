@@ -362,12 +362,11 @@ public class QueryExecution {
      * @return {@link ResultSet}
      */
     public ResultSet executeInnerJoin(Statement stm, ModelMethods primary, ModelMethods foreign,
-            String foreignT, ParamValue condition) throws SQLException {
+            String foreignT) throws SQLException {
         String sql    = queryBuilder.createInnerJoinQuery(
                 primary,
                 foreign,
-                foreignT,
-                condition
+                foreignT
         );
         stm           = cursor.createStatement();
         ResultSet rst = stm.executeQuery(sql);

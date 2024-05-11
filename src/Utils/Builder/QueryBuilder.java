@@ -300,8 +300,7 @@ public class QueryBuilder {
      * @param type: logic type for where clause
      * @return the sql query
      */
-    public String createInnerJoinQuery(ModelMethods primary, ModelMethods foreign, String foreignT,
-            ParamValue condition) {
+    public String createInnerJoinQuery(ModelMethods primary, ModelMethods foreign, String foreignT) {
         StringBuffer sql = new StringBuffer();
         String 
             foreignV   = queryUtil.assignTableNameToColumns(
@@ -317,8 +316,7 @@ public class QueryBuilder {
                 foreign.getAllProperties(),
                 this.tbName,
                 foreignT
-            ),
-            conditional = queryUtil.getNormalConditional(condition);
+            );
 
         sql.append("SELECT ");
         sql.append(primaryV);
@@ -330,8 +328,6 @@ public class QueryBuilder {
         sql.append(foreignT);
         sql.append(" ON ");
         sql.append(keys);
-        sql.append(" WHERE ");
-        sql.append(conditional);
         return sql.toString();
     }
     /** 

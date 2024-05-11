@@ -594,8 +594,7 @@ public class QueryDAO<T> {
      * @param condition: condition for where clause
      * @return a string with the format -> source_name: source_password, reference_name: reference_password
      */
-    public String innerJoin(ModelMethods primary, ModelMethods foreign, String foreignT, ParamValue condition) 
-    {
+    public String innerJoin(ModelMethods primary, ModelMethods foreign, String foreignT) {
         StringBuffer result = new StringBuffer();
         Statement stm = null;
         ResultSet rst = null;
@@ -604,8 +603,7 @@ public class QueryDAO<T> {
                     stm,
                     primary,
                     foreign,
-                    foreignT,
-                    condition
+                    foreignT
             );
             int len = rst.getMetaData().getColumnCount();
             while(rst.next()) {

@@ -157,12 +157,10 @@ public class QuerySamples<T> {
     }
     public void sampleInnerJoin(ModelMethods primary, ModelMethods foreign) {
         String foreignT     = "foreign_table_name";
-        ParamValue condition = new ParamValue("nombre", "test", "or");
         String result    = myDAO.innerJoin(
                 primary,
                 foreign,
-                foreignT,
-                condition
+                foreignT
         );
         System.out.println(result);
     }
