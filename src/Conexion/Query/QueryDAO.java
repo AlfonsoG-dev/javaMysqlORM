@@ -35,16 +35,11 @@ public class QueryDAO<T> {
      */
     private Connection cursor;
     /**
-     * table name
-     */
-    private String tbName;
-    /**
      * {@link java.lang.reflect.Constructor}
      * @param myConnector: {@link Connection} instance
      * @param builder: model builder instance
      */
     public QueryDAO(String tableName, Connection cursor, ModelBuilderMethods<T> builder) {
-        tbName              = tableName;
         this.cursor              = cursor;
         queryExecution      = new QueryExecution(tableName, cursor);
         queryUtil           = new QueryUtils();
@@ -601,7 +596,7 @@ public class QueryDAO<T> {
      */
     public String innerJoin(ModelMethods primary, ModelMethods foreign, String foreignT, ParamValue condition) 
     {
-        String result = "";
+        StringBuffer result = new StringBuffer();
         Statement stm = null;
         ResultSet rst = null;
         try {
@@ -612,11 +607,14 @@ public class QueryDAO<T> {
                     foreignT,
                     condition
             );
+            int len = rst.getMetaData().getColumnCount();
             while(rst.next()) {
-                result += tbName + "->" + rst.getString(tbName + "nombre") + ": " +
-                    rst.getString(tbName + "_password") + ", " +
-                    foreignT + "->" + rst.getString(foreignT + "_nombre") + ": " + 
-                    rst.getString(foreignT + "_password") + ", ";
+                for(int i=1; i<len; ++i) {
+                    result.append(rst.getMetaData().getColumnName(i));
+                    result.append(": ");
+                    result.append(rst.getString(i));
+                    result.append(",");
+                }
             }
 
         } catch(Exception e) {
@@ -642,10 +640,10 @@ public class QueryDAO<T> {
                 System.out.println("[ INFO ]: innerJoin completed");
             }
         }
-        if(result.length()-2 > 0) {
-            result = result.substring(0, result.length()-2);
+        if(result.length()-1 > 0) {
+            result = new StringBuffer(result.substring(0, result.length()-1));
         }
-        return result;
+        return result.toString();
     }
     /**
      * inserts a new value to the table.
@@ -1009,3 +1007,4 @@ public class QueryDAO<T> {
         return isDeleted;
     }
 }
+
