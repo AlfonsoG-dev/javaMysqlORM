@@ -139,21 +139,30 @@ public record QueryUtils() {
      * @return the condition for where clause
      */
     public String getNormalConditional(ParamValue params) {
-        String build = "";
-            String type = params.getType();
-            String[] 
-                cols = params.getColumns(),
-                vals = params.getValues();
-            for(int i=0; i<cols.length; ++i) {
-                if(type.toLowerCase().equals("not")) {
-                    build += " NOT " + cols[i] + "='" + vals[i] + "' AND";
-                } else {
-                    build += " " + cols[i] + "='" + vals[i] + "' " + type.toUpperCase();
-                }
+        String type = params.getType();
+        String[] 
+            cols = params.getColumns(),
+            vals = params.getValues();
+        StringBuffer b = new StringBuffer();
+        for(int i=0; i<cols.length; ++i) {
+            if(type.toLowerCase().equals("not")) {
+                b.append(" NOT ");
+                b.append(cols[i]);
+                b.append("='");
+                b.append(vals[i]);
+                b.append("' AND ");
+            } else {
+                b.append(" ");
+                b.append(cols[i]);
+                b.append("='");
+                b.append(vals[i]);
+                b.append("' ");
+                b.append(type.toUpperCase());
             }
+        }
         return cleanByLogicType(
                 params.getType(),
-                build
+                b.toString()
         );
     }
     /**
