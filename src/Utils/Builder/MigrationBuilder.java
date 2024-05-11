@@ -336,14 +336,9 @@ public class MigrationBuilder extends QueryBuilder {
      */
     public String getDefaultConstraintQuery(ParamValue options) throws Exception {
         StringBuffer sql = new StringBuffer();
-        if(!options.getCombination().contains(":")) {
-            throw new Exception(
-                    "[ ERROR ]: default options must have !column: value¡ format"
-            );
-        }
         sql.append(" ALTER ");
         if(options.getCombination().contains(",")) {
-            String[] others = options.getCombination().trim().split(",");
+            String[] others = options.getCombination().split(",");
             String b = "";
             for(String o: others) {
                 String[] spaces = o.trim().split(":");
@@ -354,7 +349,7 @@ public class MigrationBuilder extends QueryBuilder {
             }
             sql.append(queryUtil.cleanValues(b, 2));
         } else {
-            String[] spaces = options.getCombination().trim().split(":");
+            String[] spaces = options.getCombination().split(":");
             sql.append(spaces[0].trim());
             sql.append(" SET DEFAULT '");
             sql.append(spaces[1].trim());

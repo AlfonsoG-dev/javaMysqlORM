@@ -1,9 +1,5 @@
 package Utils.Query;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-
 import Utils.Formats.ParamValue;
 import Utils.Model.ModelUtils;
 
@@ -43,15 +39,6 @@ public record QueryUtils() {
         return value;
     }
     /**
-     * gets the query or {@link ResultSet} metadata colum count
-     * @param metadata: query or {@link ResultSet} metadata
-     * @throws SQLException: exception while trying to execute
-     * @return the column count
-     */
-    public int getMetadataNumColumns(ResultSetMetaData metadata) throws SQLException {
-        return metadata.getColumnCount();
-    }
-    /**
      * get the value of -> name: value.
      * @param condition: where clause condition
      * @return clean condition for where clause
@@ -59,9 +46,9 @@ public record QueryUtils() {
     public String getValueOfCondition(ParamValue condition) {
         StringBuffer val = new StringBuffer();
         try {
-            String[] properties = condition.getCombination().split(", ");
+            String[] properties = condition.getCombination().split(",");
             for(String p: properties) {
-                val.append(p.split(":")[1].trim());
+                val.append(p.split(":")[1]);
                 val.append(",");
             }
         } catch(Exception e) {
@@ -80,8 +67,8 @@ public record QueryUtils() {
             String[] properties = columns.getCombination().split(",");
             for(String v: properties) {
                 StringBuffer 
-                    minMax = new StringBuffer(v.split(":")[0].trim()),
-                           value  = new StringBuffer(v.split(":")[1].trim());
+                    minMax = new StringBuffer(v.split(":")[0]),
+                           value  = new StringBuffer(v.split(":")[1]);
                 if(minMax.indexOf("min") != -1) {
                     build.append( "min(");
                     build.append(value);
@@ -171,12 +158,12 @@ public record QueryUtils() {
                     build.append("not ");
                     build.append(p.split(":")[0]);
                     build.append("='");
-                    build.append(p.split(":")[1].trim());
+                    build.append(p.split(":")[1]);
                     build.append("' and");
                 } else {
                     build.append(p.split(":")[0]);
                     build.append("='");
-                    build.append(p.split(":")[1].trim());
+                    build.append(p.split(":")[1]);
                     build.append("' ");
                     build.append(type);
                 }

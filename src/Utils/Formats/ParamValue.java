@@ -64,19 +64,19 @@ public class ParamValue {
             for(int i=0; i<length; ++i) {
                 if(!getColumns()[i].isEmpty() || !getValues()[i].isEmpty()) {
                     h.append(getColumns()[i]);
-                    h.append(": ");
+                    h.append(":");
                     h.append(getValues()[i]);
                     h.append(", ");
                 } else {
                     throw new Exception(
-                            "[ ERROR ]: columns and values must have the same length and same order"
+                            "[ ERROR ]: columns and values/rows must have the same length and order"
                     );
                 }
             }
             b.append(h.substring(0, h.length()-2));
         } else if(!getColumn().isEmpty() && !getValue().isEmpty()) {
             b.append(getColumn());
-            b.append(": ");
+            b.append(":");
             b.append(getValue());
         }
         return b.toString();

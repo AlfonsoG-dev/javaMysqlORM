@@ -320,7 +320,7 @@ public class QueryExecution {
      */
     public int executeInsertByColumns(Statement stm, ParamValue options)  throws Exception {
         String 
-            cOptions = options.getCombination().trim(),
+            cOptions = options.getCombination(),
             sql = queryBuilder.createInsertByColumnQuery(cOptions);
         stm = cursor.createStatement();
         return stm.executeUpdate(sql);
