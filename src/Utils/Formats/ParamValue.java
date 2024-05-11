@@ -5,22 +5,26 @@ package Utils.Formats;
  */
 public class ParamValue {
 
-    private String column;
-    private String value;
     private String type;
     private String[] columns; 
     private String[] values;
     /**
      */
     public ParamValue(String column, String value, String type) {
-        this.column = column;
-        this.value = value;
+        String[] 
+            c = {column},
+            v = {value};
+        columns = c;
+        values = v;
         this.type = type;
         validationSingle();
     }
     public ParamValue(String column, String value) {
-        this.column = column;
-        this.value = value;
+        String[] 
+            c = {column},
+            v = {value};
+        columns = c;
+        values = v;
         validationSingle();
     }
     /**
@@ -39,9 +43,17 @@ public class ParamValue {
     }
 
     public String getColumn() {
+        String column = "";
+        if(columns.length == 1) {
+            column = columns[0];
+        }
         return column;
     }
     public String getValue() {
+        String value = "";
+        if(values.length == 1) {
+            value = values[0];
+        }
         return value;
     }
     public String getType() {

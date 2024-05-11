@@ -493,7 +493,7 @@ public class QueryDAO<T> {
                     columns,
                     condition
             );
-            int len = columns.getCombination().split(",").length;
+            int len = columns.getColumns().length;
             while(rst.next()) {
                 for(int i=1; i<=len; ++i) {
                     searched.append(rst.getMetaData().getColumnName(i));

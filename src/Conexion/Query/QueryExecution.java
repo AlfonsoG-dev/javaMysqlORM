@@ -319,9 +319,7 @@ public class QueryExecution {
      * @return row count or '0' when nothing is returned
      */
     public int executeInsertByColumns(Statement stm, ParamValue options)  throws Exception {
-        String 
-            cOptions = options.getCombination(),
-            sql = queryBuilder.createInsertByColumnQuery(cOptions);
+        String sql = queryBuilder.createInsertByColumnQuery(options.getCombination());
         stm = cursor.createStatement();
         return stm.executeUpdate(sql);
     }

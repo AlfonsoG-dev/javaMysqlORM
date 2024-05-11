@@ -337,24 +337,17 @@ public class MigrationBuilder extends QueryBuilder {
     public String getDefaultConstraintQuery(ParamValue options) throws Exception {
         StringBuffer sql = new StringBuffer();
         sql.append(" ALTER ");
-        if(options.getCombination().contains(",")) {
-            String[] others = options.getCombination().split(",");
-            String b = "";
-            for(String o: others) {
-                String[] spaces = o.trim().split(":");
-                b += spaces[0].trim();
-                b += " SET DEFAULT '";
-                b += spaces[1].trim();
-                b += "', ";
-            }
-            sql.append(queryUtil.cleanValues(b, 2));
-        } else {
-            String[] spaces = options.getCombination().split(":");
-            sql.append(spaces[0].trim());
-            sql.append(" SET DEFAULT '");
-            sql.append(spaces[1].trim());
-            sql.append("'");
+        String[]
+            cols = options.getColumns(),
+            vals = options.getValues();
+        String b = "";
+        for(int i=0; i<cols.length; ++i) {
+            b += cols[i];
+            b += " SET DEFAULT '";
+            b += vals[i];
+            b += "', ";
         }
+        sql.append(queryUtil.cleanValues(b, 2));
         return createAlterTableQuery(sql.toString());
     }
     /**

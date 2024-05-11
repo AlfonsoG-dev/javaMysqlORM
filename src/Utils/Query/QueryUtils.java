@@ -46,9 +46,9 @@ public record QueryUtils() {
     public String getValueOfCondition(ParamValue condition) {
         StringBuffer val = new StringBuffer();
         try {
-            String[] properties = condition.getCombination().split(",");
-            for(String p: properties) {
-                val.append(p.split(":")[1]);
+            String[] values = condition.getValues();
+            for(int i=0; i<values.length; ++i) {
+                val.append(values[i]);
                 val.append(",");
             }
         } catch(Exception e) {
@@ -64,11 +64,13 @@ public record QueryUtils() {
     public String getMinMaxSelection(ParamValue columns) {
         StringBuffer build = new StringBuffer();
         try {
-            String[] properties = columns.getCombination().split(",");
-            for(String v: properties) {
+            String[] 
+                cols = columns.getColumns(),
+                vals = columns.getValues();
+            for(int i=0; i<cols.length; ++i) {
                 StringBuffer 
-                    minMax = new StringBuffer(v.split(":")[0]),
-                           value  = new StringBuffer(v.split(":")[1]);
+                    minMax = new StringBuffer(cols[i]),
+                           value  = new StringBuffer(vals[i]);
                 if(minMax.indexOf("min") != -1) {
                     build.append( "min(");
                     build.append(value);
@@ -98,19 +100,17 @@ public record QueryUtils() {
     public String getPrepareConditional(ParamValue params) {
         StringBuffer build = new StringBuffer();
         try {
-            String
-                condition = params.getCombination(),
-                type = params.getType();
-            String[] properties = condition.split(",");
-            for(String p: properties) {
+            String type = params.getType();
+            String[] cols = params.getColumns();
+            for(int i=0; i<cols.length; ++i) {
                 if(type.toLowerCase().equals("not")) {
                     build.append("not ");
-                    build.append(p.split(":")[0]);
+                    build.append(cols[i]);
                     build.append("=");
                     build.append("?");
                     build.append(" and");
                 } else {
-                    build.append(p.split(":")[0]);
+                    build.append(cols[i]);
                     build.append("=");
                     build.append("? ");
                     build.append(type);
@@ -149,21 +149,21 @@ public record QueryUtils() {
         StringBuffer build = new StringBuffer();
         try {
 
-            String 
-                condition = params.getCombination(),
-                type = params.getType();
-            String[] properties = condition.split(",");
-            for(String p: properties) {
+            String type = params.getType();
+            String[] 
+                cols = params.getColumns(),
+                vals = params.getValues();
+            for(int i=0; i<cols.length; ++i) {
                 if(type.toLowerCase().equals("not")) {
                     build.append("not ");
-                    build.append(p.split(":")[0]);
+                    build.append(cols[i]);
                     build.append("='");
-                    build.append(p.split(":")[1]);
+                    build.append(vals[i]);
                     build.append("' and");
                 } else {
-                    build.append(p.split(":")[0]);
+                    build.append(cols[i]);
                     build.append("='");
-                    build.append(p.split(":")[1]);
+                    build.append(vals[i]);
                     build.append("' ");
                     build.append(type);
                 }
