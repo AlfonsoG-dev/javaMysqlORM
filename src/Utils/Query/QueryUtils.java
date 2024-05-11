@@ -45,14 +45,10 @@ public record QueryUtils() {
      */
     public String getValueOfCondition(ParamValue condition) {
         StringBuffer val = new StringBuffer();
-        try {
-            String[] values = condition.getValues();
-            for(int i=0; i<values.length; ++i) {
-                val.append(values[i]);
-                val.append(",");
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
+        String[] values = condition.getValues();
+        for(int i=0; i<values.length; ++i) {
+            val.append(values[i]);
+            val.append(",");
         }
         return cleanValues(val.toString(), 1);
     }
@@ -63,30 +59,26 @@ public record QueryUtils() {
      */
     public String getMinMaxSelection(ParamValue columns) {
         StringBuffer build = new StringBuffer();
-        try {
-            String[] 
-                cols = columns.getColumns(),
-                vals = columns.getValues();
-            for(int i=0; i<cols.length; ++i) {
-                StringBuffer 
-                    minMax = new StringBuffer(cols[i]),
-                           value  = new StringBuffer(vals[i]);
-                if(minMax.indexOf("min") != -1) {
-                    build.append( "min(");
-                    build.append(value);
-                    build.append(") as min_");
-                    build.append(value);
-                    build.append(", ");
-                } else if(minMax.indexOf("max") != -1) {
-                    build.append("max(");
-                    build.append(value);
-                    build.append(") as max_");
-                    build.append(value);
-                    build.append(", ");
-                }
+        String[] 
+            cols = columns.getColumns(),
+            vals = columns.getValues();
+        for(int i=0; i<cols.length; ++i) {
+            StringBuffer 
+                minMax = new StringBuffer(cols[i]),
+                       value  = new StringBuffer(vals[i]);
+            if(minMax.indexOf("min") != -1) {
+                build.append( "min(");
+                build.append(value);
+                build.append(") as min_");
+                build.append(value);
+                build.append(", ");
+            } else if(minMax.indexOf("max") != -1) {
+                build.append("max(");
+                build.append(value);
+                build.append(") as max_");
+                build.append(value);
+                build.append(", ");
             }
-        } catch(Exception e) {
-            e.printStackTrace();
         }
         return cleanValues(build.toString(), 2);
     }

@@ -57,7 +57,7 @@ public class ParamValue {
         return value;
     }
     public String getType() {
-        return type;
+        return type.toLowerCase();
     }
 
     public String[] getColumns() {
