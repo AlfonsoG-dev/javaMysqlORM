@@ -71,7 +71,7 @@ public class QueryDAO<T> {
      * @return value of column name
      */
     public String anyQuery(String sql) {
-        String result = "";
+        StringBuffer result = new StringBuffer();
         Statement stm = null;
         ResultSet rst = null;
         try {
@@ -79,8 +79,10 @@ public class QueryDAO<T> {
             int len = queryUtil.getMetadataNumColumns(rst.getMetaData());
             while(rst.next()) {
                 for(int i=1; i<= len; i++) {
-                    String columnName = rst.getMetaData().getColumnName(i);
-                    result += columnName + ": " + rst.getString(i) + ", ";
+                    result.append(rst.getMetaData().getColumnName(i));
+                    result.append(": ");
+                    result.append(rst.getString(i));
+                    result.append(",");
                 }
             }
         } catch (Exception e) {
@@ -106,10 +108,10 @@ public class QueryDAO<T> {
                 System.out.println("[ INFO ]: query successfully completed");
             }
         }
-        if(result.length()-2 > 0) {
-            result = result.substring(0, result.length()-2);
+        if(result.length()-1 > 0) {
+            result = new StringBuffer(result.substring(0, result.length()-1));
         }
-        return result;
+        return result.toString();
     }
     /**
      * uses the given string as sql statement.
@@ -381,7 +383,7 @@ public class QueryDAO<T> {
      * @return the object of the generic type
      */
     public String findIn(String returnColumns, String conditionalColumns, String condition, String type) {
-        String searched = null;
+        StringBuffer searched = new StringBuffer();
         Statement stm  = null;
         ResultSet rst  = null;
         try {
@@ -400,7 +402,10 @@ public class QueryDAO<T> {
             }
             while(rst.next()) {
                 for(int i=1; i<=len; ++i) {
-                    searched += rst.getString(i).replaceAll("null", "") + ", ";
+                    searched.append(rst.getMetaData().getColumnName(i));
+                    searched.append(": ");
+                    searched.append(rst.getString(i));
+                    searched.append(",");
                 }
             }
         } catch (Exception e) {
@@ -426,10 +431,10 @@ public class QueryDAO<T> {
                 System.out.println("[ INFO ]: findIn completed");
             }
         }
-        if(searched.length()-2 > 0) {
-            searched = searched.substring(0, searched.length()-2);
+        if(searched.length()-1 > 0) {
+            searched = new StringBuffer(searched.substring(0, searched.length()-1));
         }
-        return searched;
+        return searched.toString();
     }
     /**
      * search using regex or pattern.
@@ -485,7 +490,7 @@ public class QueryDAO<T> {
      * @return the min or max object data
      */
     public String getMinMax(ParamValue columns, ParamValue condition) {
-        String searched = null;
+        StringBuffer searched = new StringBuffer();
         Statement stm  = null;
         ResultSet rst  = null;
         try {
@@ -502,7 +507,10 @@ public class QueryDAO<T> {
             }
             while(rst.next()) {
                 for(int i=1; i<=len; ++i) {
-                    searched += rst.getString(i).replaceAll("null", "") + ", ";
+                    searched.append(rst.getMetaData().getColumnName(i));
+                    searched.append(": ");
+                    searched.append(rst.getString(i));
+                    searched.append(",");
                 }
             }
         } catch (Exception e) {
@@ -528,7 +536,7 @@ public class QueryDAO<T> {
                 System.out.println("[ INFO ]: getMinMax completed");
             }
         }
-        return searched.substring(0, searched.length()-2);
+        return searched.substring(0, searched.length()-1);
     }
     /**
      * search for the value of the given column. 
@@ -537,7 +545,7 @@ public class QueryDAO<T> {
      * @return value of column name
      */
     public String getValueOfColumnName(ParamValue condition, String columns) {
-        String result = "";
+        StringBuffer result = new StringBuffer();
         Statement stm = null;
         ResultSet rst = null;
         try {
@@ -555,7 +563,10 @@ public class QueryDAO<T> {
             }
             while(rst.next()) {
                 for(int i=1; i<= len; ++i) {
-                    result += rst.getString(i).replaceAll("null", "") + ", ";
+                    result.append(rst.getMetaData().getColumnName(i));
+                    result.append(": ");
+                    result.append(rst.getString(i));
+                    result.append(",");
                 }
             }
         } catch (Exception e) {
@@ -581,10 +592,10 @@ public class QueryDAO<T> {
                 System.out.println("[ INFO ]: getValueOfColumnName completed");
             }
         }
-        if(result.length()-2 > 0) {
-            result = result.substring(0, result.length()-2);
+        if(result.length()-1 > 0) {
+            result = new StringBuffer(result.substring(0, result.length()-1));
         }
-        return result;
+        return result.toString();
     }
     /**
      * inner join of 2 tables.
@@ -608,6 +619,8 @@ public class QueryDAO<T> {
             int len = rst.getMetaData().getColumnCount();
             while(rst.next()) {
                 for(int i=1; i<len; ++i) {
+                    result.append(rst.getMetaData().getTableName(i));
+                    result.append("_");
                     result.append(rst.getMetaData().getColumnName(i));
                     result.append(": ");
                     result.append(rst.getString(i));

@@ -191,10 +191,10 @@ public record ModelUtils() {
         String[] data = modelData.split("\n");
         for(String d: data) {
             String key = d.split(":")[0];
-            if(key.contains("id_pk") || key.contains("pk")) {
+            if(key.contains("_pk")) {
                 keys.put("pk", key);
             }
-            if(key.contains("id_fk") || key.contains("fk")) {
+            if(key.contains("_fk")) {
                 keys.put("fk", key);
             }
         }

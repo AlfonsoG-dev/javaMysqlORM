@@ -197,9 +197,7 @@ public class Cuenta implements ModelMethods {
     @Override
     public String getAllProperties() {
         StringBuffer all = new StringBuffer();
-        if(this.getId_pk() > 0) {
-            all.append("id_pk: " + this.getId_pk() + "\n");
-        }
+        all.append("id_pk: " + this.getId_pk() + "\n");
         if(this.getNombre() != null && this.getNombre() != "" ) {
             all.append("nombre: " + this.getNombre() + "\n");
         }

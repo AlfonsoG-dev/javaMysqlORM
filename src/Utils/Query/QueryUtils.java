@@ -315,7 +315,7 @@ public record QueryUtils() {
         String 
             pk    = modelUtils.getPkFk(foreignM).get("pk"),
             fk    = modelUtils.getPkFk(invokedM).get("fk");
-        if(!pk.isEmpty() || !fk.isEmpty()) {
+        if(pk != null || fk != null) {
             build.append(invokedT);
             build.append(".");
             build.append(fk); 
@@ -323,6 +323,8 @@ public record QueryUtils() {
             build.append(foreignT);
             build.append(".");
             build.append(pk);
+        } else {
+            System.out.println("[ ERROR ]:  no pk or fk in model");
         }
         return build.toString();
     }
