@@ -155,6 +155,10 @@ public class QuerySamples<T> {
         );
         System.out.println(result);
     }
+    /**
+     * primary: has the fk field declaration
+     * foreign: has the pk referenced by primary.fk
+     */
     public void sampleInnerJoin(ModelMethods primary, ModelMethods foreign) {
         String foreignT     = "foreign_table_name";
         String result    = myDAO.innerJoin(
