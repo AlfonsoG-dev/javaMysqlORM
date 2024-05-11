@@ -98,23 +98,24 @@ public record QueryUtils() {
      * @return the condition for where clause
      */
     public String getPrepareConditional(ParamValue params) {
-        String build = "";
-        try {
-            String type = params.getType();
-            String[] cols = params.getColumns();
-            for(int i=0; i<cols.length; ++i) {
-                if(type.toLowerCase().equals("not")) {
-                    build += "NOT " + cols[i] + "=? AND";
-                } else {
-                    build += " " + cols[i] + "=? " + type.toUpperCase();
-                }
+        StringBuffer b =  new StringBuffer();
+        String type = params.getType();
+        String[] cols = params.getColumns();
+        for(int i=0; i<cols.length; ++i) {
+            if(type.toLowerCase().equals("not")) {
+                b.append(" NOT ");
+                b.append(cols[i]);
+                b.append("=? AND");
+            } else {
+                b.append(" ");
+                b.append(cols[i]);
+                b.append("=? ");
+                b.append(type.toUpperCase());
             }
-        } catch(Exception e) {
-            e.printStackTrace();
         }
         return cleanByLogicType(
                 params.getType(),
-                build
+                b.toString()
         );
     }
     /**
