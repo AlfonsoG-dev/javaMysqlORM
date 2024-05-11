@@ -98,22 +98,15 @@ public record QueryUtils() {
      * @return the condition for where clause
      */
     public String getPrepareConditional(ParamValue params) {
-        StringBuffer build = new StringBuffer();
+        String build = "";
         try {
             String type = params.getType();
             String[] cols = params.getColumns();
             for(int i=0; i<cols.length; ++i) {
                 if(type.toLowerCase().equals("not")) {
-                    build.append("not ");
-                    build.append(cols[i]);
-                    build.append("=");
-                    build.append("?");
-                    build.append(" and");
+                    build += "NOT " + cols[i] + "=? AND";
                 } else {
-                    build.append(cols[i]);
-                    build.append("=");
-                    build.append("? ");
-                    build.append(type);
+                    build += " " + cols[i] + "=? " + type.toUpperCase();
                 }
             }
         } catch(Exception e) {
@@ -121,7 +114,7 @@ public record QueryUtils() {
         }
         return cleanByLogicType(
                 params.getType(),
-                build.toString()
+                build
         );
     }
     /**
@@ -146,34 +139,21 @@ public record QueryUtils() {
      * @return the condition for where clause
      */
     public String getNormalConditional(ParamValue params) {
-        StringBuffer build = new StringBuffer();
-        try {
-
+        String build = "";
             String type = params.getType();
             String[] 
                 cols = params.getColumns(),
                 vals = params.getValues();
             for(int i=0; i<cols.length; ++i) {
                 if(type.toLowerCase().equals("not")) {
-                    build.append("not ");
-                    build.append(cols[i]);
-                    build.append("='");
-                    build.append(vals[i]);
-                    build.append("' and");
+                    build += " NOT " + cols[i] + "='" + vals[i] + "' AND";
                 } else {
-                    build.append(cols[i]);
-                    build.append("='");
-                    build.append(vals[i]);
-                    build.append("' ");
-                    build.append(type);
+                    build += " " + cols[i] + "='" + vals[i] + "' " + type.toUpperCase();
                 }
             }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
         return cleanByLogicType(
                 params.getType(),
-                build.toString()
+                build
         );
     }
     /**
@@ -184,47 +164,31 @@ public record QueryUtils() {
      * @return the in conditional for where clause
      */
     public String getInConditional(String columns, String condition, String type) {
-        StringBuffer 
-            inCondition  = new StringBuffer(),
-            build        = new StringBuffer(),
-            cInCondition = new StringBuffer();
+        String 
+            inCondition  = "",
+            build        = "",
+            cInCondition = "";
         String[] cols = columns.split(",");
         if(condition.toLowerCase().startsWith("select")) {
             for(String c: cols) {
                 if(type.toLowerCase().equals("not")) {
-                    build.append(c);
-                    build.append(" NOT IN (");
-                    build.append(condition);
-                    build.append(") AND");
+                    build += c + " NOT IN (" + condition + ") AND ";
                 } else {
-                    build.append(c);
-                    build.append(" IN (");
-                    build.append(condition);
-                    build.append(") ");
-                    build.append(type);
+                    build += c + " IN (" + condition + ") " + type.toUpperCase();
                 }
             }
         } else {
             String[] properties = condition.split(",");
-            inCondition.append("(");
+            inCondition = "('";
             for(String p: properties) {
-                inCondition.append("'");
-                inCondition.append(p.trim());
-                inCondition.append("', ");
+                inCondition += p.trim() + "', " ;
             }
-            cInCondition.append(cleanValues(inCondition.toString(), 3));
+            cInCondition = cleanValues(inCondition.toString(), 3);
             for(String c: cols) {
                 if(type.toLowerCase().equals("not")) {
-                    build.append(c);
-                    build.append(" NOT IN ");
-                    build.append(cInCondition);
-                    build.append("') AND");
+                    build += " " + c + " NOT IN " + cInCondition + "') AND";
                 } else {
-                    build.append(c);
-                    build.append(" IN ");
-                    build.append(cInCondition);
-                    build.append("') "); 
-                    build.append(type);
+                    build += " " + c + " IN " + cInCondition + "') " + type.toUpperCase();
                 }
             }
         }
@@ -279,12 +243,12 @@ public record QueryUtils() {
      * @return the pattern
      */
     public String getPatternCondition(String pattern, String[] condition, String type) {
-        StringBuffer build = new StringBuffer();
+        String build = "";
         for(String k: condition) {
             if(type.toLowerCase().equals("not")) {
-                build.append(k + " not like " + "'" + pattern + "'" + " and");
+                build += k + " not like " + "'" + pattern + "'" + " and";
             } else {
-                build.append(k + " like " + "'" + pattern + "'" + " " + type);
+                build += k + " like " + "'" + pattern + "'" + " " + type;
             }
         }
         return cleanByLogicType(type, build.toString());

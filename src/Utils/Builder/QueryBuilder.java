@@ -127,16 +127,13 @@ public class QueryBuilder {
      * @return the sql query
      */
     public String createFindColumnValueQuery(ParamValue condition, String columns) {
-        StringBuffer 
-            sql = new StringBuffer(),
-            whereClause = new StringBuffer();
-        whereClause.append(" WHERE ");
-        whereClause.append(queryUtil.getNormalConditional(condition));
+        StringBuffer sql = new StringBuffer();
         sql.append("SELECT ");
         sql.append(columns);
         sql.append(" FROM ");
         sql.append(tbName);
-        sql.append(whereClause);
+        sql.append(" WHERE ");
+        sql.append(queryUtil.getNormalConditional(condition));
         return sql.toString();
     }
     /**
