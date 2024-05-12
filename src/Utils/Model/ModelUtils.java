@@ -36,7 +36,7 @@ public record ModelUtils() {
             colName = new StringBuffer(),
             modelCol = new StringBuffer();
         for(int i=0; i<data.length; ++i) {
-            StringBuffer col = new StringBuffer(data[i].split(":")[0].trim());
+            StringBuffer col = new StringBuffer(data[i].split(":", 2)[0].trim());
             if(!col.isEmpty()) {
                 colName.append(col + ", ");
             }
@@ -141,7 +141,7 @@ public record ModelUtils() {
         StringBuffer types = new StringBuffer();
         if(includeKeys == false) {
             for(int i = 1; i < data.length; i++) {
-                StringBuffer type = new StringBuffer(data[i].split(":")[1].trim());
+                StringBuffer type = new StringBuffer(data[i].split(":", 2)[1].trim());
                 if(!type.isEmpty()) {
                     types.append("'");
                     types.append(type);
@@ -153,7 +153,7 @@ public record ModelUtils() {
         else {
             for(int i = 0; i < data.length; i++) {
                 if(data[i].contains(":")) {
-                    String myType = data[i].split(":")[1].trim();
+                    String myType = data[i].split(":", 2)[1].trim();
                     types.append("'");
                     types.append(myType);
                     types.append("'");
@@ -190,7 +190,7 @@ public record ModelUtils() {
         HashMap<String, String> keys = new HashMap<String, String>();
         String[] data = modelData.split("\n");
         for(String d: data) {
-            String key = d.split(":")[0];
+            String key = d.split(":", 2)[0];
             if(key.contains("_pk")) {
                 keys.put("pk", key);
             }
