@@ -53,9 +53,6 @@ public class QueryBuilder {
      */
     public String readAllQuery(ParamValue params) {
         StringBuffer sql = new StringBuffer();
-        if(params == null) {
-            params = new ParamValue("", "");
-        }
         String[]
             columns = params.getColumns(),
             rows = params.getValues();
