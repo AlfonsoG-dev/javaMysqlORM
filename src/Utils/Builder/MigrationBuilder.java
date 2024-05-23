@@ -59,14 +59,15 @@ public class MigrationBuilder extends QueryBuilder {
      */
     public String createTableQuery(ModelMethods model, String type) {
         String typeColumn = "", modelInit = model.initModel();
-        String[] columns = modelUtils.getModelColumns(
+        String[]
+            columns = modelUtils.getModelColumns(
                 modelInit,
                 true
-        ).split(",");
-        String[] types = modelUtils.getModelTypes(
-                modelInit,
-                true
-        ).split(",");
+            ).split(","),
+            types = modelUtils.getModelTypes(
+                    modelInit,
+                    true
+            ).split(",");
         for(String t: types) {
             if(t.contains(".")) {
                 typeColumn = t.replace(".", ",");
@@ -88,7 +89,7 @@ public class MigrationBuilder extends QueryBuilder {
         if(type.equals("n")) {
             sql = "CREATE TABLE IF NOT EXISTS " + tableName + clearValues;
         } else if(type.equals("t")) {
-            sql = "CREATE TEMPORARY TABLE " + "t_" + tableName + clearValues;
+            sql = "CREATE TEMPORARY TABLE t_" + tableName + clearValues;
         }
         return sql;
     }
@@ -277,7 +278,7 @@ public class MigrationBuilder extends QueryBuilder {
             String[] columns = deleteColumns.toString().split(", ");
             for(String k: columns) {
                 String[] data = k.split(":");
-                if(data[0].contains("fk")) {
+                if(data[0].contains("fk") || data[0].contains("pk")) {
                     sql.append(
                             createDeleteConstraintQuery(
                             deleteColumns.toString(),
